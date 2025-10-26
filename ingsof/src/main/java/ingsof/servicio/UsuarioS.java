@@ -24,8 +24,9 @@ public class UsuarioS {
 
     // Crear o actualizar usuario
     public Usuario guardar(Usuario usuario) {
-        return repo.save(usuario);
+    return repo.save(usuario);
     }
+
 
     // Eliminar usuario por id
     public void eliminar(int id) {
