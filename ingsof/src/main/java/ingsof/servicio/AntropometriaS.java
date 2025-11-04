@@ -30,7 +30,7 @@ public class AntropometriaS {
         repo.deleteById(id);
     }
 
-    public void actualizarPorId(int id, Antropometria antropometriaActualizado) {
+    public void actualizar(int id, Antropometria antropometriaActualizado) {
         Optional<Antropometria> antropometriaExistente = repo.findById(id);
         if (antropometriaExistente.isPresent()) {
             antropometriaExistente.get().setEstatura(antropometriaActualizado.getEstatura());

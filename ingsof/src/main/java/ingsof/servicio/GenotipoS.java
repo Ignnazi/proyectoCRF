@@ -14,11 +14,11 @@ public class GenotipoS {
         this.repo = repo;
     }
 
-    public void save(Genotipo genotipo) {
+    public void guardar(Genotipo genotipo) {
         repo.save(genotipo);
     }
 
-    public void delete(int id) {
+    public void eliminar(int id) {
         repo.deleteById(id);
     }
     public void actualizar(int id, Genotipo genotipoActualizado) {

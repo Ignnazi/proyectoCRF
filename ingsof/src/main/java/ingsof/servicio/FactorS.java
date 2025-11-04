@@ -15,11 +15,11 @@ public class FactorS {
         this.repo = repo;
     }
 
-    public void save(Factor factor) {
+    public void guardar(Factor factor) {
         repo.save(factor);
     }
 
-    public void delete(int id) {
+    public void eliminar(int id) {
         repo.deleteById(id);
     }
 
