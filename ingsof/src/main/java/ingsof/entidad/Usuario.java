@@ -14,6 +14,8 @@ public class Usuario {
     private String nombre;
     private String rol;
 
+    public Usuario() {}
+
     // Getters y setters
     public int getIdUser() {
         return idUser;

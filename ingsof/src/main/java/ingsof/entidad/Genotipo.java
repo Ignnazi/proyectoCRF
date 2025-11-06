@@ -41,6 +41,7 @@ public class Genotipo {
     @JoinColumn(name = "cod_part", referencedColumnName = "cod_part", insertable = false, updatable = false)
     private Participantecrf participante;
 
+    public Genotipo() { }
     // Getters y setters
     public int getIdGenotip() {
         return idGenotip;

@@ -31,6 +31,8 @@ public class Sociodemo {
     @JoinColumn(name = "cod_part", referencedColumnName = "cod_part", insertable = false, updatable = false)
     private Participantecrf participante;
 
+    public Sociodemo() { }
+
     // Getters y setters
     public int getIdSocdemo() {
         return idSocdemo;

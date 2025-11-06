@@ -36,9 +36,11 @@ public class Antecedente {
     private String codPart;
 
     // Relación con participante (1:1)
-    @OneToOne
+    @OneToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_part", referencedColumnName = "cod_part", insertable = false, updatable = false)
     private Participantecrf participante;
+
+    public Antecedente() { }
 
     // Getters y setters
     public int getIdAntec() {

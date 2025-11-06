@@ -23,6 +23,8 @@ public class Histopatologia {
     @JoinColumn(name = "cod_part", referencedColumnName = "cod_part", insertable = false, updatable = false)
     private Participantecrf participante;
 
+    public Histopatologia() { }
+
     // Getters y setters
     public int getIdHisto() {
         return idHisto;

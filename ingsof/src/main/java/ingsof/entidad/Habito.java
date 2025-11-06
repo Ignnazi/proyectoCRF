@@ -33,6 +33,8 @@ public class Habito {
     @JoinColumn(name = "cod_part", referencedColumnName = "cod_part", insertable = false, updatable = false)
     private Participantecrf participante;
 
+    public Habito() { }
+
     // Getters y setters
 
     public int getIdHabit() {

@@ -23,6 +23,8 @@ public class Helicobacter {
     @JoinColumn(name = "cod_part", referencedColumnName = "cod_part", insertable = false, updatable = false)
     private Participantecrf participante;
 
+    public Helicobacter() { }
+
     // Getters y setters
     public int getIdHelic() {
         return idHelic;
