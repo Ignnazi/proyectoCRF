@@ -2,41 +2,31 @@ package ingsof.controlador;
 
 import ingsof.entidad.Antropometria;
 import ingsof.servicio.AntropometriaS;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/antropometria")
 public class AntropometriaC {
+
     private final AntropometriaS servicio;
-    public AntropometriaC(AntropometriaS servicio) {
-        this.servicio = servicio;
-    }
+
+    public AntropometriaC(AntropometriaS servicio) { this.servicio = servicio; }
 
     @GetMapping
-    public List<Antropometria> listar() {
-        return this.servicio.listar();
-    }
+    public ResponseEntity<List<Antropometria>> listar(){ return ResponseEntity.ok(servicio.listar()); }
 
     @GetMapping("/{id}")
-    public Optional<Antropometria> obtener(@PathVariable int id) {
-        return this.servicio.obtenerPorId(id);
-    }
+    public ResponseEntity<Antropometria> porId(@PathVariable Integer id){ return ResponseEntity.ok(servicio.porId(id)); }
+
+    @GetMapping("/por-participante/{codPart}")
+    public ResponseEntity<List<Antropometria>> porParticipante(@PathVariable String codPart){ return ResponseEntity.ok(servicio.porParticipante(codPart)); }
 
     @PostMapping
-    public void guardar(@RequestBody Antropometria antropometria) {
-        this.servicio.guardar(antropometria);
-    }
-
-    @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable int id) {
-        this.servicio.eliminar(id);
-    }
+    public ResponseEntity<Antropometria> crear(@RequestBody Antropometria body){ return ResponseEntity.ok(servicio.crear(body)); }
 
     @PutMapping("/{id}")
-    public void actualizar(@PathVariable int id, @RequestBody Antropometria antropometria) {
-        this.servicio.actualizar(id, antropometria);
-    }
+    public ResponseEntity<Antropometria> actualizar(@PathVariable Integer id, @RequestBody Antropometria body){ return ResponseEntity.ok(servicio.actualizar(id, body)); }
 }
