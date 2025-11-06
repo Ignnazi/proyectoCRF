@@ -1,6 +1,7 @@
 package ingsof.entidad;
 
 import jakarta.persistence.*;
+import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
 @Table(name = "sociodemo")
@@ -10,8 +11,7 @@ public class Sociodemo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_socdemo")
     private int idSocdemo;
-
-    private int edad;
+    private Integer edad;
     private String sexo;              // 'Hombre' o 'Mujer'
     private String nacionalidad;
     private String direccion;
@@ -42,11 +42,11 @@ public class Sociodemo {
         this.idSocdemo = idSocdemo;
     }
 
-    public int getEdad() {
+    public Integer getEdad() {
         return edad;
     }
 
-    public void setEdad(int edad) {
+    public void setEdad(Integer edad) {
         this.edad = edad;
     }
 

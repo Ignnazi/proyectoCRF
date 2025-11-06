@@ -2,6 +2,7 @@ package ingsof.controlador;
 
 import ingsof.entidad.Sociodemo;
 import ingsof.servicio.SociodemoS;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,8 +29,14 @@ public class SociodemoC {
     }
 
     @PostMapping
-    public void guardar(@RequestBody Sociodemo sociodemo) {
-        this.servicio.guardar(sociodemo);
+    public ResponseEntity<?> guardar(@RequestBody Sociodemo sociodemo) {
+        try{
+            this.servicio.guardar(sociodemo);
+            return ResponseEntity.ok("Guardado Exitosamente");
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 
     @DeleteMapping("/{id}")

@@ -24,6 +24,7 @@ public class Histopatologia {
     @JoinColumn(name = "cod_part", referencedColumnName = "cod_part", insertable = false, updatable = false)
     private Participantecrf participante;
 
+    public Histopatologia() { }
     public Integer getIdHisto() { return idHisto; }
     public void setIdHisto(Integer idHisto) { this.idHisto = idHisto; }
     public String getTipo() { return tipo; }

@@ -35,30 +35,60 @@ public class Antecedente {
     @Column(name = "cod_part", nullable = false, length = 5)
     private String codPart;
 
-    @OneToOne
+
+    @OneToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_part", referencedColumnName = "cod_part", insertable = false, updatable = false)
     private Participantecrf participante;
 
-    public Integer getIdAntec() { return idAntec; }
-    public void setIdAntec(Integer idAntec) { this.idAntec = idAntec; }
-    public String getDiagnostico() { return diagnostico; }
-    public void setDiagnostico(String diagnostico) { this.diagnostico = diagnostico; }
-    public LocalDate getFechaDiag() { return fechaDiag; }
-    public void setFechaDiag(LocalDate fechaDiag) { this.fechaDiag = fechaDiag; }
-    public String getFamCg() { return famCg; }
-    public void setFamCg(String famCg) { this.famCg = famCg; }
-    public String getFamOtro() { return famOtro; }
-    public void setFamOtro(String famOtro) { this.famOtro = famOtro; }
-    public String getOtroCancer() { return otroCancer; }
-    public void setOtroCancer(String otroCancer) { this.otroCancer = otroCancer; }
-    public String getOtrasEnfermedades() { return otrasEnfermedades; }
-    public void setOtrasEnfermedades(String otrasEnfermedades) { this.otrasEnfermedades = otrasEnfermedades; }
-    public String getMedicamentos() { return medicamentos; }
-    public void setMedicamentos(String medicamentos) { this.medicamentos = medicamentos; }
-    public String getCirugia() { return cirugia; }
-    public void setCirugia(String cirugia) { this.cirugia = cirugia; }
-    public String getCodPart() { return codPart; }
-    public void setCodPart(String codPart) { this.codPart = codPart; }
-    public Participantecrf getParticipante() { return participante; }
-    public void setParticipante(Participantecrf participante) { this.participante = participante; }
+    public Antecedente() { }
+
+    // Getters y setters
+    public Integer getIdAntec() {
+        return idAntec;
+    }
+
+    public void setIdAntec(Integer idAntec) {
+        this.idAntec = idAntec;
+    }
+
+    public String getDiagnostico() {
+        return diagnostico;
+    }
+
+    public void setDiagnostico(String diagnostico) {
+        this.diagnostico = diagnostico;
+    }
+
+    public LocalDate getFechaDiag() {
+        return fechaDiag;
+    }
+
+    public void setFechaDiag(LocalDate fechaDiag) {
+        this.fechaDiag = fechaDiag;
+    }
+
+    public String getFamCg() {
+        return famCg;
+    }
+
+    public void setFamCg(String famCg) {
+        this.famCg = famCg;
+    }
+
+    public String getFamOtro() {
+        return famOtro;
+    }
+
+    public void setFamOtro(String famOtro) {
+        this.famOtro = famOtro;
+    }
+
+    public String getOtroCancer() {
+        return otroCancer;
+    }
+
+    public void setOtroCancer(String otroCancer) {
+        this.otroCancer = otroCancer;
+    }
+
 }

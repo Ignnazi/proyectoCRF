@@ -1,5 +1,6 @@
 package ingsof.servicio;
 
+import ingsof.entidad.Participantecrf;
 import ingsof.entidad.Sociodemo;
 import ingsof.repositorio.SociodemoR;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class SociodemoS {
     }
 
     public void guardar(Sociodemo sociodemo) {
+        validarEdad(sociodemo);
         repo.save(sociodemo);
     }
 
@@ -44,5 +46,14 @@ public class SociodemoS {
 
     public List<Sociodemo> listar() {
         return repo.findAll();
+    }
+
+    private void validarEdad(Sociodemo sociodemo) {
+        if (sociodemo.getEdad() == null){
+            throw new IllegalArgumentException("La edad no puede ser nula");
+        }
+        if (sociodemo.getEdad() < 18) {
+            throw new IllegalArgumentException("La edad debe ser mayor o igual a 18");
+        }
     }
 }

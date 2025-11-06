@@ -16,10 +16,14 @@ public class AntropometriaC {
     public AntropometriaC(AntropometriaS servicio) { this.servicio = servicio; }
 
     @GetMapping
-    public ResponseEntity<List<Antropometria>> listar(){ return ResponseEntity.ok(servicio.listar()); }
+    public ResponseEntity<List<Antropometria>> listar(){
+        return ResponseEntity.ok(servicio.listar());
+    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Antropometria> porId(@PathVariable Integer id){ return ResponseEntity.ok(servicio.porId(id)); }
+    public ResponseEntity<Antropometria> porId(@PathVariable Integer id){
+        return ResponseEntity.ok(servicio.porId(id));
+    }
 
     @GetMapping("/por-participante/{codPart}")
     public ResponseEntity<List<Antropometria>> porParticipante(@PathVariable String codPart){ return ResponseEntity.ok(servicio.porParticipante(codPart)); }
