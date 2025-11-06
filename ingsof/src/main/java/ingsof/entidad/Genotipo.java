@@ -37,10 +37,11 @@ public class Genotipo {
     private String codPart;
 
     // Relación 1:1 con Participante
-    @OneToOne
+    @OneToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_part", referencedColumnName = "cod_part", insertable = false, updatable = false)
     private Participantecrf participante;
 
+    public Genotipo() { }
     // Getters y setters
     public int getIdGenotip() {
         return idGenotip;

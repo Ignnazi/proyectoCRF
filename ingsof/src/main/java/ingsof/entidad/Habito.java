@@ -29,9 +29,11 @@ public class Habito {
     private Integer edadInicio;
 
     // Relación N:1 con Participante (un participante puede tener varios hábitos)
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_part", referencedColumnName = "cod_part", insertable = false, updatable = false)
     private Participantecrf participante;
+
+    public Habito() { }
 
     // Getters y setters
 
