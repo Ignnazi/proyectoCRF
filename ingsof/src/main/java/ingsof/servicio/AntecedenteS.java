@@ -4,6 +4,7 @@ import ingsof.entidad.Antecedente;
 import ingsof.entidad.Participantecrf;
 import ingsof.repositorio.AntecedenteR;
 import ingsof.repositorio.ParticipantecrfR;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ public class AntecedenteS {
     private final AntecedenteR repo;
     private final ParticipantecrfR partRepo;
 
+    @Autowired
     public AntecedenteS(AntecedenteR repo, ParticipantecrfR partRepo) {
         this.repo = repo;
         this.partRepo = partRepo;
