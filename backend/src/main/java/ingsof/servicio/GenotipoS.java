@@ -31,8 +31,8 @@ public class GenotipoS {
     public List<Genotipo> listar() {
         return repo.findAll();
     }
-    
-    public Genotipo guardar(Genotipo genotipo) {
+
+    public void guardar(Genotipo genotipo) {
         validarCamposGenotipo(genotipo);
         
         // Si la fecha de toma no está establecida, usar la fecha actual
@@ -40,7 +40,7 @@ public class GenotipoS {
             genotipo.setFechaToma(LocalDate.now());
         }
         
-        return repo.save(genotipo);
+        repo.save(genotipo);
     }
     
     public void eliminar(int id) {
