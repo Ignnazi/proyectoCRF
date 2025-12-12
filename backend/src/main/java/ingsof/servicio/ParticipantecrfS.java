@@ -40,6 +40,7 @@ public class ParticipantecrfS {
     @Transactional(readOnly = true)
     public List<Participantecrf> listar() { return repo.findAll(); }
 
+    @SuppressWarnings("null")
     @Transactional(readOnly = true)
     public Optional<Participantecrf> buscar(String codPart) { return repo.findById(codPart); }
 
@@ -66,6 +67,7 @@ public class ParticipantecrfS {
         return repo.save(p);
     }
 
+    @SuppressWarnings("null")
     @Transactional
     public Participantecrf actualizar(String codActual, Participantecrf cambios) {
         Participantecrf db = repo.findById(codActual)
@@ -99,6 +101,7 @@ public class ParticipantecrfS {
         return repo.save(db);
     }
 
+    @SuppressWarnings("null")
     @Transactional
     public void eliminar(String codPart) { repo.deleteById(codPart); }
 }

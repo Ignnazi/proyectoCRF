@@ -14,6 +14,7 @@ public class GenotipoS {
         this.repo = repo;
     }
 
+    @SuppressWarnings("null")
     public void guardar(Genotipo genotipo) {
         repo.save(genotipo);
     }
@@ -21,6 +22,7 @@ public class GenotipoS {
     public void eliminar(int id) {
         repo.deleteById(id);
     }
+    @SuppressWarnings("null")
     public void actualizar(int id, Genotipo genotipoActualizado) {
         Optional<Genotipo> genotipoExistente = repo.findById(id);
         if (genotipoExistente.isPresent()) {

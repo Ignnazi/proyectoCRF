@@ -35,6 +35,7 @@ class ParticipantecrfST {
         verify(repo).findAll();
     }
 
+    @SuppressWarnings("null")
     @Test
     void crear_basico_generaCodigoYFecha() {
         Participantecrf in = new Participantecrf();
@@ -52,6 +53,7 @@ class ParticipantecrfST {
         verify(repo).save(any(Participantecrf.class));
     }
 
+    @SuppressWarnings("null")
     @Test
     void actualizar_basico_sinCambioDeGrupo() {
         Participantecrf db = new Participantecrf();

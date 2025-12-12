@@ -27,6 +27,7 @@ public class HistopatologiaS {
         return repo.findAll();
     }
 
+    @SuppressWarnings("null")
     @Transactional(readOnly = true)
     public Histopatologia porId(Integer id) {
         return repo.findById(id).orElseThrow(() ->
@@ -41,6 +42,7 @@ public class HistopatologiaS {
 
     @Transactional
     public Histopatologia crear(Histopatologia h) {
+        @SuppressWarnings("null")
         Participantecrf p = partRepo.findById(h.getCodPart())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Participante no encontrado"));
         if (!"Caso".equalsIgnoreCase(p.getGrupo()))
@@ -50,10 +52,12 @@ public class HistopatologiaS {
         return repo.save(h);
     }
 
+    @SuppressWarnings("null")
     @Transactional
     public Histopatologia actualizar(Integer id, Histopatologia cambios) {
         Histopatologia db = porId(id);
         String destino = cambios.getCodPart() != null ? cambios.getCodPart() : db.getCodPart();
+        @SuppressWarnings("null")
         Participantecrf p = partRepo.findById(destino)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Participante no encontrado"));
         if (!"Caso".equalsIgnoreCase(p.getGrupo()))
@@ -70,6 +74,7 @@ public class HistopatologiaS {
 
     @Transactional
     public void borrarControl(String codPart) { //Elimina registro automaticamente si en participante se actualiza como Control
+        @SuppressWarnings("null")
         Participantecrf p = partRepo.findById(codPart)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Participante no encontrado"));
         if ("Control".equalsIgnoreCase(p.getGrupo()) && repo.existsByCodPart(codPart)) {

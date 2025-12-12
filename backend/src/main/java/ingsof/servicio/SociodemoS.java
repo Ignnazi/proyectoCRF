@@ -15,6 +15,7 @@ public class SociodemoS {
         this.repo = repo;
     }
 
+    @SuppressWarnings("null")
     public void guardar(Sociodemo sociodemo) {
         repo.save(sociodemo);
     }
@@ -23,6 +24,7 @@ public class SociodemoS {
         repo.deleteById(id);
     }
 
+    @SuppressWarnings("null")
     public void actualizar(int id, Sociodemo sociodemoActualizado) {
         Optional<Sociodemo> sociodemoExistente = repo.findById(id);
         if (sociodemoExistente.isPresent()) {
