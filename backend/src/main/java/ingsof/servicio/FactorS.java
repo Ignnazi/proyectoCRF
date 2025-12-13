@@ -15,6 +15,7 @@ public class FactorS {
         this.repo = repo;
     }
 
+    @SuppressWarnings("null")
     public void guardar(Factor factor) {
         repo.save(factor);
     }
@@ -31,6 +32,7 @@ public class FactorS {
         return repo.findAll();
     }
 
+    @SuppressWarnings("null")
     public void actualizarPorId(int id, Factor factorActualizado) {
         Optional<Factor> factorExistente = repo.findById(id);
         if (factorExistente.isPresent()) {

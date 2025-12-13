@@ -14,6 +14,7 @@ public class HabitoS {
         this.repo = repo;
     }
 
+    @SuppressWarnings("null")
     public void guardar(Habito habito) {
         repo.save(habito);
     }
@@ -22,6 +23,7 @@ public class HabitoS {
         repo.deleteById(id);
     }
 
+    @SuppressWarnings("null")
     public void actualizar(int id, Habito habitoActualizado) {
         Optional<Habito> habitoExistente = repo.findById(id);
         if (habitoExistente.isPresent()) {

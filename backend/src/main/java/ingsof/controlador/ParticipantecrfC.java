@@ -24,6 +24,7 @@ public class ParticipantecrfC {
     }
 
     // GET: obtiene uno por cod_part
+    @SuppressWarnings("null")
     @GetMapping("/{codPart}")
     public ResponseEntity<Participantecrf> porCodigo(@PathVariable String codPart) {
         return ResponseEntity.of(servicio.buscar(codPart));

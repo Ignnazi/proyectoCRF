@@ -27,6 +27,7 @@ public class AntecedenteS {
         return repo.findAll();
     }
 
+    @SuppressWarnings("null")
     @Transactional(readOnly = true)
     public Antecedente porId(Integer id) {
         return repo.findById(id).orElseThrow(() ->
@@ -41,6 +42,7 @@ public class AntecedenteS {
 
     @Transactional
     public Antecedente crear(Antecedente a) {
+        @SuppressWarnings("null")
         Participantecrf p = partRepo.findById(a.getCodPart())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Participante no encontrado"));
         if (!"Caso".equalsIgnoreCase(p.getGrupo()) && "Sí".equalsIgnoreCase(a.getDiagnostico()))
@@ -50,10 +52,12 @@ public class AntecedenteS {
         return repo.save(a);
     }
 
+    @SuppressWarnings("null")
     @Transactional
     public Antecedente actualizar(Integer id, Antecedente cambios) {
         Antecedente db = porId(id);
         String destino = cambios.getCodPart() != null ? cambios.getCodPart() : db.getCodPart();
+        @SuppressWarnings("null")
         Participantecrf p = partRepo.findById(destino)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Participante no encontrado"));
         String diag = cambios.getDiagnostico() != null ? cambios.getDiagnostico() : db.getDiagnostico();

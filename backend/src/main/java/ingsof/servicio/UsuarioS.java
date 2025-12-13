@@ -23,6 +23,7 @@ public class UsuarioS {
     }
 
     // Crear o actualizar usuario
+    @SuppressWarnings("null")
     public Usuario guardar(Usuario usuario) {
     return repo.save(usuario);
     }

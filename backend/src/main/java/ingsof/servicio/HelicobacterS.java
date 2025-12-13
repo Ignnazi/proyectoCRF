@@ -16,6 +16,7 @@ public class HelicobacterS {
         this.repo = repo;
     }
 
+    @SuppressWarnings("null")
     public void guardar(Helicobacter helicobacter) {
         repo.save(helicobacter);
     }
@@ -24,6 +25,7 @@ public class HelicobacterS {
         repo.deleteById(id);
     }
 
+    @SuppressWarnings("null")
     public void actualizar(int id, Helicobacter helicobacterActualizado) {
         Optional<Helicobacter> helicobacterExistente = repo.findById(id);
         if (helicobacterExistente.isPresent()) {

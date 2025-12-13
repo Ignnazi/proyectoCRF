@@ -20,8 +20,6 @@ public class GenotipoS {
         this.repo = repo;
     }
 
-    // Valores permitidos para los campos de genotipo
-    private static final List<String> VALORES_PERMITIDOS = Arrays.asList("TT", "TC", "CC", "GG", "GC", "GT");
 
     public Optional<Genotipo> obtenerPorId(int id) {
         return repo.findById(id);

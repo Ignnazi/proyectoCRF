@@ -29,6 +29,7 @@ public class AntropometriaS {
     @Transactional(readOnly = true)
     public List<Antropometria> listar(){ return repo.findAll(); }
 
+    @SuppressWarnings("null")
     @Transactional(readOnly = true)
     public Antropometria porId(Integer id){
         return repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "no existe antropometría"));
@@ -37,6 +38,7 @@ public class AntropometriaS {
     @Transactional(readOnly = true)
     public List<Antropometria> porParticipante(String codPart){ return repo.findAllByCodPart(codPart); }
 
+    @SuppressWarnings("null")
     @Transactional
     public Antropometria crear(Antropometria a){
         if(!partRepo.existsById(a.getCodPart())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"participante no encontrado");
@@ -44,6 +46,7 @@ public class AntropometriaS {
         return repo.save(a);
     }
 
+    @SuppressWarnings("null")
     @Transactional
     public Antropometria actualizar(Integer id, Antropometria c){
         Antropometria db = porId(id);
