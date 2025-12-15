@@ -15,11 +15,7 @@ public class GenotipoS {
 
     private final GenotipoR repo;
 
-<<<<<<< HEAD
-    private static final List<String> VALORES_PERMITIDOS =
-=======
         private static final List<String> VALORES_PERMITIDOS =
->>>>>>> igna
         Arrays.asList("TT", "TC", "CC", "GG", "GC", "GT");
 
     @Autowired
