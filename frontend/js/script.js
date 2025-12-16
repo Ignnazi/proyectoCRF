@@ -4,7 +4,6 @@
 */
 
 const API = "http://localhost:8080/api/participantecrf";
-const USER_API = "http://localhost:8080/api/usuario";
 
 window.irAFormulario = function irAFormulario(){
   const home = document.getElementById("homeView");
@@ -149,10 +148,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el) el.addEventListener('click', fn);
   };
 
+  // Mostrar información del usuario en home.html
+  const userInfo = document.getElementById('userInfo');
+  if (userInfo) {
+    const userName = sessionStorage.getItem('userName') || 'Usuario';
+    userInfo.textContent = `👤 ${userName}`;
+  }
+
+  // Botón de cerrar sesión en home.html
+  const btnLogout = document.getElementById('btnLogout');
+  if (btnLogout) {
+    btnLogout.addEventListener('click', () => {
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    });
+  }
+
   addIf('btnLogin', () => alert('Login después :)'));
   // El botón de formulario debe navegar a formulario.html (no existe #formView en index.html)
   addIf('btnForm', () => { window.location.href = 'formulario.html'; });
-  addIf('btnInfo', () => alert('Búsqueda después :)'));
+  addIf('btnInfo', () => { window.location.href = 'busqueda.html'; });
 
   // Si estamos en la página del formulario, inicializamos ciertas acciones específicas
   if (document.getElementById('formView')) {
@@ -161,58 +176,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (backForm) backForm.addEventListener('click', () => { window.location.href = 'index.html'; });
   }
 
-  // Manejo de login (si existe la página/form)
-  const loginForm = document.getElementById('loginForm');
-  if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const userIdRaw = document.getElementById('userId')?.value;
-      const pass = document.getElementById('password')?.value;
-      const user = userIdRaw ? userIdRaw.toString().trim() : '';
-      const box = document.getElementById('msgBox');
-
-      if (!user || !pass) {
-        if (box) { box.className = 'msg show err'; box.textContent = 'Completa ID y contraseña.'; }
-        return;
-      }
-
-      // Llamada al backend para autenticar por id
-      try {
-        // Usamos GET para traer el usuario por id y validar la contraseña en el cliente
-        console.log('Login: solicitando usuario id=', user);
-        const resp = await fetch(`${USER_API}/${encodeURIComponent(parseInt(user, 10))}`);
-        if (!resp.ok) {
-          const txt = await resp.text();
-          if (box) { box.className = 'msg show err'; box.textContent = txt || 'Usuario no encontrado.'; }
-          return;
-        }
-
-        const usuario = await resp.json();
-        console.log('Login: usuario recibido del backend:', usuario);
-        // Normalizar (coerción a string y trim) para evitar fallos por tipos o espacios
-        const stored = usuario.password != null ? String(usuario.password).trim() : '';
-        const entered = pass != null ? String(pass).trim() : '';
-        console.log('Login: contraseña almacenada (normalized)=', JSON.stringify(stored), 'contraseña ingresada (normalized)=', JSON.stringify(entered));
-        if (!stored || stored !== entered) {
-          if (box) { box.className = 'msg show err'; box.textContent = 'Usuario o contraseña inválidos.'; }
-          return;
-        }
-
-        // Credenciales válidas
-        if (box) { box.className = 'msg show ok'; box.textContent = 'Ingreso correcto. Redirigiendo...'; }
-        setTimeout(() => { window.location.href = 'home.html'; }, 800);
-        return;
-      } catch (err) {
-        console.error(err);
-        if (box) { box.className = 'msg show err'; box.textContent = 'Error al conectar con el servidor.'; }
-      }
-    });
-
-    const backLogin = document.getElementById('btnBackLogin');
-    if (backLogin) backLogin.addEventListener('click', () => { window.location.href = 'home.html'; });
-  }
 
   addIf('btnGuardar', () => { if (typeof guardarParticipante === 'function') guardarParticipante(); });
   addIf('btnNextForm', () => { if (typeof irSeccion2 === 'function') irSeccion2(); });
   addIf('btnBackSec2', () => { if (typeof volverASeccion1 === 'function') volverASeccion1(); });
 });
+
