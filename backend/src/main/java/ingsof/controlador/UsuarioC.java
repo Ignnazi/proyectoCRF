@@ -15,7 +15,11 @@ import org.springframework.http.HttpStatus;
 public class UsuarioC {
 
     @Autowired
-    private UsuarioS servicio;
+    private final UsuarioS servicio;
+
+    public UsuarioC(UsuarioS servicio) {
+        this.servicio = servicio;
+    }
 
     @GetMapping
     public List<Usuario> listar() {
@@ -29,8 +33,18 @@ public class UsuarioC {
     }
 
     @PostMapping
-    public Usuario crear(@RequestBody Usuario usuario) {
-        return servicio.guardar(usuario);
+    public ResponseEntity<?> crear(@RequestBody Usuario usuario) {
+        try {
+            Usuario u = servicio.guardar(usuario);
+            return ResponseEntity.status(HttpStatus.CREATED).body(u);
+        } catch (org.springframework.dao.DataIntegrityViolationException ex) {
+            // Constraint violation (por ejemplo columna inexistente/unique/not null)
+            String msg = "Constraint violation: " + (ex.getMostSpecificCause() != null ? ex.getMostSpecificCause().getMessage() : ex.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(msg);
+        } catch (Exception ex) {
+            String msg = "Error creating user: " + ex.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(msg);
+        }
     }
 
     @PutMapping("/{id}")
@@ -44,36 +58,7 @@ public class UsuarioC {
         servicio.eliminar(id);
     }
 
-    // Endpoint de login (comparación rudimentaria por id y contraseña en texto plano)
-    public static class Credenciales {
-        public Integer id;
-        public String password;
-    }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Credenciales cred) {
-        if (cred == null || cred.id == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o contraseña inválidos");
-        }
 
-        Usuario u = servicio.obtenerPorId(cred.id);
-        if (u == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o contraseña inválidos");
-        }
-
-        String stored = u.getPassword();
-        if (stored == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o contraseña inválidos");
-        }
-
-        boolean ok = stored.equals(cred.password);
-
-        if (!ok) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o contraseña inválidos");
-        }
-
-        // Autenticación exitosa — devolver usuario (sin password)
-        u.setPassword(null);
-        return ResponseEntity.ok(u);
-    }
 }
+
