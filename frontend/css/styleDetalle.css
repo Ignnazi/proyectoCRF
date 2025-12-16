@@ -1,0 +1,161 @@
+/* Estilos para la página de detalle del participante */
+
+/* Contenedor principal con fondo blanco */
+.crf-wrap {
+    background: #2d3642;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.crf-container {
+    background: white;
+    color: #2d3642;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.crf-container h1 {
+    color: #2d3642;
+    margin-bottom: 20px;
+}
+
+.crf-container hr {
+    border: none;
+    border-top: 2px solid #e0e0e0;
+    margin: 20px 0;
+}
+
+.detail-section {
+    background: rgba(45, 54, 66, 0.08);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #c8cad0;
+}
+
+.detail-section h3 {
+    color: #2d3642;
+    margin-top: 0;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #2d89ff;
+    padding-bottom: 8px;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.detail-item {
+    padding: 12px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+.detail-item label {
+    display: block;
+    font-weight: bold;
+    color: #495057;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.detail-item span {
+    display: block;
+    color: #2d3642;
+    font-size: 15px;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+}
+
+.error {
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    padding: 16px;
+    border-radius: 6px;
+    margin: 20px 0;
+}
+
+.btn-export {
+    background: #28a745;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-export:hover {
+    background: #218838;
+    filter: brightness(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.btn-export:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+.btn-back {
+    background: #2d89ff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 24px;
+}
+
+.btn-back:hover {
+    background: #1a6fd8;
+    filter: brightness(1.1);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+/* Estilos para impresión/PDF */
+@media print {
+    .btn-back, .btn-export {
+        display: none !important;
+    }
+    .crf-container {
+        background: white;
+        color: black;
+    }
+    .detail-section {
+        page-break-inside: avoid;
+    }
+}
+
+/* Estilos para mejorar captura de PDF - colores sólidos alternativos */
+.pdf-rendering .detail-section {
+    background: #f5f6f7 !important;
+    border: 1px solid #d1d3d6 !important;
+}
+
+.pdf-rendering .detail-item {
+    background: white !important;
+    border: 1px solid #e0e0e0 !important;
+}
+
