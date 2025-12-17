@@ -1,0 +1,44 @@
+services:
+
+  db:
+    image: mysql:8
+    container_name: ingsof_db
+    env_file:
+      - .env
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD: ${MYSQL_ALLOW_EMPTY_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+    restart: always
+
+  backend:
+    build: ./backend
+    container_name: proyectoCRF_backend
+    env_file:
+      - .env
+    environment:
+      MYSQL_URL: ${MYSQL_URL}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASS: ${MYSQL_PASS}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    restart: always
+
+  frontend:
+    build: ./frontend
+    container_name: proyectoCRF_frontend
+    env_file:
+      - .env
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    ports:
+      - "3002:80"
+    depends_on:
+      - backend
+    restart: always
