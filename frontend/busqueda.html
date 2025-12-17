@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador Maestro CRF</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .nav-tabs .nav-link.active {
+            background-color: #0d6efd;
+            color: white;
+            font-weight: bold;
+        }
+        .card-header-custom {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #0d6efd;
+        }
+    </style>
+</head>
+<body class="bg-light p-4">
+
+<div class="container">
+    <div class="card shadow-sm mb-4">
+        <div class="card-body text-center p-5">
+            <h2 class="mb-3 text-primary"><i class="bi bi-search"></i> Buscador de Participantes CRF</h2>
+            <div class="input-group input-group-lg w-75 mx-auto">
+                <input type="text" id="inputBusqueda" class="form-control" placeholder="Ingrese Código (ej. CS001) o Nombre...">
+                <button class="btn btn-primary" type="button" onclick="buscarParticipante()">Buscar</button>
+            </div>
+            <small class="text-muted">Busca en la base de datos SQL por `cod_part` o `nombre`</small>
+        </div>
+    </div>
+
+    <div id="seccionResultados" class="card shadow-sm mb-4" style="display: none;">
+        <div class="card-header bg-white">Resultados de la búsqueda</div>
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Cód. Parte</th>
+                        <th>Nombre</th>
+                        <th>Grupo</th>
+                        <th>Fecha Inclusión</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaCuerpo">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="seccionDetalle" class="card shadow-lg" style="display: none;">
+        <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
+            <h4 class="m-0" id="tituloDetalle">Ficha Clínica: CS001</h4>
+            <button class="btn btn-sm btn-secondary" onclick="cerrarDetalle()">X Cerrar</button>
+        </div>
+        <div class="card-body">
+            <ul class="nav nav-tabs mb-3" id="misPestañas" role="tablist">
+                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-socio">Sociodemográfico</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-clinico">Clínico (Histopatología)</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-habitos">Hábitos y Factores</button></li>
+            </ul>
+
+            <div class="tab-content" id="contenidoPestañas">
+                
+                <div class="tab-pane fade show active" id="tab-socio">
+                    <div class="row g-3">
+                        <div class="col-md-3"><label class="fw-bold">Edad:</label> <span id="val_edad">-</span></div>
+                        <div class="col-md-3"><label class="fw-bold">Sexo:</label> <span id="val_sexo">-</span></div>
+                        <div class="col-md-6"><label class="fw-bold">Dirección:</label> <span id="val_direccion">-</span></div>
+                        <div class="col-md-3"><label class="fw-bold">Zona:</label> <span id="val_zona">-</span></div>
+                        <div class="col-md-3"><label class="fw-bold">Educación:</label> <span id="val_educacion">-</span></div>
+                        <div class="col-md-6"><label class="fw-bold">Ocupación:</label> <span id="val_ocupacion">-</span></div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="tab-clinico">
+                    <div class="alert alert-info" id="avisoControl" style="display:none;">Paciente Control - Sin datos de cáncer</div>
+                    <div id="datosHisto">
+                        <div class="row g-3">
+                            <div class="col-md-4"><label class="fw-bold text-danger">Tipo Cáncer:</label> <span id="val_tipo_cancer">-</span></div>
+                            <div class="col-md-4"><label class="fw-bold">Localización:</label> <span id="val_localizacion">-</span></div>
+                            <div class="col-md-4"><label class="fw-bold">Estadio:</label> <span id="val_estadio">-</span></div>
+                            <div class="col-12 mt-3"><h6 class="text-primary border-bottom">Antropometría</h6></div>
+                            <div class="col-md-4"><label class="fw-bold">Peso:</label> <span id="val_peso">-</span> kg</div>
+                            <div class="col-md-4"><label class="fw-bold">Estatura:</label> <span id="val_talla">-</span> m</div>
+                            <div class="col-md-4"><label class="fw-bold">IMC:</label> <span id="val_imc">-</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="tab-habitos">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span><i class="bi bi-fire"></i> Hábito Tabáquico:</span>
+                            <strong id="val_fumar">-</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span><i class="bi bi-cup-straw"></i> Consumo Alcohol:</span>
+                            <strong id="val_beber">-</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span><i class="bi bi-droplet"></i> Fuente de Agua:</span>
+                            <strong id="val_agua">-</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // URL de tu Backend Java (Ajustar según tu proyecto Spring Boot)
+    const API_URL = "http://localhost:8080/api/busqueda";
+
+    // 1. FUNCIÓN DE BÚSQUEDA
+    async function buscarParticipante() {
+        const query = document.getElementById("inputBusqueda").value;
+        if (!query) return alert("Escribe algo para buscar");
+
+        // Simulación de Fetch al Backend (Descomentar para producción)
+        /*
+        try {
+            const res = await fetch(`${API_URL}?q=${query}`);
+            const data = await res.json();
+            mostrarResultados(data);
+        } catch (e) { console.error(e); }
+        */
+
+        // DATOS DE PRUEBA (MOCK) basados en tu SQL 'ingsof.sql'
+        // Esto simula lo que tu Backend Java debería devolver como JSON
+        const datosSimulados = [
+            {
+                cod_part: "CS001", nombre: "Juan Pérez", grupo: "Caso", fecha: "2025-10-24",
+                sociodemo: { edad: 45, sexo: "Hombre", direccion: "Av. Libertad 123", zona: "Urbana", educ: "Superior", ocup: "Profesor" },
+                histopatologia: { tipo: "Intestinal", loc: "Antro", estadio: "IIA" },
+                antropometria: { peso: 70.50, talla: 1.72, imc: 23.8 },
+                habitos: { fumar: "Ex-fumador (15 años)", beber: "Actual (Regular)", agua: "Red (Filtro)" }
+            },
+            {
+                cod_part: "CT001", nombre: "María González", grupo: "Control", fecha: "2025-10-24",
+                sociodemo: { edad: 38, sexo: "Mujer", direccion: "Los Robles 22", zona: "Rural", educ: "Medio", ocup: "Comerciante" },
+                histopatologia: null, // Control no tiene cáncer
+                antropometria: { peso: 63.0, talla: 1.65, imc: 23.1 },
+                habitos: { fumar: "Nunca", beber: "Actual", agua: "Pozo (Hervir)" }
+            }
+        ];
+
+        // Filtro simple local para la demo
+        const resultados = datosSimulados.filter(p => 
+            p.nombre.toLowerCase().includes(query.toLowerCase()) || 
+            p.cod_part.toLowerCase().includes(query.toLowerCase())
+        );
+
+        renderizarTabla(resultados);
+    }
+
+    function renderizarTabla(lista) {
+        const tbody = document.getElementById("tablaCuerpo");
+        tbody.innerHTML = "";
+        document.getElementById("seccionResultados").style.display = "block";
+        document.getElementById("seccionDetalle").style.display = "none";
+
+        if (lista.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='5' class='text-center'>No se encontraron resultados</td></tr>";
+            return;
+        }
+
+        lista.forEach(p => {
+            const fila = `
+                <tr>
+                    <td class="fw-bold text-primary">${p.cod_part}</td>
+                    <td>${p.nombre}</td>
+                    <td><span class="badge ${p.grupo === 'Caso' ? 'bg-danger' : 'bg-success'}">${p.grupo}</span></td>
+                    <td>${p.fecha}</td>
+                    <td><button class="btn btn-sm btn-outline-primary" onclick='verFicha(${JSON.stringify(p)})'>Ver Ficha</button></td>
+                </tr>
+            `;
+            tbody.innerHTML += fila;
+        });
+    }
+
+    // 2. FUNCIÓN PARA VER DETALLES (LLENADO DE PESTAÑAS)
+    function verFicha(paciente) {
+        document.getElementById("seccionDetalle").style.display = "block";
+        document.getElementById("tituloDetalle").innerText = `Ficha Clínica: ${paciente.nombre} (${paciente.cod_part})`;
+
+        // Llenar SocioDemo (Mapeo con campos de tu tabla 'sociodemo')
+        if (paciente.sociodemo) {
+            document.getElementById("val_edad").innerText = paciente.sociodemo.edad + " años";
+            document.getElementById("val_sexo").innerText = paciente.sociodemo.sexo;
+            document.getElementById("val_direccion").innerText = paciente.sociodemo.direccion;
+            document.getElementById("val_zona").innerText = paciente.sociodemo.zona;
+            document.getElementById("val_educacion").innerText = paciente.sociodemo.educ;
+            document.getElementById("val_ocupacion").innerText = paciente.sociodemo.ocup;
+        }
+
+        // Llenar Histopatología (Mapeo tabla 'histopatologia')
+        if (paciente.grupo === "Control") {
+            document.getElementById("datosHisto").style.display = "none";
+            document.getElementById("avisoControl").style.display = "block";
+        } else {
+            document.getElementById("datosHisto").style.display = "block";
+            document.getElementById("avisoControl").style.display = "none";
+            if (paciente.histopatologia) {
+                document.getElementById("val_tipo_cancer").innerText = paciente.histopatologia.tipo;
+                document.getElementById("val_localizacion").innerText = paciente.histopatologia.loc;
+                document.getElementById("val_estadio").innerText = paciente.histopatologia.estadio;
+            }
+        }
+
+        // Llenar Antropometría
+        if (paciente.antropometria) {
+            document.getElementById("val_peso").innerText = paciente.antropometria.peso;
+            document.getElementById("val_talla").innerText = paciente.antropometria.talla;
+            document.getElementById("val_imc").innerText = paciente.antropometria.imc;
+        }
+
+        // Llenar Hábitos
+        if (paciente.habitos) {
+            document.getElementById("val_fumar").innerText = paciente.habitos.fumar;
+            document.getElementById("val_beber").innerText = paciente.habitos.beber;
+            document.getElementById("val_agua").innerText = paciente.habitos.agua;
+        }
+        
+        // Scroll suave hacia el detalle
+        document.getElementById("seccionDetalle").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function cerrarDetalle() {
+        document.getElementById("seccionDetalle").style.display = "none";
+    }
+</script>
+
+</body>
+</html>

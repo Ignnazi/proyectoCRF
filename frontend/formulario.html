@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>FormularioCRF</title>
     <link rel="stylesheet" href="css/styleFormulario.css">
 </head>
 <body class="container-fluid">
-<!-- ========= FORMULARIO (CRF) ========= -->
 <section id="formView">
     <div class="crf-wrap">
         <div class="crf-container">
@@ -65,8 +64,53 @@
 
             <section id="sec2" class="hidden">
                 <h2>2. Datos Sociodemográficos</h2>
-                <p>(Aquí agregamos lo de Sociodemo después)</p>
-                <button id="btnBackSec2" class="btn-back" type="button">← Volver a sección 1</button>
+                
+                <input type="hidden" id="currentCodPart" />
+
+                <label for="edad">Edad:</label>
+                <input type="number" id="edad" placeholder="Ej: 45" />
+
+                <label for="sexo">Sexo:</label>
+                <select id="sexo">
+                    <option value="Hombre">Hombre</option>
+                    <option value="Mujer">Mujer</option>
+                </select>
+
+                <label for="nacionalidad">Nacionalidad:</label>
+                <input type="text" id="nacionalidad" value="Chilena" />
+
+                <label for="zona">Zona de residencia:</label>
+                <select id="zona">
+                    <option value="Urbana">Urbana</option>
+                    <option value="Rural">Rural</option>
+                </select>
+
+                <label for="aniosRes">Años de residencia:</label>
+                <select id="aniosRes">
+                    <option value="<5">&lt; 5 años</option>
+                    <option value="5–10">5 – 10 años</option>
+                    <option value=">10">&gt; 10 años</option>
+                </select>
+
+                <label for="educacion">Nivel Educacional:</label>
+                <select id="educacion">
+                    <option value="Básico">Básico</option>
+                    <option value="Medio">Medio</option>
+                    <option value="Superior">Superior</option>
+                </select>
+                
+                <label for="ocupacion">Ocupación:</label>
+                <input type="text" id="ocupacion" placeholder="Ej: Profesor" />
+
+                <button id="btnGuardarSociodemo" class="btn-primary" type="button">
+                    Guardar Datos Sociodemográficos
+                </button>
+                
+                <div id="msgBoxSec2" class="msg"></div>
+
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button id="btnBackSec2" class="btn-back" type="button">← Volver a sección 1</button>
+                    </div>
             </section>
 
         </div>
