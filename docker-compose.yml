@@ -6,9 +6,9 @@ services:
     env_file:
       - .env
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_ALLOW_EMPTY_PASSWORD: ${MYSQL_ALLOW_EMPTY_PASSWORD}
+      MYSQL_DATABASE: ingsof
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
     ports:
       - "3306:3306"
     volumes:
@@ -21,9 +21,9 @@ services:
     env_file:
       - .env
     environment:
-      MYSQL_URL: ${MYSQL_URL}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASS: ${MYSQL_PASS}
+      MYSQL_URL: jdbc:mysql://db:3306/ingsof
+      MYSQL_USER: root
+      MYSQL_PASS: 
     ports:
       - "8080:8080"
     depends_on:
