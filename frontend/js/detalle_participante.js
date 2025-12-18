@@ -75,9 +75,12 @@ async function obtenerDatos(entidad, codPart) {
         if (!resp.ok) return null;
 
         const lista = await resp.json();
+        console.log(`Datos de ${entidad}:`, lista);
+
         // Filtrar por cod_part
         if (Array.isArray(lista)) {
             const filtrado = lista.filter(item => item.codPart === codPart);
+            console.log(`Filtrado de ${entidad} para ${codPart}:`, filtrado);
             // Para hábitos puede haber varios, para el resto solo uno
             return entidad === 'habito' ? filtrado : filtrado[0] || null;
         }
@@ -90,6 +93,7 @@ async function obtenerDatos(entidad, codPart) {
 
 // Mostrar toda la información del participante
 function mostrarDetalle(data) {
+    console.log('Todos los datos del participante:', data);
     const contenido = document.getElementById('contenido');
     const p = data.participante;
     const fechaInclusion = (p.fechaInclusion || "").toString().slice(0, 10);
