@@ -149,38 +149,8 @@ INSERT INTO `factor` (`id_factor`, `carnes`, `salados`, `frutas`, `frituras`, `b
 (10, '1–2/sem', 'No', 'Alta', 'No', 'Pocas', 'No', 'No', '', 'Nunca', 'Red', 'Filtro', 'CT005');
 
 -- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `genotipo`
---
-
-CREATE TABLE `genotipo` (
-  `id_genotip` int(11) NOT NULL,
-  `fecha_toma` date DEFAULT NULL,
-  `tlr9_rs5743836` varchar(3) DEFAULT NULL,
-  `tlr9_rs187084` varchar(3) DEFAULT NULL,
-  `mir146a_rs2910164` varchar(3) DEFAULT NULL,
-  `mir196a2_rs11614913` varchar(3) DEFAULT NULL,
-  `mthfr_rs1801133` varchar(3) DEFAULT NULL,
-  `dnmt3b_rs1569686` varchar(3) DEFAULT NULL,
-  `cod_part` varchar(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `genotipo`
---
-
-INSERT INTO `genotipo` (`id_genotip`, `fecha_toma`, `tlr9_rs5743836`, `tlr9_rs187084`, `mir146a_rs2910164`, `mir196a2_rs11614913`, `mthfr_rs1801133`, `dnmt3b_rs1569686`, `cod_part`) VALUES
-(1, '2024-05-01', 'TT', 'TT', 'GG', 'CC', 'CC', 'GG', 'CS001'),
-(2, '2024-05-02', 'TC', 'TC', 'GC', 'CT', 'CT', 'GT', 'CT001'),
-(3, '2024-05-03', 'CC', 'TT', 'CC', 'TT', 'TT', 'TT', 'CS002'),
-(4, '2024-05-04', 'TC', 'TC', 'GC', 'CT', 'CT', 'GT', 'CT002'),
-(5, '2024-05-05', 'TT', 'CC', 'GG', 'CC', 'CC', 'GG', 'CS003'),
-(6, '2024-05-06', 'TC', 'TC', 'GC', 'CT', 'CT', 'GT', 'CT003'),
-(7, '2024-05-07', 'TT', 'TT', 'GG', 'CC', 'CC', 'GG', 'CS004'),
-(8, '2024-05-08', 'CC', 'CC', 'CC', 'TT', 'TT', 'TT', 'CT004'),
-(9, '2024-05-09', 'TT', 'TC', 'GC', 'CT', 'CT', 'GT', 'CS005'),
-(10, '2024-05-10', 'TC', 'TT', 'GG', 'CC', 'CC', 'GG', 'CT005');
+-- OJO: genotipo ELIMINADO (estructura + inserts + índices + FK)
+-- --------------------------------------------------------
 
 -- --------------------------------------------------------
 
@@ -221,31 +191,137 @@ INSERT INTO `habito` (`id_habit`, `tipo`, `estado`, `frecuencia`, `cantidad`, `a
 
 --
 -- Estructura de tabla para la tabla `helicobacter`
+-- (REEMPLAZADA por la versión extendida)
 --
 
 CREATE TABLE `helicobacter` (
   `id_helic` int(11) NOT NULL,
-  `prueba` varchar(20) DEFAULT NULL,
-  `resultado` varchar(10) DEFAULT NULL,
-  `antiguedad` varchar(10) DEFAULT NULL,
+  `resultado_exam` varchar(12) NOT NULL,              -- Positivo / Negativo / Desconocido
+
+  `pasado_positivo` varchar(12) DEFAULT NULL,         -- Sí / No / No recuerda
+  `pasado_detalle` varchar(150) DEFAULT NULL,         -- "año aprox / tipo examen"
+
+  `tratamiento` varchar(12) DEFAULT NULL,             -- Sí / No / No recuerda
+  `tratamiento_detalle` varchar(150) DEFAULT NULL,    -- "año / esquema"
+
+  `tipo_examen` varchar(255) DEFAULT NULL,            -- múltiple: "A|B|C"
+  `otro_examen` varchar(80) DEFAULT NULL,             -- si incluye "Otro"
+
+  `antiguedad` varchar(12) DEFAULT NULL,              -- <1 año / 1–5 años / >5 años
+
+  `uso_ibp_abx` varchar(12) DEFAULT NULL,             -- Sí / No / No recuerda
+
+  `repetido` varchar(5) DEFAULT NULL,                 -- Sí / No
+  `repetido_fecha` date DEFAULT NULL,
+  `repetido_resultado` varchar(12) DEFAULT NULL,      -- Positivo / Negativo / Desconocido
+
   `cod_part` varchar(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `helicobacter`
+-- (nuevos datos coherentes con la tabla extendida)
 --
 
-INSERT INTO `helicobacter` (`id_helic`, `prueba`, `resultado`, `antiguedad`, `cod_part`) VALUES
-(1, 'Aliento', 'Positivo', '<1 año', 'CS001'),
-(2, 'Antígeno', 'Negativo', '1–5 años', 'CT001'),
-(3, 'Endoscopía', 'Positivo', '>5 años', 'CS002'),
-(4, 'Antígeno', 'Negativo', '1–5 años', 'CT002'),
-(5, 'Aliento', 'Positivo', '<1 año', 'CS003'),
-(6, 'Antígeno', 'Negativo', '1–5 años', 'CT003'),
-(7, 'Endoscopía', 'Positivo', '>5 años', 'CS004'),
-(8, 'Aliento', 'Negativo', '1–5 años', 'CT004'),
-(9, 'Endoscopía', 'Positivo', '<1 año', 'CS005'),
-(10, 'Antígeno', 'Negativo', '1–5 años', 'CT005');
+INSERT INTO `helicobacter` (
+  `id_helic`, `resultado_exam`,
+  `pasado_positivo`, `pasado_detalle`,
+  `tratamiento`, `tratamiento_detalle`,
+  `tipo_examen`, `otro_examen`,
+  `antiguedad`,
+  `uso_ibp_abx`,
+  `repetido`, `repetido_fecha`, `repetido_resultado`,
+  `cod_part`
+) VALUES
+(1, 'Positivo',
+NULL, NULL,
+ NULL, NULL,
+ 'Test de aliento (urea-C13/C14)', NULL,
+ '<1 año',
+ 'No',
+ 'No', NULL, NULL,
+ 'CS001'),
+
+(2, 'Negativo',
+ 'No', NULL,
+ 'No', NULL,
+ 'Antígeno en deposiciones', NULL,
+ '1–5 años',
+ 'No',
+ 'No', NULL, NULL,
+ 'CT001'),
+
+(3, 'Positivo',
+ NULL, NULL,
+ NULL, NULL,
+ 'Histología / Biopsia', NULL,
+ '>5 años',
+ 'No recuerda',
+ 'Sí', '2024-09-10', 'Negativo',
+ 'CS002'),
+
+(4, 'Negativo',
+ 'No recuerda', NULL,
+ 'No', NULL,
+ 'Antígeno en deposiciones', NULL,
+ '1–5 años',
+ 'Sí',
+ 'No', NULL, NULL,
+ 'CT002'),
+
+(5, 'Positivo',
+ NULL, NULL,
+ NULL, NULL,
+ 'Test de aliento (urea-C13/C14)', NULL,
+ '<1 año',
+ 'No',
+ 'Sí', '2025-01-15', 'Positivo',
+ 'CS003'),
+
+(6, 'Negativo',
+ 'No', NULL,
+ 'No', NULL,
+ 'Antígeno en deposiciones', NULL,
+ '1–5 años',
+ 'No',
+ 'No', NULL, NULL,
+ 'CT003'),
+
+(7, 'Positivo',
+ NULL, NULL,
+ NULL, NULL,
+ 'Histología / Biopsia|Test rápido de ureasa', NULL,
+ '>5 años',
+ 'No',
+ 'No', NULL, NULL,
+ 'CS004'),
+
+(8, 'Negativo',
+ 'Sí', '2019 / test de aliento',
+ 'Sí', '2020 / triple terapia (según recuerda)',
+ 'Test de aliento (urea-C13/C14)', NULL,
+ '1–5 años',
+ 'No',
+ 'Sí', '2024-11-02', 'Negativo',
+ 'CT004'),
+
+(9, 'Positivo',
+ NULL, NULL,
+ NULL, NULL,
+ 'Otro', 'Endoscopía/biopsia',
+ '<1 año',
+ 'No',
+ 'No', NULL, NULL,
+ 'CS005'),
+
+(10, 'Negativo',
+ 'No', NULL,
+ 'No', NULL,
+ 'Antígeno en deposiciones', NULL,
+ '1–5 años',
+ 'No',
+ 'No', NULL, NULL,
+ 'CT005');
 
 -- --------------------------------------------------------
 
@@ -391,6 +467,8 @@ INSERT INTO `usuario` (`id_user`, `nombre`, `rol`) VALUES
 (13, 'Alucard', 'Colaborador'),
 (14, 'Joaquin', 'Medico');
 
+-- --------------------------------------------------------
+
 --
 -- Índices para tablas volcadas
 --
@@ -414,13 +492,6 @@ ALTER TABLE `antropometria`
 --
 ALTER TABLE `factor`
   ADD PRIMARY KEY (`id_factor`),
-  ADD UNIQUE KEY `cod_part` (`cod_part`);
-
---
--- Indices de la tabla `genotipo`
---
-ALTER TABLE `genotipo`
-  ADD PRIMARY KEY (`id_genotip`),
   ADD UNIQUE KEY `cod_part` (`cod_part`);
 
 --
@@ -464,6 +535,8 @@ ALTER TABLE `sociodemo`
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`id_user`);
 
+-- --------------------------------------------------------
+
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
@@ -485,12 +558,6 @@ ALTER TABLE `antropometria`
 --
 ALTER TABLE `factor`
   MODIFY `id_factor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT de la tabla `genotipo`
---
-ALTER TABLE `genotipo`
-  MODIFY `id_genotip` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `habito`
@@ -522,6 +589,8 @@ ALTER TABLE `sociodemo`
 ALTER TABLE `usuario`
   MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
+-- --------------------------------------------------------
+
 --
 -- Restricciones para tablas volcadas
 --
@@ -543,12 +612,6 @@ ALTER TABLE `antropometria`
 --
 ALTER TABLE `factor`
   ADD CONSTRAINT `fk_factor_part` FOREIGN KEY (`cod_part`) REFERENCES `participantecrf` (`cod_part`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `genotipo`
---
-ALTER TABLE `genotipo`
-  ADD CONSTRAINT `fk_genotipo_part` FOREIGN KEY (`cod_part`) REFERENCES `participantecrf` (`cod_part`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `habito`
@@ -579,6 +642,7 @@ ALTER TABLE `participantecrf`
 --
 ALTER TABLE `sociodemo`
   ADD CONSTRAINT `fk_sociodemo_part` FOREIGN KEY (`cod_part`) REFERENCES `participantecrf` (`cod_part`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
