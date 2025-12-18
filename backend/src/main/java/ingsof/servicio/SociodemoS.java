@@ -16,9 +16,9 @@ public class SociodemoS {
     }
 
     @SuppressWarnings("null")
-    public void guardar(Sociodemo sociodemo) {
+    public Sociodemo guardar(Sociodemo sociodemo) {
         validarEdad(sociodemo);
-        repo.save(sociodemo);
+        return repo.save(sociodemo);
     }
 
     public void eliminar(int id) {
@@ -50,10 +50,8 @@ public class SociodemoS {
     }
 
     private void validarEdad(Sociodemo sociodemo) {
-        if (sociodemo.getEdad() == null){
-            throw new IllegalArgumentException("La edad no puede ser nula");
-        }
-        if (sociodemo.getEdad() < 18) {
+        // Solo validar edad si está presente
+        if (sociodemo.getEdad() != null && sociodemo.getEdad() < 18) {
             throw new IllegalArgumentException("La edad debe ser mayor o igual a 18");
         }
     }

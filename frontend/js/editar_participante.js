@@ -95,7 +95,8 @@ async function cargarEntidad(entidad, codPart) {
 
         const lista = await resp.json();
         if (Array.isArray(lista)) {
-            return lista.find(item => item.codPart === parseInt(codPart)) || null;
+            // Comparar como string, no como entero
+            return lista.find(item => item.codPart === codPart) || null;
         }
         return null;
     } catch (error) {
@@ -112,7 +113,8 @@ async function cargarHabitos(codPart) {
 
         const lista = await resp.json();
         if (Array.isArray(lista)) {
-            return lista.filter(item => item.codPart === parseInt(codPart));
+            // Comparar como string, no como entero
+            return lista.filter(item => item.codPart === codPart);
         }
         return [];
     } catch (error) {
@@ -340,59 +342,73 @@ async function guardarCambios() {
     try {
         // Recopilar datos del formulario
         const formData = recopilarDatosFormulario();
+        console.log('Datos a guardar:', formData);
+
+        // Helper: Verificar si una entidad tiene datos útiles (más que solo codPart y ID)
+        const tieneContenido = (entidad) => {
+            if (!entidad) return false;
+            const claves = Object.keys(entidad).filter(k =>
+                k !== 'codPart' &&
+                !k.startsWith('id') &&
+                entidad[k] !== null &&
+                entidad[k] !== ''
+            );
+            return claves.length > 0;
+        };
 
         // Guardar cada entidad
+        console.log('Guardando participante...');
         await guardarEntidad('participantecrf', formData.participante, participanteId, 'codPart');
 
-        if (formData.sociodemo && formData.sociodemo.idSocdemo) {
+        // Sociodemo
+        if (formData.sociodemo && (formData.sociodemo.idSocdemo || tieneContenido(formData.sociodemo))) {
+            console.log('Guardando sociodemo...', formData.sociodemo);
             await guardarEntidad('sociodemo', formData.sociodemo, formData.sociodemo.idSocdemo, 'idSocdemo');
-        } else if (formData.sociodemo) {
-            await guardarEntidad('sociodemo', formData.sociodemo, null, 'idSocdemo');
         }
 
-        if (formData.antropometria && formData.antropometria.idAntrop) {
+        // Antropometria
+        if (formData.antropometria && (formData.antropometria.idAntrop || tieneContenido(formData.antropometria))) {
+            console.log('Guardando antropometria...', formData.antropometria);
             await guardarEntidad('antropometria', formData.antropometria, formData.antropometria.idAntrop, 'idAntrop');
-        } else if (formData.antropometria) {
-            await guardarEntidad('antropometria', formData.antropometria, null, 'idAntrop');
         }
 
-        if (formData.antecedente && formData.antecedente.idAntec) {
+        // Antecedente
+        if (formData.antecedente && (formData.antecedente.idAntec || tieneContenido(formData.antecedente))) {
+            console.log('Guardando antecedente...', formData.antecedente);
             await guardarEntidad('antecedente', formData.antecedente, formData.antecedente.idAntec, 'idAntec');
-        } else if (formData.antecedente) {
-            await guardarEntidad('antecedente', formData.antecedente, null, 'idAntec');
         }
 
-        if (formData.factor && formData.factor.idFac) {
+        // Factor
+        if (formData.factor && (formData.factor.idFac || tieneContenido(formData.factor))) {
+            console.log('Guardando factor...', formData.factor);
             await guardarEntidad('factor', formData.factor, formData.factor.idFac, 'idFac');
-        } else if (formData.factor) {
-            await guardarEntidad('factor', formData.factor, null, 'idFac');
         }
 
-        if (formData.genotipo && formData.genotipo.idGenotip) {
+        // Genotipo
+        if (formData.genotipo && (formData.genotipo.idGenotip || tieneContenido(formData.genotipo))) {
+            console.log('Guardando genotipo...', formData.genotipo);
             await guardarEntidad('genotipo', formData.genotipo, formData.genotipo.idGenotip, 'idGenotip');
-        } else if (formData.genotipo) {
-            await guardarEntidad('genotipo', formData.genotipo, null, 'idGenotip');
         }
 
-        if (formData.helicobacter && formData.helicobacter.idHelic) {
+        // Helicobacter
+        if (formData.helicobacter && (formData.helicobacter.idHelic || tieneContenido(formData.helicobacter))) {
+            console.log('Guardando helicobacter...', formData.helicobacter);
             await guardarEntidad('helicobacter', formData.helicobacter, formData.helicobacter.idHelic, 'idHelic');
-        } else if (formData.helicobacter) {
-            await guardarEntidad('helicobacter', formData.helicobacter, null, 'idHelic');
         }
 
-        if (formData.histopatologia && formData.histopatologia.idHisto) {
+        // Histopatologia
+        if (formData.histopatologia && (formData.histopatologia.idHisto || tieneContenido(formData.histopatologia))) {
+            console.log('Guardando histopatologia...', formData.histopatologia);
             await guardarEntidad('histopatologia', formData.histopatologia, formData.histopatologia.idHisto, 'idHisto');
-        } else if (formData.histopatologia) {
-            await guardarEntidad('histopatologia', formData.histopatologia, null, 'idHisto');
         }
 
         // Guardar hábitos
         if (formData.habitos && formData.habitos.length > 0) {
+            console.log('Guardando hábitos...', formData.habitos);
             for (const habito of formData.habitos) {
-                if (habito.idHabit) {
+                // Solo guardar hábitos con contenido
+                if (tieneContenido(habito) || habito.idHabit) {
                     await guardarEntidad('habito', habito, habito.idHabit, 'idHabit');
-                } else {
-                    await guardarEntidad('habito', habito, null, 'idHabit');
                 }
             }
         }
@@ -404,7 +420,7 @@ async function guardarCambios() {
 
     } catch (error) {
         console.error('Error al guardar:', error);
-        alert('❌ Error al guardar los cambios: ' + error.message);
+        alert('❌ Error al guardar los cambios:\n' + error.message);
     } finally {
         btnSave.disabled = false;
         btnSave.textContent = '💾 Guardar Cambios';
@@ -481,30 +497,105 @@ function recopilarDatosFormulario() {
 
 // Guardar una entidad
 async function guardarEntidad(endpoint, datos, id, idField) {
-    // Si no hay ID, crear nueva entidad
-    if (!id) {
-        const resp = await fetch(`http://localhost:8080/api/${endpoint}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(datos)
-        });
+    try {
+        // Si no hay ID, crear nueva entidad
+        if (!id) {
+            console.log(`📤 POST /api/${endpoint}`, datos);
+            const resp = await fetch(`http://localhost:8080/api/${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datos)
+            });
 
-        if (!resp.ok) {
-            throw new Error(`Error al crear ${endpoint}`);
-        }
-        return await resp.json();
-    } else {
-        // Actualizar entidad existente
-        const resp = await fetch(`http://localhost:8080/api/${endpoint}/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(datos)
-        });
+            if (!resp.ok) {
+                const contentType = resp.headers.get('content-type');
+                let errorMsg = `Error ${resp.status}`;
+                let fullError = null;
 
-        if (!resp.ok) {
-            throw new Error(`Error al actualizar ${endpoint}`);
+                try {
+                    const responseText = await resp.text();
+                    console.error(`❌ Respuesta completa del servidor:`, responseText);
+
+                    if (contentType && contentType.includes('application/json')) {
+                        try {
+                            const errorJson = JSON.parse(responseText);
+                            errorMsg = errorJson.message || errorJson.error || JSON.stringify(errorJson);
+                            fullError = errorJson;
+                        } catch (e) {
+                            errorMsg = responseText;
+                        }
+                    } else {
+                        errorMsg = responseText;
+                    }
+                } catch (e) {
+                    errorMsg = `HTTP ${resp.status} - ${resp.statusText}`;
+                }
+
+                console.error(`❌ Error al crear ${endpoint}:`, errorMsg);
+                console.error(`❌ Datos enviados:`, datos);
+                if (fullError) console.error(`❌ Error completo:`, fullError);
+                throw new Error(`Error al crear ${endpoint}: ${errorMsg}`);
+            }
+
+            // Intentar parsear JSON solo si hay contenido
+            const contentType = resp.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const result = await resp.json();
+                console.log(`✅ ${endpoint} creado:`, result);
+                return result;
+            }
+            return null;
+        } else {
+            // Actualizar entidad existente
+            console.log(`📤 PUT /api/${endpoint}/${id}`, datos);
+            const resp = await fetch(`http://localhost:8080/api/${endpoint}/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datos)
+            });
+
+            if (!resp.ok) {
+                const contentType = resp.headers.get('content-type');
+                let errorMsg = `Error ${resp.status}`;
+                let fullError = null;
+
+                try {
+                    const responseText = await resp.text();
+                    console.error(`❌ Respuesta completa del servidor:`, responseText);
+
+                    if (contentType && contentType.includes('application/json')) {
+                        try {
+                            const errorJson = JSON.parse(responseText);
+                            errorMsg = errorJson.message || errorJson.error || JSON.stringify(errorJson);
+                            fullError = errorJson;
+                        } catch (e) {
+                            errorMsg = responseText;
+                        }
+                    } else {
+                        errorMsg = responseText;
+                    }
+                } catch (e) {
+                    errorMsg = `HTTP ${resp.status} - ${resp.statusText}`;
+                }
+
+                console.error(`❌ Error al actualizar ${endpoint}:`, errorMsg);
+                console.error(`❌ Datos enviados:`, datos);
+                if (fullError) console.error(`❌ Error completo:`, fullError);
+                throw new Error(`Error al actualizar ${endpoint}: ${errorMsg}`);
+            }
+
+            // Intentar parsear JSON solo si hay contenido
+            const contentType = resp.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const result = await resp.json();
+                console.log(`✅ ${endpoint} actualizado:`, result);
+                return result;
+            }
+            return null;
         }
-        return await resp.json();
+    } catch (error) {
+        console.error(`💥 Error en guardarEntidad (${endpoint}):`, error);
+        throw error;
     }
 }
 
