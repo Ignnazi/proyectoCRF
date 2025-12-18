@@ -2,12 +2,11 @@ package ingsof.controlador;
 
 import ingsof.entidad.Helicobacter;
 import ingsof.servicio.HelicobacterS;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
+
 @CrossOrigin(origins = "http://localhost:3002")
 @RestController
 @RequestMapping("/api/helicobacter")
@@ -19,23 +18,30 @@ public class HelicobacterC {
         this.servicio = servicio;
     }
 
-    @RequestMapping("/listar")
-    public String listar() {
-        return this.servicio.listar().toString();
+    @GetMapping
+    public ResponseEntity<List<Helicobacter>> listar() {
+        return ResponseEntity.ok(servicio.listar());
     }
 
-    @RequestMapping("/guardar")
-    public void guardar(@RequestBody Helicobacter helicobacter) {
-        this.servicio.guardar(helicobacter);
+    @GetMapping("/{id}")
+    public ResponseEntity<Helicobacter> porId(@PathVariable Integer id) {
+        return ResponseEntity.ok(servicio.porId(id));
     }
 
-    @RequestMapping("/eliminar/{id}")
-    public void eliminar(@PathVariable int id) {
-        this.servicio.eliminar(id);
+    @GetMapping("/por-participante/{codPart}")
+    public ResponseEntity<Helicobacter> porCodPart(@PathVariable String codPart) {
+        Helicobacter h = servicio.porCodPart(codPart);
+        if (h == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(h);
     }
 
-    @RequestMapping("/actualizar/{id}")
-    public void actualizar(@PathVariable int id, @RequestBody Helicobacter helicobacter) {
-        this.servicio.actualizar(id, helicobacter);
+    @PostMapping
+    public ResponseEntity<Helicobacter> crear(@RequestBody Helicobacter body) {
+        return ResponseEntity.ok(servicio.crear(body));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Helicobacter> actualizar(@PathVariable Integer id, @RequestBody Helicobacter body) {
+        return ResponseEntity.ok(servicio.actualizar(id, body));
     }
 }

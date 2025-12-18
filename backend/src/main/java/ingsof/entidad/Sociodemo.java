@@ -10,29 +10,36 @@ public class Sociodemo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_socdemo")
     private int idSocdemo;
+
     private Integer edad;
-    private String sexo;              // 'Hombre' o 'Mujer'
+    private String sexo;
     private String nacionalidad;
     private String direccion;
-    private String zona;              // 'Urbana' o 'Rural'
+    private String comuna;
+    private String ciudad;
+    private String zona;
 
-    @Column(name = "anios_res")
-    private String aniosRes;          // '<5', '5–10', '>10'
+    @Column(name = "vive_mas_5")
+    private String viveMas5;
 
-    private String educacion;         // 'Básico', 'Medio', 'Superior'
+    private String educacion;
     private String ocupacion;
+
+    @Column(name = "prevision_salud")
+    private String previsionSalud;
+
+    @Column(name = "prevision_otra")
+    private String previsionOtra;
 
     @Column(name = "cod_part")
     private String codPart;
 
-    // Relación 1:1 con Participante
     @OneToOne
     @JoinColumn(name = "cod_part", referencedColumnName = "cod_part", insertable = false, updatable = false)
     private Participantecrf participante;
 
     public Sociodemo() { }
 
-    // Getters y setters
     public int getIdSocdemo() {
         return idSocdemo;
     }
@@ -73,6 +80,22 @@ public class Sociodemo {
         this.direccion = direccion;
     }
 
+    public String getComuna() {
+        return comuna;
+    }
+
+    public void setComuna(String comuna) {
+        this.comuna = comuna;
+    }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
+
     public String getZona() {
         return zona;
     }
@@ -81,12 +104,12 @@ public class Sociodemo {
         this.zona = zona;
     }
 
-    public String getAniosRes() {
-        return aniosRes;
+    public String getViveMas5() {
+        return viveMas5;
     }
 
-    public void setAniosRes(String aniosRes) {
-        this.aniosRes = aniosRes;
+    public void setViveMas5(String viveMas5) {
+        this.viveMas5 = viveMas5;
     }
 
     public String getEducacion() {
@@ -103,6 +126,22 @@ public class Sociodemo {
 
     public void setOcupacion(String ocupacion) {
         this.ocupacion = ocupacion;
+    }
+
+    public String getPrevisionSalud() {
+        return previsionSalud;
+    }
+
+    public void setPrevisionSalud(String previsionSalud) {
+        this.previsionSalud = previsionSalud;
+    }
+
+    public String getPrevisionOtra() {
+        return previsionOtra;
+    }
+
+    public void setPrevisionOtra(String previsionOtra) {
+        this.previsionOtra = previsionOtra;
     }
 
     public String getCodPart() {
