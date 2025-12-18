@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FormularioCRF</title>
+    <link rel="stylesheet" href="css/styleFormulario.css">
+</head>
+<body class="container-fluid">
+<!-- ========= FORMULARIO (CRF) ========= -->
+<section id="formView">
+    <div class="crf-wrap">
+        <div class="crf-container">
+
+            <button id="btnBackForm" class="btn-back" type="button">← Volver al inicio</button>
+
+            <h1>Case Report Form – Estudio Cáncer Gástrico</h1>
+            <hr>
+
+            <section id="sec1">
+                <h2>1. Identificación del participante</h2>
+
+                <label for="nombre">Nombre completo:</label>
+                <input id="nombre" type="text" placeholder="Ej: María Ignacia" />
+
+                <label>Grupo:</label>
+                <div class="radio-group">
+                    <label class="radio-item">
+                        <input type="radio" name="grupo" value="Caso" />
+                        Caso
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="grupo" value="Control" />
+                        Control
+                    </label>
+                </div>
+
+                <label for="fecha">Fecha de inclusión:</label>
+                <input id="fecha" type="date" />
+
+                <button id="btnGuardar" class="btn-primary" type="button">
+                    Guardar participante
+                </button>
+
+                <div id="msgBox" class="msg"></div>
+
+                <h3>Participantes registrados</h3>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Grupo</th>
+                        <th>Fecha inclusión</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tablaParticipantes">
+                    <tr><td colspan="4">Cargando...</td></tr>
+                    </tbody>
+                </table>
+
+                <button id="btnNextForm" class="btn-next" type="button">
+                    Continuar a sección 2
+                </button>
+            </section>
+
+            <section id="sec2" class="hidden">
+                <h2>2. Datos Sociodemográficos</h2>
+                <p>(Aquí agregamos lo de Sociodemo después)</p>
+                <button id="btnBackSec2" class="btn-back" type="button">← Volver a sección 1</button>
+            </section>
+
+        </div>
+    </div>
+</section>
+<script src="js/script.js"></script>
+</body>
+</html>

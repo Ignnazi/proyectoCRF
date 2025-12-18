@@ -1,0 +1,126 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.crf-wrap{
+    /* Full-bleed layout: ocupar todo el ancho de la página */
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Usar la misma familia de fontes que en index (Arial, Helvetica, sans-serif) */
+.crf-container {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #2d3642;
+    padding: 40px 48px;
+    border-radius: 0; /* quitar esquinas redondeadas para full-bleed */
+    box-shadow: none;
+    color: white;
+    width: 100%;
+    min-height: 100vh; /* ocupar toda la altura del viewport */
+    box-sizing: border-box;
+}
+
+.crf-container h1 {
+    font-size: 32px;
+    color: #a4c8ff;
+    margin: 0 0 10px;
+}
+
+.crf-container h2 {
+    margin-top: 20px;
+    color: #a4c8ff;
+}
+
+.crf-container label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+}
+
+.crf-container input, .crf-container select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 6px;
+    border: none;
+    background: #11161c;
+    color: white;
+    box-sizing: border-box;
+}
+
+.radio-group {
+    margin-top: 8px;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.radio-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.radio-item input[type="radio"]{
+    width: auto;
+    margin: 0;
+    transform: translateY(1px);
+    cursor: pointer;
+}
+
+.crf-container button {
+    padding: 12px 20px;
+    border: none;
+    margin-top: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-primary { background: #2d89ff; color: white; }
+.btn-primary:hover { filter: brightness(1.05); }
+
+.btn-next { background: #3fbf4a; color: white; width: 100%; }
+.btn-next:hover { filter: brightness(1.05); }
+
+.btn-back { background: transparent; color: #e6f0ff; border: 1px solid rgba(255,255,255,0.25); }
+.btn-back:hover { background: rgba(255,255,255,0.08); }
+
+table {
+    width: 100%;
+    margin-top: 14px;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #3c4654;
+    text-align: center;
+}
+
+th { background: #0f4c75; }
+
+tbody tr:nth-child(even) { background: rgba(255,255,255,0.03); }
+
+.hidden { display: none !important; }
+
+.msg {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    display: none;
+    font-size: 14px;
+}
+.msg.ok { background: rgba(63,191,74,0.18); border: 1px solid rgba(63,191,74,0.5); }
+.msg.err { background: rgba(255,99,99,0.18); border: 1px solid rgba(255,99,99,0.5); }
+.msg.show { display: block; }
