@@ -10,7 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const userIdRaw = document.getElementById('userId')?.value;
+      const passwordInput = document.getElementById('password')?.value;
       const user = userIdRaw ? userIdRaw.toString().trim() : '';
+      const password = passwordInput ? passwordInput.trim() : '';
       const box = document.getElementById('msgBox');
 
       if (!user) {
@@ -21,7 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Obtener el nombre del usuario desde la API
+      if (!password) {
+        if (box) {
+          box.className = 'msg show err';
+          box.textContent = 'Ingresa la contraseña.';
+        }
+        return;
+      }
+
+      // Obtener el usuario desde la API
       try {
         const resp = await fetch(`${USER_API}/${parseInt(user, 10)}`);
 
@@ -35,9 +45,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const usuario = await resp.json();
 
+        // Validación rudimentaria de password
+        if (usuario.password !== password) {
+          if (box) {
+            box.className = 'msg show err';
+            box.textContent = 'Contraseña incorrecta.';
+          }
+          return;
+        }
+
+        // Login exitoso
         // Guardar userId y el nombre real del usuario en sessionStorage
         sessionStorage.setItem('userId', user);
         sessionStorage.setItem('userName', usuario.nombre || `Usuario ${user}`);
+        sessionStorage.setItem('userRol', usuario.rol || 'Usuario');
 
         if (box) {
           box.className = 'msg show ok';
