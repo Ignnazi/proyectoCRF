@@ -72,7 +72,10 @@ function mostrarResultados(lista) {
             <td>${p.nombre ?? ""}</td>
             <td>${p.grupo ?? ""}</td>
             <td>${fechaStr}</td>
-            <td><a href="detalle_participante.html?id=${p.codPart}" style="color: #2d89ff; text-decoration: none; font-weight: bold;">Ver más →</a></td>
+            <td>
+                <a href="detalle_participante.html?id=${p.codPart}" style="color: #2d89ff; text-decoration: none; font-weight: bold; margin-right: 10px;">Ver más →</a>
+                <a href="editar_participante.html?id=${p.codPart}" style="color: #28a745; text-decoration: none; font-weight: bold;">Editar ✏️</a>
+            </td>
         `;
         tabla.appendChild(tr);
     });

@@ -97,7 +97,7 @@ function mostrarDetalle(data) {
     let html = `
         <!-- Información básica -->
         <div class="detail-section">
-            <h3>📋 Identificación del participante</h3>
+            <h3>Identificación del participante</h3>
             <div class="detail-grid">
                 <div class="detail-item">
                     <label>Código:</label>
@@ -124,7 +124,7 @@ function mostrarDetalle(data) {
         const s = data.sociodemo;
         html += `
             <div class="detail-section">
-                <h3>👤 Datos Sociodemográficos</h3>
+                <h3>Datos Sociodemográficos</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
                         <label>Edad:</label>
@@ -168,7 +168,7 @@ function mostrarDetalle(data) {
         const a = data.antropometria;
         html += `
             <div class="detail-section">
-                <h3>📏 Variables Antropométricas</h3>
+                <h3>Variables Antropométricas</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
                         <label>Peso:</label>
@@ -193,7 +193,7 @@ function mostrarDetalle(data) {
         const fechaDiag = ant.fechaDiag ? ant.fechaDiag.toString().slice(0, 10) : 'N/A';
         html += `
             <div class="detail-section">
-                <h3>📝 Antecedentes Clínicos</h3>
+                <h3>Antecedentes Clínicos</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
                         <label>Diagnóstico:</label>
@@ -237,7 +237,7 @@ function mostrarDetalle(data) {
         const f = data.factores;
         html += `
             <div class="detail-section">
-                <h3>⚠️ Factores dietarios y ambientales</h3>
+                <h3>Factores dietarios y ambientales</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
                         <label>Consumo de Carnes:</label>
@@ -294,7 +294,7 @@ function mostrarDetalle(data) {
         const fechaToma = g.fechaToma ? g.fechaToma.toString().slice(0, 10) : 'N/A';
         html += `
             <div class="detail-section">
-                <h3>🧬 Muestras biológicas y genéticas</h3>
+                <h3>Muestras biológicas y genéticas</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
                         <label>Fecha de Toma:</label>
@@ -333,7 +333,7 @@ function mostrarDetalle(data) {
     if (data.habitos && data.habitos.length > 0) {
         html += `
             <div class="detail-section">
-                <h3>🚬 Hábitos</h3>
+                <h3>Hábitos</h3>
         `;
         data.habitos.forEach((h, index) => {
             html += `
@@ -380,7 +380,7 @@ function mostrarDetalle(data) {
         const hel = data.helicobacter;
         html += `
             <div class="detail-section">
-                <h3>🦠 Helicobacter Pylori</h3>
+                <h3>Helicobacter Pylori</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
                         <label>Prueba:</label>
@@ -404,7 +404,7 @@ function mostrarDetalle(data) {
         const hist = data.histopatologia;
         html += `
             <div class="detail-section">
-                <h3>🔬 Histopatología</h3>
+                <h3>Histopatología</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
                         <label>Tipo:</label>

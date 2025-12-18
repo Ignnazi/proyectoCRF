@@ -1,5 +1,35 @@
 /* Estilos para la página de detalle del participante */
 
+/* Botón de guardar cambios (flotante) */
+#btn-save {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+#btn-save:hover {
+    background: #218838;
+    box-shadow: 0 6px 16px rgba(40, 167, 69, 0.6);
+    transform: translateY(-2px);
+}
+
+#btn-save:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
 /* Contenedor principal con fondo blanco */
 .crf-wrap {
     background: #2d3642;
@@ -159,3 +189,69 @@
     border: 1px solid #e0e0e0 !important;
 }
 
+/* Estilos para formularios de edición */
+.section {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    color: #2d3642;
+    border-bottom: 2px solid #2d89ff;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    font-weight: bold;
+    color: #2d3642;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.info-value {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+}
+
+.info-value:focus {
+    outline: none;
+    border-color: #2d89ff;
+    box-shadow: 0 0 0 0.2rem rgba(45, 137, 255, 0.25);
+}
+
+/* Estilos para hábitos */
+.habito-item {
+    background: rgba(45, 54, 66, 0.05);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+}
+
+.habito-item h3 {
+    color: #2d3642;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+#habitosContainer {
+    margin-bottom: 15px;
+}
