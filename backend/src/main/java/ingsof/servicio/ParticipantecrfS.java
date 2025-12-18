@@ -27,7 +27,7 @@ public class ParticipantecrfS {
     private String siguienteCodigo(String grupo) {
         String pref = prefijoPorGrupo(grupo);
         int last = repo.maxNumeroPorPrefijo(pref);
-        return String.format("%s%03d", pref, last + 1); // 001..999
+        return String.format("%s%03d", pref, last + 1);
     }
 
     private void validarObligatorios(Participantecrf p) {
@@ -74,7 +74,7 @@ public class ParticipantecrfS {
                 .orElseThrow(() -> new IllegalArgumentException("No existe: " + codActual));
 
         boolean cambiaGrupo = cambios.getGrupo() != null &&
-                              !cambios.getGrupo().equalsIgnoreCase(db.getGrupo());
+                !cambios.getGrupo().equalsIgnoreCase(db.getGrupo());
 
         if (cambiaGrupo) {
             String nuevoCodigo = siguienteCodigo(cambios.getGrupo());
@@ -85,6 +85,8 @@ public class ParticipantecrfS {
                     .orElseThrow(() -> new IllegalStateException("No se encontró nuevo PK"));
 
             if (cambios.getNombre() != null) nuevo.setNombre(cambios.getNombre());
+            if (cambios.getTelefono() != null) nuevo.setTelefono(cambios.getTelefono());
+            if (cambios.getCorreo() != null) nuevo.setCorreo(cambios.getCorreo());
             if (cambios.getIdUser() != null) nuevo.setIdUser(cambios.getIdUser());
             nuevo.setGrupo(cambios.getGrupo());
             if (cambios.getFechaInclusion() != null) nuevo.setFechaInclusion(cambios.getFechaInclusion());
@@ -92,8 +94,9 @@ public class ParticipantecrfS {
             return repo.save(nuevo);
         }
 
-        // sin cambio de grupo
         if (cambios.getNombre() != null) db.setNombre(cambios.getNombre());
+        if (cambios.getTelefono() != null) db.setTelefono(cambios.getTelefono());
+        if (cambios.getCorreo() != null) db.setCorreo(cambios.getCorreo());
         if (cambios.getIdUser() != null) db.setIdUser(cambios.getIdUser());
         if (cambios.getGrupo() != null) db.setGrupo(cambios.getGrupo());
         if (cambios.getFechaInclusion() != null) db.setFechaInclusion(cambios.getFechaInclusion());

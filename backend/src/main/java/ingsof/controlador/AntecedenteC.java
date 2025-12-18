@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+
 @CrossOrigin(origins = "http://localhost:3002")
 @RestController
 @RequestMapping("/api/antecedente")
@@ -18,27 +20,32 @@ public class AntecedenteC {
     }
 
     @GetMapping
-    public ResponseEntity<List<Antecedente>> listar() {
-        return ResponseEntity.ok(servicio.listar());
+    public List<Antecedente> listar() {
+        return this.servicio.listar();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Antecedente> porId(@PathVariable Integer id) {
-        return ResponseEntity.ok(servicio.porId(id));
-    }
-
-    @GetMapping("/por-participante/{codPart}")
-    public ResponseEntity<Antecedente> porCodPart(@PathVariable String codPart) {
-        return ResponseEntity.ok(servicio.porCodPart(codPart));
+    public Optional<Antecedente> obtener(@PathVariable int id) {
+        return this.servicio.obtener(id);
     }
 
     @PostMapping
-    public ResponseEntity<Antecedente> crear(@RequestBody Antecedente body) {
-        return ResponseEntity.ok(servicio.crear(body));
+    public ResponseEntity<?> guardar(@RequestBody Antecedente antecedente) {
+        try {
+            this.servicio.guardar(antecedente);
+            return ResponseEntity.ok("Guardado Exitosamente");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public void eliminar(@PathVariable int id) {
+        this.servicio.eliminar(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Antecedente> actualizar(@PathVariable Integer id, @RequestBody Antecedente body) {
-        return ResponseEntity.ok(servicio.actualizar(id, body));
+    public void actualizar(@PathVariable int id, @RequestBody Antecedente antecedente) {
+        this.servicio.actualizar(id, antecedente);
     }
 }
