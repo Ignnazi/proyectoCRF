@@ -1,69 +1,100 @@
-/* Script completo para index.html y formulario.html */
 
 const API = "http://localhost:8080/api/participantecrf";
 const USER_API = "http://localhost:8080/api/usuario";
 const SOCIODEMO_API = "http://localhost:8080/api/sociodemo";
 
-/* ================= NAVEGACIÓN ENTRE VISTAS (SPA simple) ================= */
-
-window.irAFormulario = function irAFormulario(){
-  const home = document.getElementById("homeView");
-  const form = document.getElementById("formView");
-  if (!home || !form) return;
-  home.classList.add("hidden");
-  form.classList.remove("hidden");
-  if (typeof listarParticipantes === 'function') listarParticipantes();
-  window.scrollTo({top:0, behavior:"smooth"});
-}
-
-window.volverInicio = function volverInicio(){
-  const home = document.getElementById("homeView");
-  const form = document.getElementById("formView");
-  if (!home || !form) return;
-  form.classList.add("hidden");
-  home.classList.remove("hidden");
-  window.scrollTo({top:0, behavior:"smooth"});
-}
-
 /* ================= UTILIDADES ================= */
 
-window.showMsg = function showMsg(texto, tipo = "ok", elementId = "msgBox") {
+window.showMsg = function(texto, tipo = "ok", elementId = "msgBox") {
   const box = document.getElementById(elementId);
   if (!box) return;
+  
+  box.style.display = 'block';
   box.className = "msg show " + (tipo === "err" ? "err" : "ok");
   box.textContent = texto;
-  setTimeout(() => box.classList.remove("show"), 3500);
+  
+  setTimeout(() => {
+    box.style.display = 'none';
+    box.classList.remove("show");
+  }, 4000);
 }
 
-window.aLocalDateTime = function aLocalDateTime(fechaYYYYMMDD) {
+window.aLocalDateTime = function(fechaYYYYMMDD) {
   if (!fechaYYYYMMDD) return "";
   return `${fechaYYYYMMDD}T00:00:00`;
 }
 
-/* ================= LÓGICA DE PARTICIPANTE (SECCIÓN 1) ================= */
+/* ================= LÓGICA DE BÚSQUEDA (busqueda.html) ================= */
 
-window.guardarParticipante = async function guardarParticipante() {
+window.buscarParticipante = async function() {
+    const codigoInput = document.getElementById("searchCodPart");
+    const resultDiv = document.getElementById("searchResult");
+    const msgDivId = "searchMsg"; 
+
+    if (!codigoInput || !resultDiv) return;
+
+    const codigo = codigoInput.value.trim();
+    if (!codigo) {
+        showMsg("Por favor, ingrese un código.", "err", msgDivId);
+        return;
+    }
+
+    // Mostrar estado de carga
+    resultDiv.classList.remove("hidden");
+    resultDiv.innerHTML = "<p>Buscando...</p>";
+
+    try {
+        const resp = await fetch(`${API}/${encodeURIComponent(codigo)}`);
+
+        if (resp.status === 404) {
+            resultDiv.innerHTML = "";
+            showMsg("Participante no encontrado.", "err", msgDivId);
+            return;
+        }
+
+        if (!resp.ok) {
+            resultDiv.innerHTML = "";
+            showMsg("Error en la búsqueda.", "err", msgDivId);
+            return;
+        }
+
+        const p = await resp.json();
+        const fechaStr = p.fechaInclusion ? p.fechaInclusion.toString().slice(0, 10) : "Sin fecha";
+        
+        resultDiv.innerHTML = `
+            <div class="result-card">
+                <h3>Resultados para: ${p.codPart}</h3>
+                <div class="result-item"><span class="result-label">Nombre:</span> ${p.nombre}</div>
+                <div class="result-item"><span class="result-label">Grupo:</span> ${p.grupo}</div>
+                <div class="result-item"><span class="result-label">Fecha Inclusión:</span> ${fechaStr}</div>
+                <div class="result-item"><span class="result-label">Registrado por ID:</span> ${p.idUser || "N/A"}</div>
+            </div>
+        `;
+
+    } catch (e) {
+        console.error(e);
+        resultDiv.innerHTML = "";
+        showMsg("Error de conexión con el servidor.", "err", msgDivId);
+    }
+}
+
+/* ================= LÓGICA DE FORMULARIO (formulario.html) ================= */
+// (Se mantiene igual para soportar el guardado)
+
+window.guardarParticipante = async function() {
   const nombreEl = document.getElementById("nombre");
   const fechaEl = document.getElementById("fecha");
   const grupoEl = document.querySelector("input[name='grupo']:checked");
 
   if (!nombreEl || !fechaEl || !grupoEl) {
-    showMsg("Completa nombre, grupo y fecha.", "err");
-    return;
-  }
-
-  const nombre = nombreEl.value.trim();
-  const fecha = fechaEl.value;
-
-  if (!nombre || !fecha) {
-    showMsg("Faltan datos obligatorios.", "err");
+    showMsg("Complete todos los campos.", "err", "msgBox");
     return;
   }
 
   const body = {
-    nombre: nombre,
+    nombre: nombreEl.value.trim(),
     grupo: grupoEl.value,
-    fechaInclusion: aLocalDateTime(fecha)
+    fechaInclusion: aLocalDateTime(fechaEl.value)
   };
 
   try {
@@ -75,220 +106,115 @@ window.guardarParticipante = async function guardarParticipante() {
 
     if (!resp.ok) {
       const txt = await resp.text();
-      showMsg("Error al guardar: " + txt, "err");
+      showMsg("Error: " + txt, "err", "msgBox");
       return;
     }
 
-    // Respuesta exitosa: Backend devuelve el objeto creado (incluye codPart)
-    const participanteCreado = await resp.json();
+    const creado = await resp.json();
+    showMsg(`Guardado exitoso. Código: ${creado.codPart}`, "ok", "msgBox");
     
-    showMsg(`Participante guardado: ${participanteCreado.codPart}`, "ok");
-
-    // Guardar codPart en el input oculto de la Sección 2 para usarlo después
+    // Guardar código para la siguiente sección
     const hiddenInput = document.getElementById("currentCodPart");
-    if(hiddenInput) {
-        hiddenInput.value = participanteCreado.codPart;
-    }
+    if(hiddenInput) hiddenInput.value = creado.codPart;
 
-    // Limpiar formulario Sección 1
+    // Limpiar campos y refrescar tabla
     nombreEl.value = "";
     fechaEl.value = "";
     grupoEl.checked = false;
-
-    // Actualizar tabla
-    await listarParticipantes();
-
-  } catch (e) {
-    console.error(e);
-    showMsg("Error de conexión con el servidor.", "err");
-  }
-}
-
-window.listarParticipantes = async function listarParticipantes() {
-  const tabla = document.getElementById("tablaParticipantes");
-  if (!tabla) return;
-  tabla.innerHTML = `<tr><td colspan="4">Cargando...</td></tr>`;
-
-  try {
-    const resp = await fetch(API);
-    if (!resp.ok) {
-      tabla.innerHTML = `<tr><td colspan="4">Error al cargar lista</td></tr>`;
-      return;
-    }
-    const lista = await resp.json();
-
-    if (!Array.isArray(lista) || lista.length === 0) {
-      tabla.innerHTML = `<tr><td colspan="4">Sin registros</td></tr>`;
-      return;
-    }
-
-    tabla.innerHTML = "";
-    lista.forEach(p => {
-      const fechaStr = (p.fechaInclusion || "").toString().slice(0, 10);
-      tabla.innerHTML += `
-          <tr>
-            <td>${p.codPart ?? ""}</td>
-            <td>${p.nombre ?? ""}</td>
-            <td>${p.grupo ?? ""}</td>
-            <td>${fechaStr}</td>
-          </tr>
-        `;
-    });
-  } catch (e) {
-    console.error(e);
-    tabla.innerHTML = `<tr><td colspan="4">No se pudo cargar la lista</td></tr>`;
-  }
-}
-
-/* ================= LÓGICA DE SOCIODEMOGRÁFICOS (SECCIÓN 2) ================= */
-
-window.guardarSociodemo = async function guardarSociodemo() {
-    // Recuperar el código del participante guardado previamente
-    const codPart = document.getElementById("currentCodPart")?.value;
     
-    if (!codPart) {
-        showMsg("Debes guardar un participante en la Sección 1 primero.", "err", "msgBoxSec2");
-        return;
-    }
+    if(typeof listarParticipantes === 'function') listarParticipantes();
 
-    const edad = document.getElementById("edad").value;
-    const sexo = document.getElementById("sexo").value;
-    const nacionalidad = document.getElementById("nacionalidad").value;
-    const zona = document.getElementById("zona").value;
-    const aniosRes = document.getElementById("aniosRes").value;
-    const educacion = document.getElementById("educacion").value;
-    const ocupacion = document.getElementById("ocupacion").value;
-
-    // Validación básica
-    if (!edad || parseInt(edad) < 18) {
-        showMsg("La edad es obligatoria y debe ser >= 18.", "err", "msgBoxSec2");
-        return;
-    }
-
-    const body = {
-        codPart: codPart,
-        edad: parseInt(edad),
-        sexo: sexo,
-        nacionalidad: nacionalidad,
-        zona: zona,
-        aniosRes: aniosRes,
-        direccion: "Dirección Genérica", // Valor por defecto si no está en el form
-        educacion: educacion,
-        ocupacion: ocupacion
-    };
-
-    try {
-        const resp = await fetch(SOCIODEMO_API, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body)
-        });
-
-        if (resp.ok) {
-            showMsg("Datos sociodemográficos guardados correctamente ✅", "ok", "msgBoxSec2");
-            // Aquí podrías limpiar campos o avanzar a otra sección
-        } else {
-            const txt = await resp.text();
-            showMsg("Error al guardar: " + txt, "err", "msgBoxSec2");
-        }
-    } catch (e) {
-        console.error(e);
-        showMsg("Error de conexión al guardar sociodemográficos.", "err", "msgBoxSec2");
-    }
-}
-
-/* ================= NAVEGACIÓN INTERNA DEL FORMULARIO ================= */
-
-window.irSeccion2 = function irSeccion2() {
-  const sec1 = document.getElementById("sec1");
-  const sec2 = document.getElementById("sec2");
-  if (!sec1 || !sec2) return;
-  
-  // Validar si ya hay un participante seleccionado/creado
-  const codPart = document.getElementById("currentCodPart")?.value;
-  if (!codPart) {
-      alert("Por favor, guarda el participante antes de continuar.");
-      return;
+  } catch (e) {
+    console.error(e);
+    showMsg("Error de conexión.", "err", "msgBox");
   }
-
-  sec1.classList.add("hidden");
-  sec2.classList.remove("hidden");
-  window.scrollTo({top:0, behavior:"smooth"});
 }
 
-window.volverASeccion1 = function volverASeccion1() {
-  const sec1 = document.getElementById("sec1");
-  const sec2 = document.getElementById("sec2");
-  if (!sec1 || !sec2) return;
-  sec2.classList.add("hidden");
-  sec1.classList.remove("hidden");
-  window.scrollTo({top:0, behavior:"smooth"});
+// Función auxiliar para listar en la tabla de formulario.html
+window.listarParticipantes = async function() {
+    const tabla = document.getElementById("tablaParticipantes");
+    if (!tabla) return;
+    
+    try {
+        const resp = await fetch(API);
+        if(!resp.ok) return;
+        const lista = await resp.json();
+        
+        tabla.innerHTML = "";
+        if (lista.length === 0) {
+             tabla.innerHTML = `<tr><td colspan="4">Sin registros</td></tr>`;
+             return;
+        }
+        
+        lista.forEach(p => {
+            const fechaStr = (p.fechaInclusion || "").toString().slice(0, 10);
+            tabla.innerHTML += `
+                <tr>
+                    <td>${p.codPart}</td>
+                    <td>${p.nombre}</td>
+                    <td>${p.grupo}</td>
+                    <td>${fechaStr}</td>
+                </tr>
+            `;
+        });
+    } catch(e) { console.error(e); }
 }
 
-/* ================= EVENT LISTENERS ================= */
+
+/* ================= INICIALIZACIÓN DE EVENTOS ================= */
 
 document.addEventListener('DOMContentLoaded', () => {
-  const addListener = (id, fn) => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('click', fn);
-  };
-
-  // Botones generales
-  addListener('btnForm', () => { window.location.href = 'formulario.html'; });
-  addListener('btnInfo', () => alert('Búsqueda en desarrollo...'));
-
-  // Botones Formulario
-  if (document.getElementById('formView')) {
-    listarParticipantes(); // Cargar tabla al inicio
-    addListener('btnBackForm', () => { window.location.href = 'index.html'; });
     
-    // Sección 1
-    addListener('btnGuardar', guardarParticipante);
-    addListener('btnNextForm', irSeccion2);
+    // --- Detectar en qué página estamos ---
 
-    // Sección 2
-    addListener('btnGuardarSociodemo', guardarSociodemo);
-    addListener('btnBackSec2', volverASeccion1);
-  }
+    // 1. HOME.HTML
+    const btnInfo = document.getElementById('btnInfo');
+    if (btnInfo) {
+        // Redirigir a busqueda.html
+        btnInfo.addEventListener('click', () => { window.location.href = 'busqueda.html'; });
+    }
 
-  // Lógica de Login (index.html)
-  const loginForm = document.getElementById('loginForm');
-  if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const userIdRaw = document.getElementById('userId')?.value;
-      const pass = document.getElementById('password')?.value;
-      const box = document.getElementById('msgBox');
+    const btnForm = document.getElementById('btnForm');
+    if (btnForm) {
+        // Redirigir a formulario.html
+        btnForm.addEventListener('click', () => { window.location.href = 'formulario.html'; });
+    }
 
-      if (!userIdRaw || !pass) {
-        if (box) { box.className = 'msg show err'; box.textContent = 'Completa ID y contraseña.'; }
-        return;
-      }
+    const btnLogin = document.getElementById('btnLogin');
+    if (btnLogin) {
+        // Redirigir a login (o index.html si lo usas para login)
+        btnLogin.addEventListener('click', () => { window.location.href = 'index.html'; });
+    }
 
-      try {
-        const resp = await fetch(`${USER_API}/${encodeURIComponent(parseInt(userIdRaw))}`);
-        if (!resp.ok) {
-          if (box) { box.className = 'msg show err'; box.textContent = 'Usuario no encontrado.'; }
-          return;
+    // 2. BUSQUEDA.HTML
+    const btnSearchAction = document.getElementById('btnSearchAction');
+    if (btnSearchAction) {
+        btnSearchAction.addEventListener('click', window.buscarParticipante);
+        
+        // Permitir buscar con Enter
+        const inputSearch = document.getElementById('searchCodPart');
+        if(inputSearch) {
+            inputSearch.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') window.buscarParticipante();
+            });
         }
-        const usuario = await resp.json();
-        const stored = usuario.password ? String(usuario.password).trim() : '';
-        const entered = String(pass).trim();
+    }
 
-        if (stored !== entered) {
-          if (box) { box.className = 'msg show err'; box.textContent = 'Contraseña incorrecta.'; }
-          return;
-        }
+    const btnBackHome = document.getElementById('btnBackHome');
+    if (btnBackHome) {
+        btnBackHome.addEventListener('click', () => { window.location.href = 'home.html'; });
+    }
 
-        if (box) { box.className = 'msg show ok'; box.textContent = 'Ingreso correcto...'; }
-        setTimeout(() => { window.location.href = 'home.html'; }, 800);
-
-      } catch (err) {
-        console.error(err);
-        if (box) { box.className = 'msg show err'; box.textContent = 'Error de conexión.'; }
-      }
-    });
+    // 3. FORMULARIO.HTML
+    const btnGuardar = document.getElementById('btnGuardar');
+    if (btnGuardar) {
+        btnGuardar.addEventListener('click', window.guardarParticipante);
+        // Cargar la tabla al inicio
+        window.listarParticipantes();
+    }
     
-    addListener('btnBackLogin', () => { window.location.href = 'home.html'; });
-  }
+    const btnBackForm = document.getElementById('btnBackForm');
+    if(btnBackForm) {
+        btnBackForm.addEventListener('click', () => { window.location.href = 'home.html'; });
+    }
 });

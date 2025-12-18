@@ -13,14 +13,29 @@
             font-weight: bold;
         }
         .card-header-custom {
-            background-color: #f8f9fa;
+            background-color:#2d89ff;
             border-bottom: 2px solid #0d6efd;
+            color: white;
         }
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 0.2em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border .75s linear infinite;
+        }
+        @keyframes spinner-border { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="bg-light p-4">
 
 <div class="container">
+    <div class="mb-3">
+        <a href="home.html" class="btn btn-outline-secondary">← Volver al Inicio</a>
+    </div>
+
     <div class="card shadow-sm mb-4">
         <div class="card-body text-center p-5">
             <h2 class="mb-3 text-primary"><i class="bi bi-search"></i> Buscador de Participantes CRF</h2>
@@ -28,33 +43,35 @@
                 <input type="text" id="inputBusqueda" class="form-control" placeholder="Ingrese Código (ej. CS001) o Nombre...">
                 <button class="btn btn-primary" type="button" onclick="buscarParticipante()">Buscar</button>
             </div>
-            <small class="text-muted">Busca en la base de datos SQL por `cod_part` o `nombre`</small>
+            <small class="text-muted">Busca en la base de datos SQL por <code>codPart</code> o <code>nombre</code></small>
         </div>
     </div>
 
     <div id="seccionResultados" class="card shadow-sm mb-4" style="display: none;">
-        <div class="card-header bg-white">Resultados de la búsqueda</div>
+        <div class="card-header bg-white fw-bold">Resultados de la búsqueda</div>
         <div class="card-body">
-            <table class="table table-hover align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>Cód. Parte</th>
-                        <th>Nombre</th>
-                        <th>Grupo</th>
-                        <th>Fecha Inclusión</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody id="tablaCuerpo">
-                    </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Cód. Parte</th>
+                            <th>Nombre</th>
+                            <th>Grupo</th>
+                            <th>Fecha Inclusión</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaCuerpo">
+                        </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <div id="seccionDetalle" class="card shadow-lg" style="display: none;">
+    <div id="seccionDetalle" class="card shadow-lg mb-5" style="display: none;">
         <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
-            <h4 class="m-0" id="tituloDetalle">Ficha Clínica: CS001</h4>
-            <button class="btn btn-sm btn-secondary" onclick="cerrarDetalle()">X Cerrar</button>
+            <h4 class="m-0" id="tituloDetalle">Ficha Clínica</h4>
+            <button class="btn btn-sm btn-light text-primary fw-bold" onclick="cerrarDetalle()">X Cerrar</button>
         </div>
         <div class="card-body">
             <ul class="nav nav-tabs mb-3" id="misPestañas" role="tablist">
@@ -66,47 +83,63 @@
             <div class="tab-content" id="contenidoPestañas">
                 
                 <div class="tab-pane fade show active" id="tab-socio">
-                    <div class="row g-3">
-                        <div class="col-md-3"><label class="fw-bold">Edad:</label> <span id="val_edad">-</span></div>
-                        <div class="col-md-3"><label class="fw-bold">Sexo:</label> <span id="val_sexo">-</span></div>
-                        <div class="col-md-6"><label class="fw-bold">Dirección:</label> <span id="val_direccion">-</span></div>
-                        <div class="col-md-3"><label class="fw-bold">Zona:</label> <span id="val_zona">-</span></div>
-                        <div class="col-md-3"><label class="fw-bold">Educación:</label> <span id="val_educacion">-</span></div>
-                        <div class="col-md-6"><label class="fw-bold">Ocupación:</label> <span id="val_ocupacion">-</span></div>
+                    <div id="loadingSocio" class="text-muted fst-italic">Cargando datos...</div>
+                    <div id="contentSocio" style="display:none;" class="row g-3">
+                        <div class="col-md-3"><label class="fw-bold text-secondary">Edad:</label> <div id="val_edad" class="fs-5">-</div></div>
+                        <div class="col-md-3"><label class="fw-bold text-secondary">Sexo:</label> <div id="val_sexo" class="fs-5">-</div></div>
+                        <div class="col-md-6"><label class="fw-bold text-secondary">Dirección:</label> <div id="val_direccion" class="fs-5">-</div></div>
+                        <div class="col-md-3"><label class="fw-bold text-secondary">Zona:</label> <div id="val_zona" class="fs-5">-</div></div>
+                        <div class="col-md-3"><label class="fw-bold text-secondary">Educación:</label> <div id="val_educacion" class="fs-5">-</div></div>
+                        <div class="col-md-6"><label class="fw-bold text-secondary">Ocupación:</label> <div id="val_ocupacion" class="fs-5">-</div></div>
                     </div>
                 </div>
 
                 <div class="tab-pane fade" id="tab-clinico">
-                    <div class="alert alert-info" id="avisoControl" style="display:none;">Paciente Control - Sin datos de cáncer</div>
-                    <div id="datosHisto">
+                    <div id="loadingClinico" class="text-muted fst-italic">Cargando datos...</div>
+                    
+                    <div id="contentClinico" style="display:none;">
+                        <div class="alert alert-success" id="avisoControl" style="display:none;">
+                            <i class="bi bi-check-circle"></i> Participante Control - No aplica Histopatología.
+                        </div>
+                        
+                        <div id="datosHisto">
+                            <h6 class="text-primary border-bottom pb-2 mb-3">Histopatología</h6>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-4"><label class="fw-bold text-danger">Tipo Cáncer:</label> <div id="val_tipo_cancer">-</div></div>
+                                <div class="col-md-4"><label class="fw-bold">Localización:</label> <div id="val_localizacion">-</div></div>
+                                <div class="col-md-4"><label class="fw-bold">Estadio:</label> <div id="val_estadio">-</div></div>
+                            </div>
+                        </div>
+
+                        <h6 class="text-primary border-bottom pb-2 mb-3">Antropometría</h6>
                         <div class="row g-3">
-                            <div class="col-md-4"><label class="fw-bold text-danger">Tipo Cáncer:</label> <span id="val_tipo_cancer">-</span></div>
-                            <div class="col-md-4"><label class="fw-bold">Localización:</label> <span id="val_localizacion">-</span></div>
-                            <div class="col-md-4"><label class="fw-bold">Estadio:</label> <span id="val_estadio">-</span></div>
-                            <div class="col-12 mt-3"><h6 class="text-primary border-bottom">Antropometría</h6></div>
                             <div class="col-md-4"><label class="fw-bold">Peso:</label> <span id="val_peso">-</span> kg</div>
                             <div class="col-md-4"><label class="fw-bold">Estatura:</label> <span id="val_talla">-</span> m</div>
-                            <div class="col-md-4"><label class="fw-bold">IMC:</label> <span id="val_imc">-</span></div>
+                            <div class="col-md-4"><label class="fw-bold">IMC:</label> <span id="val_imc" class="badge bg-secondary">-</span></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="tab-pane fade" id="tab-habitos">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between">
-                            <span><i class="bi bi-fire"></i> Hábito Tabáquico:</span>
-                            <strong id="val_fumar">-</strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            <span><i class="bi bi-cup-straw"></i> Consumo Alcohol:</span>
-                            <strong id="val_beber">-</strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            <span><i class="bi bi-droplet"></i> Fuente de Agua:</span>
-                            <strong id="val_agua">-</strong>
-                        </li>
-                    </ul>
+                    <div id="loadingHabitos" class="text-muted fst-italic">Cargando datos...</div>
+                    <div id="contentHabitos" style="display:none;">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-fire text-danger"></i> Hábito Tabáquico</span>
+                                <span id="val_fumar" class="fw-bold text-dark">-</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-cup-straw text-warning"></i> Consumo Alcohol</span>
+                                <span id="val_beber" class="fw-bold text-dark">-</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-droplet text-primary"></i> Fuente de Agua</span>
+                                <span id="val_agua" class="fw-bold text-dark">-</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -114,121 +147,214 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // URL de tu Backend Java (Ajustar según tu proyecto Spring Boot)
-    const API_URL = "http://localhost:8080/api/busqueda";
+    // --- CONFIGURACIÓN API ---
+    const BASE_URL = "http://localhost:8080/api";
+    
+    // Permitir buscar con Enter
+    document.getElementById("inputBusqueda").addEventListener("keypress", function(e){
+        if(e.key === "Enter") buscarParticipante();
+    });
 
-    // 1. FUNCIÓN DE BÚSQUEDA
+    // ==========================================
+    // 1. BUSCAR PARTICIPANTES (Listar y Filtrar)
+    // ==========================================
     async function buscarParticipante() {
-        const query = document.getElementById("inputBusqueda").value;
-        if (!query) return alert("Escribe algo para buscar");
+        const input = document.getElementById("inputBusqueda");
+        const query = input.value.trim().toLowerCase();
+        const tbody = document.getElementById("tablaCuerpo");
+        
+        if (!query) return alert("Por favor, ingrese un código o nombre.");
 
-        // Simulación de Fetch al Backend (Descomentar para producción)
-        /*
+        // Mostrar estado cargando
+        tbody.innerHTML = "<tr><td colspan='5' class='text-center py-3'><div class='loading-spinner'></div> Buscando en base de datos...</td></tr>";
+        document.getElementById("seccionResultados").style.display = "block";
+        cerrarDetalle();
+
         try {
-            const res = await fetch(`${API_URL}?q=${query}`);
-            const data = await res.json();
-            mostrarResultados(data);
-        } catch (e) { console.error(e); }
-        */
+            // Petición al backend
+            const res = await fetch(`${BASE_URL}/participantecrf`);
+            if (!res.ok) throw new Error("Error al conectar con el servidor.");
+            
+            const todos = await res.json();
 
-        // DATOS DE PRUEBA (MOCK) basados en tu SQL 'ingsof.sql'
-        // Esto simula lo que tu Backend Java debería devolver como JSON
-        const datosSimulados = [
-            {
-                cod_part: "CS001", nombre: "Juan Pérez", grupo: "Caso", fecha: "2025-10-24",
-                sociodemo: { edad: 45, sexo: "Hombre", direccion: "Av. Libertad 123", zona: "Urbana", educ: "Superior", ocup: "Profesor" },
-                histopatologia: { tipo: "Intestinal", loc: "Antro", estadio: "IIA" },
-                antropometria: { peso: 70.50, talla: 1.72, imc: 23.8 },
-                habitos: { fumar: "Ex-fumador (15 años)", beber: "Actual (Regular)", agua: "Red (Filtro)" }
-            },
-            {
-                cod_part: "CT001", nombre: "María González", grupo: "Control", fecha: "2025-10-24",
-                sociodemo: { edad: 38, sexo: "Mujer", direccion: "Los Robles 22", zona: "Rural", educ: "Medio", ocup: "Comerciante" },
-                histopatologia: null, // Control no tiene cáncer
-                antropometria: { peso: 63.0, talla: 1.65, imc: 23.1 },
-                habitos: { fumar: "Nunca", beber: "Actual", agua: "Pozo (Hervir)" }
-            }
-        ];
+            // Filtrar localmente (por codPart o nombre)
+            const resultados = todos.filter(p => {
+                const nombre = (p.nombre || "").toLowerCase();
+                const codigo = (p.codPart || "").toLowerCase();
+                return nombre.includes(query) || codigo.includes(query);
+            });
 
-        // Filtro simple local para la demo
-        const resultados = datosSimulados.filter(p => 
-            p.nombre.toLowerCase().includes(query.toLowerCase()) || 
-            p.cod_part.toLowerCase().includes(query.toLowerCase())
-        );
+            renderizarTabla(resultados);
 
-        renderizarTabla(resultados);
+        } catch (e) {
+            console.error(e);
+            tbody.innerHTML = `<tr><td colspan='5' class='text-center text-danger'>Error: ${e.message} <br><small>Verifica que 'mainAp' esté corriendo en el puerto 8080.</small></td></tr>`;
+        }
     }
 
     function renderizarTabla(lista) {
         const tbody = document.getElementById("tablaCuerpo");
         tbody.innerHTML = "";
-        document.getElementById("seccionResultados").style.display = "block";
-        document.getElementById("seccionDetalle").style.display = "none";
 
         if (lista.length === 0) {
-            tbody.innerHTML = "<tr><td colspan='5' class='text-center'>No se encontraron resultados</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='5' class='text-center py-3 text-muted'>No se encontraron coincidencias.</td></tr>";
             return;
         }
 
         lista.forEach(p => {
+            const fechaStr = p.fechaInclusion ? p.fechaInclusion.slice(0, 10) : "-";
+            const badgeClass = p.grupo === 'Caso' ? 'bg-danger' : (p.grupo === 'Control' ? 'bg-success' : 'bg-secondary');
+
+            // Usamos un botón con el objeto participante completo
+            const btnVer = `<button class="btn btn-sm btn-outline-primary" onclick="cargarFicha('${p.codPart}', '${p.grupo}', '${p.nombre}')">Ver Ficha</button>`;
+
             const fila = `
                 <tr>
-                    <td class="fw-bold text-primary">${p.cod_part}</td>
+                    <td class="fw-bold text-primary">${p.codPart}</td>
                     <td>${p.nombre}</td>
-                    <td><span class="badge ${p.grupo === 'Caso' ? 'bg-danger' : 'bg-success'}">${p.grupo}</span></td>
-                    <td>${p.fecha}</td>
-                    <td><button class="btn btn-sm btn-outline-primary" onclick='verFicha(${JSON.stringify(p)})'>Ver Ficha</button></td>
+                    <td><span class="badge ${badgeClass}">${p.grupo}</span></td>
+                    <td>${fechaStr}</td>
+                    <td>${btnVer}</td>
                 </tr>
             `;
             tbody.innerHTML += fila;
         });
     }
 
-    // 2. FUNCIÓN PARA VER DETALLES (LLENADO DE PESTAÑAS)
-    function verFicha(paciente) {
+    // ==========================================
+    // 2. CARGAR FICHA (Detalles)
+    // ==========================================
+    async function cargarFicha(codPart, grupo, nombre) {
+        // Mostrar panel
         document.getElementById("seccionDetalle").style.display = "block";
-        document.getElementById("tituloDetalle").innerText = `Ficha Clínica: ${paciente.nombre} (${paciente.cod_part})`;
-
-        // Llenar SocioDemo (Mapeo con campos de tu tabla 'sociodemo')
-        if (paciente.sociodemo) {
-            document.getElementById("val_edad").innerText = paciente.sociodemo.edad + " años";
-            document.getElementById("val_sexo").innerText = paciente.sociodemo.sexo;
-            document.getElementById("val_direccion").innerText = paciente.sociodemo.direccion;
-            document.getElementById("val_zona").innerText = paciente.sociodemo.zona;
-            document.getElementById("val_educacion").innerText = paciente.sociodemo.educ;
-            document.getElementById("val_ocupacion").innerText = paciente.sociodemo.ocup;
-        }
-
-        // Llenar Histopatología (Mapeo tabla 'histopatologia')
-        if (paciente.grupo === "Control") {
-            document.getElementById("datosHisto").style.display = "none";
-            document.getElementById("avisoControl").style.display = "block";
-        } else {
-            document.getElementById("datosHisto").style.display = "block";
-            document.getElementById("avisoControl").style.display = "none";
-            if (paciente.histopatologia) {
-                document.getElementById("val_tipo_cancer").innerText = paciente.histopatologia.tipo;
-                document.getElementById("val_localizacion").innerText = paciente.histopatologia.loc;
-                document.getElementById("val_estadio").innerText = paciente.histopatologia.estadio;
-            }
-        }
-
-        // Llenar Antropometría
-        if (paciente.antropometria) {
-            document.getElementById("val_peso").innerText = paciente.antropometria.peso;
-            document.getElementById("val_talla").innerText = paciente.antropometria.talla;
-            document.getElementById("val_imc").innerText = paciente.antropometria.imc;
-        }
-
-        // Llenar Hábitos
-        if (paciente.habitos) {
-            document.getElementById("val_fumar").innerText = paciente.habitos.fumar;
-            document.getElementById("val_beber").innerText = paciente.habitos.beber;
-            document.getElementById("val_agua").innerText = paciente.habitos.agua;
-        }
-        
-        // Scroll suave hacia el detalle
+        document.getElementById("tituloDetalle").innerText = `Ficha Clínica: ${nombre} (${codPart})`;
         document.getElementById("seccionDetalle").scrollIntoView({ behavior: "smooth" });
+
+        // Resetear visualización
+        resetearFicha();
+
+        // ------------------------------------------
+        // A. SOCIODEMOGRÁFICO
+        // ------------------------------------------
+        try {
+            // Como no hay endpoint por código, traemos todos y filtramos
+            const res = await fetch(`${BASE_URL}/sociodemo`);
+            if(res.ok) {
+                const lista = await res.json();
+                const socio = lista.find(s => s.codPart === codPart);
+                
+                if (socio) {
+                    setText("val_edad", socio.edad + " años");
+                    setText("val_sexo", socio.sexo);
+                    setText("val_direccion", socio.direccion);
+                    setText("val_zona", socio.zona);
+                    setText("val_educacion", socio.educacion);
+                    setText("val_ocupacion", socio.ocupacion);
+                } else {
+                    setText("val_edad", "Sin datos");
+                }
+            }
+        } catch(e) { console.error("Error socio", e); }
+        finally { mostrarContenido("Socio"); }
+
+
+        // ------------------------------------------
+        // B. HISTOPATOLOGÍA + ANTROPOMETRÍA
+        // ------------------------------------------
+        try {
+            // Antropometría
+            const resAntro = await fetch(`${BASE_URL}/antropometria/por-participante/${codPart}`);
+            if(resAntro.ok) {
+                const listaAntro = await resAntro.json();
+                // Puede venir una lista, tomamos el ultimo registro si hay varios
+                const antro = listaAntro.length > 0 ? listaAntro[listaAntro.length - 1] : null;
+                
+                if(antro) {
+                    setText("val_peso", antro.peso);
+                    setText("val_talla", antro.estatura);
+                    setText("val_imc", antro.imc);
+                }
+            }
+
+            // Histopatología (Solo Casos)
+            if (grupo === "Control") {
+                document.getElementById("avisoControl").style.display = "block";
+                document.getElementById("datosHisto").style.display = "none";
+            } else {
+                document.getElementById("avisoControl").style.display = "none";
+                document.getElementById("datosHisto").style.display = "block";
+                
+                const resHisto = await fetch(`${BASE_URL}/histopatologia/por-participante/${codPart}`);
+                if(resHisto.ok) {
+                    const histo = await resHisto.json();
+                    setText("val_tipo_cancer", histo.tipo);
+                    setText("val_localizacion", histo.localizacion);
+                    setText("val_estadio", histo.estadio);
+                } else {
+                   setText("val_tipo_cancer", "Sin registro");
+                }
+            }
+        } catch(e) { console.error("Error clinico", e); }
+        finally { mostrarContenido("Clinico"); }
+
+
+        // ------------------------------------------
+        // C. HÁBITOS Y FACTORES
+        // ------------------------------------------
+        try {
+            // Factores (Agua) - Listar y filtrar
+            const resFact = await fetch(`${BASE_URL}/factor`);
+            if(resFact.ok) {
+                const listaFact = await resFact.json();
+                const factor = listaFact.find(f => f.codPart === codPart);
+                if(factor) setText("val_agua", factor.fuenteAgua + " (" + (factor.tratamientoAgua || "-") + ")");
+            }
+
+            // Hábitos (Fumar/Beber) - Listar y filtrar
+            const resHab = await fetch(`${BASE_URL}/habito`);
+            if(resHab.ok) {
+                const listaHab = await resHab.json();
+                // Filtramos los de este usuario
+                const misHabitos = listaHab.filter(h => h.codPart === codPart);
+                
+                // Buscar específicos
+                const tabaco = misHabitos.find(h => h.tipo === 'Fumar');
+                const alcohol = misHabitos.find(h => h.tipo === 'Beber');
+
+                if(tabaco) setText("val_fumar", `${tabaco.estado} (${tabaco.aniosConsumo || 0} años)`);
+                if(alcohol) setText("val_beber", `${alcohol.estado} (${alcohol.frecuencia || ""})`);
+            }
+        } catch(e) { console.error("Error habitos", e); }
+        finally { mostrarContenido("Habitos"); }
+    }
+
+
+    // --- HELPERS ---
+    function setText(id, val) {
+        const el = document.getElementById(id);
+        if(el) el.innerText = val || "-";
+    }
+
+    function resetearFicha() {
+        // Ocultar contenidos y mostrar spinners
+        ['Socio', 'Clinico', 'Habitos'].forEach(pestana => {
+            document.getElementById(`content${pestana}`).style.display = 'none';
+            document.getElementById(`loading${pestana}`).style.display = 'block';
+        });
+
+        // Limpiar textos
+        const ids = [
+            "val_edad", "val_sexo", "val_direccion", "val_zona", "val_educacion", "val_ocupacion",
+            "val_peso", "val_talla", "val_imc", 
+            "val_tipo_cancer", "val_localizacion", "val_estadio",
+            "val_fumar", "val_beber", "val_agua"
+        ];
+        ids.forEach(id => setText(id, "-"));
+    }
+
+    function mostrarContenido(pestana) {
+        document.getElementById(`loading${pestana}`).style.display = 'none';
+        document.getElementById(`content${pestana}`).style.display = 'block';
     }
 
     function cerrarDetalle() {
