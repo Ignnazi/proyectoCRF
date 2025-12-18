@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exportar Datos - Stata</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .card-header-export {
+            background-color: #198754; /* Verde Excel/Stata */
+            color: white;
+        }
+        .btn-stata {
+            background-color: #206095; /* Azul Stata */
+            color: white;
+            border: none;
+        }
+        .btn-stata:hover { background-color: #154268; color: white; }
+    </style>
+</head>
+<body class="bg-light p-4">
+
+<div class="container">
+    <div class="mb-4">
+        <a href="home.html" class="btn btn-outline-secondary">← Volver al Inicio</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header card-header-export text-center p-3">
+            <h2 class="m-0"><i class="bi bi-file-earmark-spreadsheet"></i> Exportar Datos para Stata</h2>
+            <p class="m-0 text-white-50">Descarga los datos en formato CSV compatible con Stata, SPSS y Excel.</p>
+        </div>
+        
+        <div class="card-body p-4">
+            
+            <div class="alert alert-info border-0 shadow-sm">
+                <i class="bi bi-info-circle-fill"></i> <strong>Nota para Stata:</strong>
+                Para importar estos archivos en Stata, use el comando:<br>
+                <code>import delimited "nombre_archivo.csv", clear case(preserve)</code>
+            </div>
+
+            <div class="row g-4 mt-2">
+                
+                <div class="col-12">
+                    <div class="card border-primary h-100">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">Base de datos Completa</h5>
+                            <p class="card-text text-muted">Descarga un solo archivo con todos los participantes y sus datos sociodemográficos unidos (Join por <code>cod_part</code>).</p>
+                            <button onclick="exportarMaestra()" class="btn btn-primary w-100 btn-lg">
+                                <i class="bi bi-cloud-download"></i> Descargar Base de datos (.csv)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <h5 class="text-secondary">Descargas Individuales (Tablas Brutas)</h5>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold">Participantes (Core)</h6>
+                            <p class="small text-muted">Códigos, grupos y fechas.</p>
+                            <button onclick="exportarTabla('participantecrf')" class="btn btn-stata w-100">Descargar CSV</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold">Sociodemográficos</h6>
+                            <p class="small text-muted">Edad, sexo, educación, etc.</p>
+                            <button onclick="exportarTabla('sociodemo')" class="btn btn-stata w-100">Descargar CSV</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold">Histopatología</h6>
+                            <p class="small text-muted">Estadificación y tipos de cáncer.</p>
+                            <button onclick="exportarTabla('histopatologia')" class="btn btn-stata w-100">Descargar CSV</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold">Antropometría</h6>
+                            <p class="small text-muted">Peso, talla, IMC.</p>
+                            <button onclick="exportarTabla('antropometria')" class="btn btn-stata w-100">Descargar CSV</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold">Factores Ambientales</h6>
+                            <p class="small text-muted">Agua, humo, pesticidas.</p>
+                            <button onclick="exportarTabla('factor')" class="btn btn-stata w-100">Descargar CSV</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold">Hábitos</h6>
+                            <p class="small text-muted">Tabaco y alcohol.</p>
+                            <button onclick="exportarTabla('habito')" class="btn btn-stata w-100">Descargar CSV</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_BASE = "http://localhost:8080/api";
+
+    // Función genérica para convertir JSON a CSV
+    function convertirACSV(objArray) {
+        const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+        if (array.length === 0) return '';
+        
+        let str = '';
+        
+        // 1. Obtener encabezados
+        // Aplanamos objetos anidados si es necesario, aquí asumimos estructura plana
+        const headers = Object.keys(array[0]).join(','); 
+        str += headers + '\r\n';
+
+        // 2. Iterar filas
+        for (let i = 0; i < array.length; i++) {
+            let line = '';
+            for (let index in array[i]) {
+                if (line !== '') line += ',';
+
+                let item = array[i][index];
+                
+                // Manejo de nulos
+                if (item === null || item === undefined) {
+                    item = ""; 
+                } else {
+                    // Limpiar strings para evitar romper el CSV
+                    item = item.toString().replace(/"/g, '""'); // Escapar comillas dobles
+                    if (item.search(/("|,|\n)/g) >= 0) {
+                        item = `"${item}"`; // Envolver en comillas si tiene comas o saltos
+                    }
+                }
+                line += item;
+            }
+            str += line + '\r\n';
+        }
+        return str;
+    }
+
+    // Función para descargar el archivo
+    function descargarCSV(csvData, filename) {
+        const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // EXPORTAR TABLA INDIVIDUAL
+    async function exportarTabla(endpoint) {
+        try {
+            const res = await fetch(`${API_BASE}/${endpoint}`);
+            if (!res.ok) throw new Error("Error al obtener datos");
+            const data = await res.json();
+            
+            if (data.length === 0) return alert("La tabla está vacía.");
+
+            const csv = convertirACSV(data);
+            const fecha = new Date().toISOString().slice(0,10);
+            descargarCSV(csv, `CRF_${endpoint}_${fecha}.csv`);
+
+        } catch (e) {
+            console.error(e);
+            alert("Error al exportar: " + e.message);
+        }
+    }
+
+    // EXPORTAR MAESTRA (JOIN MANUAL EN FRONTEND)
+    async function exportarMaestra() {
+        try {
+            // 1. Obtener tablas principales
+            const [resPart, resSoc, resHisto] = await Promise.all([
+                fetch(`${API_BASE}/participantecrf`),
+                fetch(`${API_BASE}/sociodemo`),
+                fetch(`${API_BASE}/histopatologia`)
+            ]);
+
+            const partes = await resPart.json();
+            const socios = await resSoc.json();
+            const histos = await resHisto.json();
+
+            // 2. Unir datos (Merge) basado en 'codPart'
+            const maestra = partes.map(p => {
+                // Buscar coincidencia en sociodemo
+                const s = socios.find(soc => soc.codPart === p.codPart) || {};
+                // Buscar coincidencia en histo
+                const h = histos.find(his => his.codPart === p.codPart) || {};
+
+                // Construir objeto plano
+                return {
+                    cod_part: p.codPart,
+                    nombre: p.nombre,
+                    grupo: p.grupo,
+                    fecha_inclusion: p.fechaInclusion ? p.fechaInclusion.slice(0,10) : "",
+                    // Datos Sociodemo (con prefijo soc_ para evitar colisiones)
+                    soc_edad: s.edad || "",
+                    soc_sexo: s.sexo || "",
+                    soc_educacion: s.educacion || "",
+                    soc_zona: s.zona || "",
+                    // Datos Histo
+                    histo_tipo: h.tipo || "",
+                    histo_estadio: h.estadio || ""
+                };
+            });
+
+            if (maestra.length === 0) return alert("No hay datos para exportar.");
+
+            const csv = convertirACSV(maestra);
+            const fecha = new Date().toISOString().slice(0,10);
+            descargarCSV(csv, `CRF_BaseMaestra_${fecha}.csv`);
+
+        } catch (e) {
+            console.error(e);
+            alert("Error al generar la base maestra. Asegúrate que el backend esté corriendo.");
+        }
+    }
+</script>
+
+</body>
+</html>

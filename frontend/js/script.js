@@ -185,6 +185,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Redirigir a login (o index.html si lo usas para login)
         btnLogin.addEventListener('click', () => { window.location.href = 'index.html'; });
     }
+    const btnExport = document.getElementById('btnExport');
+    if (btnExport) {
+    btnExport.addEventListener('click', () => { window.location.href = 'exportar.html'; });
+    }
 
     // 2. BUSQUEDA.HTML
     const btnSearchAction = document.getElementById('btnSearchAction');
