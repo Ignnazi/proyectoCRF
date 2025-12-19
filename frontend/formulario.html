@@ -1,77 +1,842 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>FormularioCRF</title>
-    <link rel="stylesheet" href="css/styleFormulario.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Case Report Form – Estudio Cáncer Gástrico</title>
+
+  <link rel="stylesheet" href="css/styleFormulario.css" />
 </head>
-<body class="container-fluid">
-<!-- ========= FORMULARIO (CRF) ========= -->
+
+<body>
 <section id="formView">
-    <div class="crf-wrap">
-        <div class="crf-container">
+  <div class="crf-wrap">
+    <div class="crf-container">
 
-            <button id="btnBackForm" class="btn-back" type="button">← Volver al inicio</button>
+      <button id="btnBackForm" class="btn-back" type="button">← Volver al inicio</button>
 
-            <h1>Case Report Form – Estudio Cáncer Gástrico</h1>
-            <hr>
+      <h1>Case Report Form – Estudio Cáncer Gástrico</h1>
+      <hr />
 
-            <section id="sec1">
-                <h2>1. Identificación del participante</h2>
+      <!-- ===================== SECCIÓN 1 ===================== -->
+<section id="sec1" class="styleFormularioParticipante">
+  <h2>1. Identificación del participante</h2>
 
-                <label for="nombre">Nombre completo:</label>
-                <input id="nombre" type="text" placeholder="Ej: María Ignacia" />
+  <label for="nombre">Nombre completo:</label>
+  <input id="nombre" type="text" placeholder="Ej: María Ignacia" />
 
-                <label>Grupo:</label>
-                <div class="radio-group">
-                    <label class="radio-item">
-                        <input type="radio" name="grupo" value="Caso" />
-                        Caso
-                    </label>
-                    <label class="radio-item">
-                        <input type="radio" name="grupo" value="Control" />
-                        Control
-                    </label>
-                </div>
+  <label for="telefono">Teléfono:</label>
+  <input id="telefono" type="tel" placeholder="Ej: +56971234567" />
 
-                <label for="fecha">Fecha de inclusión:</label>
-                <input id="fecha" type="date" />
+  <label for="correo">Correo electrónico:</label>
+  <input id="correo" type="email" placeholder="Ej: correo@dominio.com" />
 
-                <button id="btnGuardar" class="btn-primary" type="button">
-                    Guardar participante
-                </button>
+  <label>Grupo:</label>
+  <div class="radio-group">
+    <label class="radio-item">
+      <input type="radio" name="grupo" value="Caso" />
+      Caso
+    </label>
+    <label class="radio-item">
+      <input type="radio" name="grupo" value="Control" />
+      Control
+    </label>
+  </div>
 
-                <div id="msgBox" class="msg"></div>
+  <label for="codPart">Código (automático):</label>
+  <input id="codPart" type="text" readonly placeholder="Se generará al guardar" />
 
-                <h3>Participantes registrados</h3>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Grupo</th>
-                        <th>Fecha inclusión</th>
-                    </tr>
-                    </thead>
-                    <tbody id="tablaParticipantes">
-                    <tr><td colspan="4">Cargando...</td></tr>
-                    </tbody>
-                </table>
+  <label for="fechaAuto">Fecha de inclusión (automática):</label>
+  <input id="fechaAuto" type="text" readonly placeholder="Se asignará automáticamente" />
 
-                <button id="btnNextForm" class="btn-next" type="button">
-                    Continuar a sección 2
-                </button>
-            </section>
+  <div id="msgBox" class="msg"></div>
 
-            <section id="sec2" class="hidden">
-                <h2>2. Datos Sociodemográficos</h2>
-                <p>(Aquí agregamos lo de Sociodemo después)</p>
-                <button id="btnBackSec2" class="btn-back" type="button">← Volver a sección 1</button>
-            </section>
-
-        </div>
-    </div>
+  <h3>Participantes registrados</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Teléfono</th>
+        <th>Correo</th>
+        <th>Grupo</th>
+        <th>Fecha inclusión</th>
+      </tr>
+    </thead>
+    <tbody id="tablaParticipantes">
+      <tr><td colspan="6">Cargando...</td></tr>
+    </tbody>
+  </table>
 </section>
-<script src="js/script.js"></script>
+
+ <!-- ===================== SECCIÓN 2 ===================== -->
+      <section id="sec2" class="styleFormularioSociodemo">
+  <h2>2. Datos Sociodemográficos</h2>
+
+  <div class="form-grid">
+    <div class="grid-span">
+      <label for="codPartSocio">Código participante (automático):</label>
+      <input id="codPartSocio" type="text" readonly placeholder="Se asigna al guardar el participante" />
+    </div>
+
+    <div>
+      <label for="edadSocio">Edad:</label>
+      <input id="edadSocio" type="number" min="0" placeholder="Ej: 25" />
+    </div>
+
+    <div>
+      <label>Sexo:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="sexoSocio" value="Hombre" /> Hombre</label>
+        <label class="radio-item"><input type="radio" name="sexoSocio" value="Mujer" /> Mujer</label>
+      </div>
+    </div>
+
+    <div>
+      <label for="nacionalidadSocio">Nacionalidad:</label>
+      <input id="nacionalidadSocio" type="text" placeholder="Ej: Chilena" />
+    </div>
+
+    <div>
+      <label for="direccionSocio">Dirección:</label>
+      <input id="direccionSocio" type="text" placeholder="Ej: Av. Siempre Viva 123" />
+    </div>
+
+    <div>
+      <label for="comunaSocio">Comuna:</label>
+      <input id="comunaSocio" type="text" placeholder="Ej: Providencia" />
+    </div>
+
+    <div>
+      <label for="ciudadSocio">Ciudad:</label>
+      <input id="ciudadSocio" type="text" placeholder="Ej: Santiago" />
+    </div>
+
+    <div class="grid-span">
+      <label>Zona:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="zonaSocio" value="Urbana" /> Urbana</label>
+        <label class="radio-item"><input type="radio" name="zonaSocio" value="Rural" /> Rural</label>
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>¿Vive usted en esta zona desde hace más de 5 años?</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="viveMas5Socio" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="viveMas5Socio" value="No" /> No</label>
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>Nivel educacional:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="educacionSocio" value="Básico" /> Básico</label>
+        <label class="radio-item"><input type="radio" name="educacionSocio" value="Medio" /> Medio</label>
+        <label class="radio-item"><input type="radio" name="educacionSocio" value="Superior" /> Superior</label>
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label for="ocupacionSocio">Ocupación actual:</label>
+      <input id="ocupacionSocio" type="text" placeholder="Ej: Estudiante / Trabajador/a" />
+    </div>
+
+    <div class="grid-span">
+      <label>Previsión de salud actual:</label>
+      <div class="radio-group radio-col">
+        <label class="radio-item"><input type="radio" name="previsionSaludSocio" value="Fonasa" /> Fonasa</label>
+        <label class="radio-item"><input type="radio" name="previsionSaludSocio" value="Isapre" /> Isapre</label>
+        <label class="radio-item"><input type="radio" name="previsionSaludSocio" value="Capredena / Dipreca" /> Capredena / Dipreca</label>
+        <label class="radio-item"><input type="radio" name="previsionSaludSocio" value="Sin previsión" /> Sin previsión</label>
+        <label class="radio-item"><input type="radio" name="previsionSaludSocio" value="Otra" /> Otra:</label>
+      </div>
+
+      <div id="previsionOtraBlock" class="grid-span" style="display:none;">
+        <label for="previsionOtraSocio">¿Cuál?</label>
+        <input id="previsionOtraSocio" type="text" placeholder="Especifica cuál" />
+        <hr />
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button id="btnGuardarSocio" class="btn-primary" type="button">Guardar Sociodemo</button>
+    <button id="btnLimpiarSocio" class="btn-back" type="button">Limpiar</button>
+  </div>
+
+  <div id="msgBoxSocio" class="msg"></div>
+
+  <h3>Sociodemo registrados</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Código</th>
+        <th>Edad</th>
+        <th>Sexo</th>
+        <th>Zona</th>
+        <th>Educación</th>
+        <th>Ocupación</th>
+      </tr>
+    </thead>
+    <tbody id="tablaSociodemo">
+      <tr><td colspan="7">Cargando...</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+
+      <!-- ===================== SECCIÓN 3 ===================== -->
+     <section id="sec3" class="styleFormularioAntecedente">
+  <h2>3. Antecedentes clínicos</h2>
+
+  <div class="form-grid">
+    <div class="grid-span">
+      <label for="codPartAntec">Código participante (automático):</label>
+      <input id="codPartAntec" type="text" readonly placeholder="Se asigna al guardar el participante" />
+    </div>
+
+    <!-- Solo casos -->
+    <div id="soloCasosBlock" class="grid-span">
+      <label>Diagnóstico histológico de adenocarcinoma gástrico (solo casos):</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="diagnosticoAntec" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="diagnosticoAntec" value="No" /> No</label>
+      </div>
+
+      <div id="fechaDiagBlock" class="grid-span" style="display:none;">
+        <label for="fechaDiagAntec">Fecha de diagnóstico (solo casos):</label>
+        <input id="fechaDiagAntec" type="date" />
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>Antecedentes familiares de cáncer gástrico:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="famCgAntec" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="famCgAntec" value="No" /> No</label>
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>Antecedentes familiares de otros tipos de cáncer:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="famOtroAntec" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="famOtroAntec" value="No" /> No</label>
+      </div>
+
+      <div id="cualCancerBlock" class="grid-span" style="display:none;">
+        <label for="otroCancerAntec">¿Cuál(es)?</label>
+        <input id="otroCancerAntec" type="text" />
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label for="otrasEnfAntec">Otras enfermedades relevantes (ej. gastritis crónica, úlcera péptica, anemia):</label>
+      <input id="otrasEnfAntec" type="text" />
+    </div>
+
+    <div class="grid-span">
+      <label>Uso crónico de medicamentos gastrolesivos (AINES u otros):</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="medGastroAntec" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="medGastroAntec" value="No" /> No</label>
+      </div>
+
+      <div id="medGastroCualBlock" class="grid-span" style="display:none;">
+        <label for="medGastroCualAntec">Especificar cuál</label>
+        <input id="medGastroCualAntec" type="text" />
+        <hr />
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>Cirugía gástrica previa (gastrectomía parcial):</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="cirugiaAntec" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="cirugiaAntec" value="No" /> No</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button id="btnGuardarAntec" class="btn-primary" type="button">Guardar Antecedente</button>
+    <button id="btnLimpiarAntec" class="btn-back" type="button">Limpiar</button>
+  </div>
+
+  <div id="msgBoxAntec" class="msg"></div>
+
+  <h3>Antecedentes registrados</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Código</th>
+        <th>Diagnóstico</th>
+        <th>Fecha</th>
+        <th>Fam CG</th>
+        <th>Fam otro</th>
+        <th>Cirugía</th>
+      </tr>
+    </thead>
+    <tbody id="tablaAntecedente">
+      <tr><td colspan="7">Cargando...</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+      <!-- ===================== SECCIÓN 4 ===================== -->
+      <section id="sec4" class="styleFormularioAntropometria">
+        <h2>4. Variables antropométricas</h2>
+
+        <div class="form-grid">
+          <div class="grid-span">
+            <label for="codPartAntrop">Código participante (automático):</label>
+            <input id="codPartAntrop" type="text" readonly placeholder="Se asigna al guardar el participante" />
+          </div>
+
+          <div>
+            <label for="pesoAntrop">Peso (kg):</label>
+            <input id="pesoAntrop" type="number" min="0" step="0.1" placeholder="Ej: 70.5" />
+          </div>
+
+          <div>
+            <label for="estaturaAntrop">Estatura (m):</label>
+            <input id="estaturaAntrop" type="number" min="0" step="0.01" placeholder="Ej: 1.68" />
+          </div>
+
+          <div class="grid-span">
+            <label for="imcAntrop">Índice de masa corporal (IMC = peso/estatura²):</label>
+            <input id="imcAntrop" type="text" readonly placeholder="Se calcula automáticamente" />
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button id="btnGuardarAntrop" class="btn-primary" type="button">Guardar Antropometría</button>
+          <button id="btnLimpiarAntrop" class="btn-back" type="button">Limpiar</button>
+        </div>
+
+        <div id="msgBoxAntrop" class="msg"></div>
+
+        <h3>Antropometría registrada</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Código</th>
+              <th>Peso</th>
+              <th>Estatura</th>
+              <th>IMC</th>
+            </tr>
+          </thead>
+          <tbody id="tablaAntropometria">
+            <tr><td colspan="5">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===================== SECCIÓN 5 ===================== -->
+      <section id="sec5" class="styleFormularioHabito">
+        <h2>5. Tabaquismo</h2>
+
+        <div class="form-grid">
+          <div class="grid-span">
+            <label for="codPartHabito">Código participante (automático):</label>
+            <input id="codPartHabito" type="text" readonly placeholder="Se asigna al guardar el participante" />
+          </div>
+
+          <div class="grid-span">
+            <label>Estado de tabaquismo:</label>
+            <div class="radio-group radio-col">
+              <label class="radio-item"><input type="radio" name="estadoFumaHab" value="Nunca" /> Nunca fumó (menos de 100 cigarrillos en la vida)</label>
+              <label class="radio-item"><input type="radio" name="estadoFumaHab" value="Ex" /> Exfumador</label>
+              <label class="radio-item"><input type="radio" name="estadoFumaHab" value="Actual" /> Fumador actual</label>
+            </div>
+          </div>
+
+          <div id="fumaDetallesBlock" class="grid-span">
+            <label>Edad de inicio (aprox.):</label>
+            <div class="radio-group">
+              <label class="radio-item"><input type="radio" name="edadInicioFumaHab" value="<18" /> &lt;18</label>
+              <label class="radio-item"><input type="radio" name="edadInicioFumaHab" value="18-25" /> 18–25</label>
+              <label class="radio-item"><input type="radio" name="edadInicioFumaHab" value=">25" /> &gt;25</label>
+            </div>
+
+            <label>Cantidad promedio fumada:</label>
+            <div class="radio-group">
+              <label class="radio-item"><input type="radio" name="cantidadFumaHab" value="1-9 cig/día" /> 1–9 cigarrillos/día (poco)</label>
+              <label class="radio-item"><input type="radio" name="cantidadFumaHab" value="10-19 cig/día" /> 10–19 cigarrillos/día (moderado)</label>
+              <label class="radio-item"><input type="radio" name="cantidadFumaHab" value=">=20 cig/día" /> ≥20 cigarrillos/día (mucho)</label>
+            </div>
+
+            <label>Tiempo total fumando:</label>
+            <div class="radio-group">
+              <label class="radio-item"><input type="radio" name="aniosFumaHab" value="<10" /> &lt;10 años</label>
+              <label class="radio-item"><input type="radio" name="aniosFumaHab" value="10-20" /> 10–20 años</label>
+              <label class="radio-item"><input type="radio" name="aniosFumaHab" value=">20" /> &gt;20 años</label>
+            </div>
+
+            <div id="fumaExBlock" class="grid-span">
+              <label>Si exfumador: tiempo desde que dejó de fumar</label>
+              <div class="radio-group">
+                <label class="radio-item"><input type="radio" name="tiempoDejadoFumaHab" value="<5" /> &lt;5 años</label>
+                <label class="radio-item"><input type="radio" name="tiempoDejadoFumaHab" value="5-10" /> 5–10 años</label>
+                <label class="radio-item"><input type="radio" name="tiempoDejadoFumaHab" value=">10" /> &gt;10 años</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button id="btnGuardarFumaHab" class="btn-primary" type="button">Guardar Tabaquismo</button>
+          <button id="btnLimpiarFumaHab" class="btn-back" type="button">Limpiar</button>
+        </div>
+
+        <div id="msgBoxHabitoFuma" class="msg"></div>
+      </section>
+
+      <!-- ===================== SECCIÓN 6 ===================== -->
+      <section id="sec6" class="styleFormularioHabito">
+        <h2>6. Consumo de alcohol</h2>
+
+        <div class="form-grid">
+          <div class="grid-span">
+            <label>Estado de consumo:</label>
+            <div class="radio-group">
+              <label class="radio-item"><input type="radio" name="estadoBeberHab" value="Nunca" /> Nunca</label>
+              <label class="radio-item"><input type="radio" name="estadoBeberHab" value="Ex" /> Exconsumidor</label>
+              <label class="radio-item"><input type="radio" name="estadoBeberHab" value="Actual" /> Consumidor actual</label>
+            </div>
+          </div>
+
+          <div id="beberDetallesBlock" class="grid-span">
+            <label>Frecuencia:</label>
+            <div class="radio-group">
+              <label class="radio-item"><input type="radio" name="frecuenciaBeberHab" value="Ocasional" /> Ocasional (menos de 1 vez/semana)</label>
+              <label class="radio-item"><input type="radio" name="frecuenciaBeberHab" value="Regular" /> Regular (1–3 veces/semana)</label>
+              <label class="radio-item"><input type="radio" name="frecuenciaBeberHab" value="Frecuente" /> Frecuente (≥4 veces/semana)</label>
+            </div>
+
+            <label>Cantidad típica por ocasión:</label>
+            <div class="radio-group">
+              <label class="radio-item"><input type="radio" name="cantidadBeberHab" value="1-2 tragos" /> 1–2 tragos (poco)</label>
+              <label class="radio-item"><input type="radio" name="cantidadBeberHab" value="3-4 tragos" /> 3–4 tragos (moderado)</label>
+              <label class="radio-item"><input type="radio" name="cantidadBeberHab" value=">=5 tragos" /> ≥5 tragos (mucho)</label>
+            </div>
+
+            <label>Años de consumo habitual:</label>
+            <div class="radio-group">
+              <label class="radio-item"><input type="radio" name="aniosBeberHab" value="<10" /> &lt;10 años</label>
+              <label class="radio-item"><input type="radio" name="aniosBeberHab" value="10-20" /> 10–20 años</label>
+              <label class="radio-item"><input type="radio" name="aniosBeberHab" value=">10" /> &gt;10 años</label>
+            </div>
+
+            <div id="beberExBlock" class="grid-span">
+              <label>Si exconsumidor: tiempo desde que dejó de beber regularmente</label>
+              <div class="radio-group">
+                <label class="radio-item"><input type="radio" name="tiempoDejadoBeberHab" value="<5" /> &lt;5 años</label>
+                <label class="radio-item"><input type="radio" name="tiempoDejadoBeberHab" value="5-10" /> 5–10 años</label>
+                <label class="radio-item"><input type="radio" name="tiempoDejadoBeberHab" value=">10" /> &gt;10 años</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button id="btnGuardarBeberHab" class="btn-primary" type="button">Guardar Alcohol</button>
+          <button id="btnLimpiarBeberHab" class="btn-back" type="button">Limpiar</button>
+        </div>
+
+        <div id="msgBoxHabitoBeber" class="msg"></div>
+
+        <h3>Hábitos registrados</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Código</th>
+              <th>Tipo</th>
+              <th>Estado</th>
+              <th>Edad inicio</th>
+              <th>Frecuencia</th>
+              <th>Cantidad</th>
+              <th>Años consumo</th>
+              <th>Tiempo dejado</th>
+            </tr>
+          </thead>
+          <tbody id="tablaHabito">
+            <tr><td colspan="9">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===================== SECCIÓN 7 ===================== -->
+     <section id="sec7" class="styleFormularioFactor">
+  <h2>7. Factores dietarios y ambientales</h2>
+
+  <div class="form-grid">
+    <div class="grid-span">
+      <label for="codPartFactor">Código participante (automático):</label>
+      <input id="codPartFactor" type="text" readonly placeholder="Se asigna al guardar el participante" />
+    </div>
+
+    <div class="grid-span">
+      <label>Consumo de carnes procesadas/cecinas:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="carnesFac" value="≤1/sem" /> ≤1/sem</label>
+        <label class="radio-item"><input type="radio" name="carnesFac" value="2/sem" /> 2/sem</label>
+        <label class="radio-item"><input type="radio" name="carnesFac" value="≥3/sem" /> ≥3/sem</label>
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>Consumo de alimentos muy salados (agrega sal a la comida sin probar):</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="saladosFac" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="saladosFac" value="No" /> No</label>
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>
+        Consumo de porciones de frutas y verduras frescas
+        <em>(1 porción = 1 fruta pequeña, ½ taza de fruta picada, 1 taza de verduras de hoja cruda o ½ taza de verduras cocidas ≈ 80 g)</em>
+      </label>
+      <div class="radio-group radio-col">
+        <label class="radio-item"><input type="radio" name="frutasFac" value="≥5 porciones/día" /> ≥5 porciones/día (adecuado/protector)</label>
+        <label class="radio-item"><input type="radio" name="frutasFac" value="3–4 porciones/día" /> 3–4 porciones/día (intermedio)</label>
+        <label class="radio-item"><input type="radio" name="frutasFac" value="≤2 porciones/día" /> ≤2 porciones/día (bajo/insuficiente, riesgo)</label>
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>Consumo frecuente de frituras (≥3 veces por semana):</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="friturasFac" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="friturasFac" value="No" /> No</label>
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>Consumo de alimentos muy condimentados (ají, salsas picantes, etc.)</label>
+      <div class="radio-group radio-col">
+        <label class="radio-item"><input type="radio" name="condimentadosFac" value="Casi nunca / Rara vez" /> Casi nunca / Rara vez</label>
+        <label class="radio-item"><input type="radio" name="condimentadosFac" value="1 a 2 veces por semana" /> 1 a 2 veces por semana</label>
+        <label class="radio-item"><input type="radio" name="condimentadosFac" value="3 o más veces por semana" /> 3 o más veces por semana</label>
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>Consumo de infusiones o bebidas muy calientes (tomadas sin dejar entibiar):</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="bebidasCalientesFac" value="Nunca/Rara vez" /> Nunca/Rara vez</label>
+        <label class="radio-item"><input type="radio" name="bebidasCalientesFac" value="1–2/sem" /> 1–2/sem</label>
+        <label class="radio-item"><input type="radio" name="bebidasCalientesFac" value="≥3/sem" /> ≥3/sem</label>
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>Exposición ocupacional a pesticidas:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="pesticidasFac" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="pesticidasFac" value="No" /> No</label>
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>Exposición a otros compuestos químicos:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="quimicosFac" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="quimicosFac" value="No" /> No</label>
+      </div>
+
+      <div id="detalleQuimicosBlock" class="grid-span" style="display:none;">
+        <label for="detalleQuimicosFac">¿Cuál(es)?</label>
+        <input id="detalleQuimicosFac" type="text" />
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>Humo de leña en el hogar (cocina/calefacción):</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="humoLenaFac" value="Nunca/Rara vez" /> Nunca/Rara vez</label>
+        <label class="radio-item"><input type="radio" name="humoLenaFac" value="Estacional" /> Estacional</label>
+        <label class="radio-item"><input type="radio" name="humoLenaFac" value="Diario" /> Diario</label>
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>Fuente principal de agua en el hogar:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="fuenteAguaFac" value="Red pública" /> Red pública</label>
+        <label class="radio-item"><input type="radio" name="fuenteAguaFac" value="Pozo" /> Pozo</label>
+        <label class="radio-item"><input type="radio" name="fuenteAguaFac" value="Camión aljibe" /> Camión aljibe</label>
+        <label class="radio-item"><input type="radio" name="fuenteAguaFac" value="Otra" /> Otra:</label>
+      </div>
+
+      <div id="otraAguaBlock" class="grid-span" style="display:none;">
+        <input id="fuenteAguaOtraFac" type="text" placeholder="Especificar" />
+        <hr />
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>Tratamiento del agua en casa:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="tratamientoAguaFac" value="Ninguno" /> Ninguno</label>
+        <label class="radio-item"><input type="radio" name="tratamientoAguaFac" value="Hervir" /> Hervir</label>
+        <label class="radio-item"><input type="radio" name="tratamientoAguaFac" value="Filtro" /> Filtro</label>
+        <label class="radio-item"><input type="radio" name="tratamientoAguaFac" value="Cloro" /> Cloro</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button id="btnGuardarFactor" class="btn-primary" type="button">Guardar Factores</button>
+    <button id="btnLimpiarFactor" class="btn-back" type="button">Limpiar</button>
+  </div>
+
+  <div id="msgBoxFactor" class="msg"></div>
+
+  <h3>Factores registrados</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Código</th>
+        <th>Carnes</th>
+        <th>Salados</th>
+        <th>Frutas</th>
+        <th>Frituras</th>
+        <th>Condimentados</th>
+        <th>Bebidas</th>
+        <th>Pesticidas</th>
+        <th>Químicos</th>
+        <th>Humo leña</th>
+        <th>Fuente agua</th>
+        <th>Tratamiento</th>
+      </tr>
+    </thead>
+    <tbody id="tablaFactor">
+      <tr><td colspan="13">Cargando...</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+
+
+      <!-- ===================== SECCIÓN 8 ===================== -->
+<section id="sec8" class="styleFormularioHelicobacter">
+  <h2>8. Infección por Helicobacter pylori</h2>
+
+  <div class="form-grid">
+    <div class="grid-span">
+      <label for="codPartHelic">Código participante (automático):</label>
+      <input id="codPartHelic" type="text" readonly placeholder="Se asigna al guardar el participante" />
+    </div>
+
+    <div class="grid-span">
+      <label>Resultado del examen para <em>Helicobacter pylori</em>:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="resultadoHelic" value="Positivo" /> Positivo</label>
+        <label class="radio-item"><input type="radio" name="resultadoHelic" value="Negativo" /> Negativo</label>
+        <label class="radio-item"><input type="radio" name="resultadoHelic" value="Desconocido" /> Desconocido</label>
+      </div>
+
+      <p style="opacity:.9; margin:8px 0 0;">
+        Si responde negativo o desconocido, responda las siguientes preguntas. En caso positivo continúe con el tipo de examen realizado.
+      </p>
+    </div>
+
+    <!-- Solo si resultado = Negativo o Desconocido -->
+    <div id="negDesBlock" class="grid-span">
+      <label>¿Ha tenido alguna vez un resultado POSITIVO para H. pylori en el pasado?</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="pasadoPositivoHelic" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="pasadoPositivoHelic" value="No" /> No</label>
+        <label class="radio-item"><input type="radio" name="pasadoPositivoHelic" value="No recuerda" /> No recuerda</label>
+      </div>
+
+      <div id="pasadoDetalleBlock" class="grid-span">
+        <label for="pasadoDetalleHelic">(Si responde “Sí”, indicar año aproximado y tipo de examen):</label>
+        <input id="pasadoDetalleHelic" type="text" placeholder="Ej: 2021 / antígeno en deposiciones" />
+      </div>
+
+      <label>¿Recibió tratamiento para erradicación de H. pylori?</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="tratamientoHelic" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="tratamientoHelic" value="No" /> No</label>
+        <label class="radio-item"><input type="radio" name="tratamientoHelic" value="No recuerda" /> No recuerda</label>
+      </div>
+
+      <div id="tratDetalleBlock" class="grid-span">
+        <label for="tratamientoDetalleHelic">(Si “Sí”, anotar año y esquema si se conoce):</label>
+        <input id="tratamientoDetalleHelic" type="text" placeholder="Ej: 2022 / triple terapia" />
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>Tipo de examen realizado:</label>
+      <div class="radio-group radio-col">
+        <label class="radio-item"><input type="checkbox" name="tipoExamenHelic" value="Test de aliento (urea-C13/C14)" /> Test de aliento (urea-C13/C14)</label>
+        <label class="radio-item"><input type="checkbox" name="tipoExamenHelic" value="Antígeno en deposiciones" /> Antígeno en deposiciones</label>
+        <label class="radio-item"><input type="checkbox" name="tipoExamenHelic" value="Serología (IgG)" /> Serología (IgG)</label>
+        <label class="radio-item"><input type="checkbox" name="tipoExamenHelic" value="Test rápido de ureasa" /> Test rápido de ureasa</label>
+        <label class="radio-item"><input type="checkbox" name="tipoExamenHelic" value="Histología / Biopsia" /> Histología / Biopsia</label>
+        <label class="radio-item"><input type="checkbox" name="tipoExamenHelic" value="Otro" /> Otro</label>
+      </div>
+
+      <div id="otroExamenBlock" class="grid-span">
+        <label for="otroExamenHelic">Otro (especifique):</label>
+        <input id="otroExamenHelic" type="text" placeholder="Ej: Endoscopía/biopsia" />
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>¿Hace cuánto tiempo se realizó el test?</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="antiguedadHelic" value="<1 año" /> &lt;1 año</label>
+        <label class="radio-item"><input type="radio" name="antiguedadHelic" value="1-5 años" /> 1–5 años</label>
+        <label class="radio-item"><input type="radio" name="antiguedadHelic" value=">5 años" /> &gt;5 años</label>
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>Uso de antibióticos o IBP en las 4 semanas previas al examen:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="usoIbpAbxHelic" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="usoIbpAbxHelic" value="No" /> No</label>
+        <label class="radio-item"><input type="radio" name="usoIbpAbxHelic" value="No recuerda" /> No recuerda</label>
+      </div>
+    </div>
+
+    <div class="grid-span">
+      <label>¿Ha repetido el examen posteriormente?</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="repetidoHelic" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="repetidoHelic" value="No" /> No</label>
+      </div>
+
+      <div id="repetidoDetalleBlock" class="grid-span">
+        <label for="repetidoFechaHelic">(Si “Sí”, anotar fecha y resultado del más reciente)</label>
+        <input id="repetidoFechaHelic" type="date" />
+
+        <label for="repetidoResultadoHelic">Resultado:</label>
+        <input id="repetidoResultadoHelic" type="text" placeholder="Positivo / Negativo / Desconocido" />
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button id="btnGuardarHelic" class="btn-primary" type="button">Guardar Helicobacter</button>
+    <button id="btnLimpiarHelic" class="btn-back" type="button">Limpiar</button>
+  </div>
+
+  <div id="msgBoxHelic" class="msg"></div>
+
+  <h3>Helicobacter registrados</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Código</th>
+        <th>Resultado</th>
+        <th>Prueba</th>
+        <th>Antigüedad</th>
+      </tr>
+    </thead>
+    <tbody id="tablaHelicobacter">
+      <tr><td colspan="5">Cargando...</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===================== SECCIÓN 9 ===================== -->
+<section id="sec9" class="styleFormularioHistopatologia">
+  <h2>9. Histopatología (solo casos)</h2>
+
+  <div id="soloCasosHistoMsg" class="msg err"></div>
+
+  <div class="form-grid">
+    <div class="grid-span">
+      <label for="codPartHisto">Código participante (automático):</label>
+      <input id="codPartHisto" type="text" readonly placeholder="Se asigna al guardar el participante" />
+    </div>
+
+    <div class="grid-span" id="histoSoloCasosBlock">
+      <label>Tipo histológico:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="tipoHisto" value="Intestinal" /> Intestinal</label>
+        <label class="radio-item"><input type="radio" name="tipoHisto" value="Difuso" /> Difuso</label>
+        <label class="radio-item"><input type="radio" name="tipoHisto" value="Mixto" /> Mixto</label>
+      </div>
+
+      <label>Localización:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="localizacionHisto" value="Antro" /> Antro</label>
+        <label class="radio-item"><input type="radio" name="localizacionHisto" value="Cuerpo" /> Cuerpo</label>
+        <label class="radio-item"><input type="radio" name="localizacionHisto" value="Cardias" /> Cardias</label>
+        <label class="radio-item"><input type="radio" name="localizacionHisto" value="Difuso" /> Difuso</label>
+      </div>
+
+      <label>Estadio:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="estadioHisto" value="I" /> I</label>
+        <label class="radio-item"><input type="radio" name="estadioHisto" value="IIA" /> IIA</label>
+        <label class="radio-item"><input type="radio" name="estadioHisto" value="IIB" /> IIB</label>
+        <label class="radio-item"><input type="radio" name="estadioHisto" value="III" /> III</label>
+        <label class="radio-item"><input type="radio" name="estadioHisto" value="IIIA" /> IIIA</label>
+        <label class="radio-item"><input type="radio" name="estadioHisto" value="IIIB" /> IIIB</label>
+        <label class="radio-item"><input type="radio" name="estadioHisto" value="IV" /> IV</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button id="btnGuardarHisto" class="btn-primary" type="button">Guardar Histopatología</button>
+    <button id="btnLimpiarHisto" class="btn-back" type="button">Limpiar</button>
+  </div>
+
+  <div id="msgBoxHisto" class="msg"></div>
+
+  <h3>Histopatología registrada</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Código</th>
+        <th>Tipo</th>
+        <th>Localización</th>
+        <th>Estadio</th>
+      </tr>
+    </thead>
+    <tbody id="tablaHistopatologia">
+      <tr><td colspan="5">Cargando...</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+
+
+
+
+    </div> <!-- NO TOCAR -->
+  </div>
+</section>
+
+<!-- DIRECCIONES AL JS -->
+<script src="js/participante.js?v=1"></script>
+<script src="js/sociodemo.js?v=1"></script>
+<script src="js/antecedente.js?v=1"></script>
+<script src="js/antropometria.js?v=1"></script>
+<script src="js/habito.js?v=1"></script>
+<script src="js/factor.js?v=1"></script>
+<script src="js/helicobacter.js?v=1"></script>
+<script src="js/histopatologia.js?v=1"></script>
 </body>
 </html>
