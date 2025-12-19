@@ -42,6 +42,35 @@ section {
   padding: 16px;
 }
 
+/* Botón flotante para nuevo participante */
+.btn-floating {
+  background: #28a745;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-floating:hover {
+  background: #218838;
+  filter: brightness(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-floating:active {
+  transform: translateY(0);
+}
+
 label {
   display: block;
   margin-top: 10px;

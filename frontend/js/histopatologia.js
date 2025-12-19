@@ -1,7 +1,7 @@
 // ===============================
 // histopatologia.js
 // ===============================
-const API_HISTO = "http://localhost:8082/api/histopatologia";
+const API_HISTO = "http://localhost:8080/api/histopatologia";
 
 // Reusa estado global (igual que tus otras secciones)
 window.estadoFormulario = window.estadoFormulario || { codActual: null, grupoActual: null };
@@ -81,6 +81,9 @@ function limpiarHistoForm() {
   ["tipoHisto", "localizacionHisto", "estadioHisto"].forEach(limpiarRadios);
   window.actualizarVisibilidadHistopatologia();
 }
+
+// Exponer globalmente para el botón de nuevo participante
+window.limpiarHistopatologiaForm = limpiarHistoForm;
 
 // ---------- API ----------
 window.listarHistopatologia = async function () {

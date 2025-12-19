@@ -1,9 +1,52 @@
 /* Estilos para la página de búsqueda de participantes */
 
+/* Variables CSS igual que el formulario */
+:root {
+    --bg: #0f1720;
+    --text: #e6f0ff;
+    --muted: rgba(255,255,255,0.14);
+    --panel: rgba(255,255,255,0.04);
+    --panel-b: rgba(255,255,255,0.10);
+    --input: rgba(0,0,0,0.25);
+    --brand: #1b5fa8;
+    --brand2: rgba(27,95,168,0.55);
+}
+
 * {
+    box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
 }
 
+body {
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 0;
+}
+
+.crf-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 18px 18px 32px;
+}
+
+h1 {
+    font-size: 34px;
+    margin: 6px 0 10px;
+    color: #b9d6ff;
+}
+
+h3 {
+    margin: 18px 0 10px;
+    font-size: 20px;
+    color: #cfe3ff;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid var(--muted);
+    margin: 10px 0 18px;
+}
 
 .btn-back:hover {
     background: #1a6fd8;
@@ -12,17 +55,18 @@
 
 .search-container {
     position: relative;
-    background: #1a2028;
+    background: var(--panel);
     padding: 20px;
+    padding-bottom: 70px; /* Espacio extra para los botones de exportación */
     border-radius: 12px;
     margin-bottom: 24px;
-    border: 1px solid #3c4654;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--panel-b);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 
 .search-container h3 {
-    color: #a4c8ff;
+    color: #cfe3ff;
     margin-top: 0;
     margin-bottom: 16px;
 }
@@ -55,6 +99,7 @@
     font-weight: bold;
     margin-bottom: 6px;
     font-size: 14px;
+    color: var(--text);
 }
 
 .filter-item select,
@@ -62,10 +107,17 @@
     width: 100%;
     padding: 8px 12px;
     border-radius: 6px;
-    border: none;
-    background: #11161c;
-    color: white;
+    border: 1px solid var(--panel-b);
+    background: var(--input);
+    color: var(--text);
     box-sizing: border-box;
+}
+
+.filter-item select:focus,
+.filter-item input:focus {
+    outline: none;
+    border-color: var(--brand);
+    background: rgba(0,0,0,0.35);
 }
 
 .btn-filter-group {
@@ -74,41 +126,78 @@
     margin-top: 12px;
 }
 
-.btn-filter {
-    background: #2d89ff;
+/* Sobrescribir estilos de Bootstrap para botones Buscar y Limpiar */
+.btn-filter-group .btn {
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: normal;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-filter-group .btn:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Botones de exportación */
+/* Botones de exportación */
+.btn-export {
+    background: #28a745;
     color: white;
-    padding: 10px 24px;
+    padding: 10px 20px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
 }
 
-.btn-filter:hover {
+.btn-export:hover {
+    background: #218838;
     filter: brightness(1.1);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
 }
 
-.btn-reset {
+.btn-export:disabled {
     background: #666;
+    cursor: not-allowed;
+}
+
+.btn-export-stata {
+    background: #1e3a8a;
     color: white;
-    padding: 10px 24px;
+    padding: 10px 20px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
 }
 
-.btn-reset:hover {
+.btn-export-stata:hover {
+    background: #1e40af;
     filter: brightness(1.1);
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.4);
+}
+
+.btn-export-stata:disabled {
+    background: #666;
+    cursor: not-allowed;
 }
 
 .results-info {
     margin: 16px 0;
     padding: 12px;
-    background: rgba(164, 200, 255, 0.1);
+    background: var(--panel);
     border-radius: 6px;
-    border-left: 4px solid #2d89ff;
+    border-left: 4px solid var(--brand);
     font-size: 14px;
+    color: var(--text);
+    border: 1px solid var(--panel-b);
 }
 
 tbody tr {
@@ -116,36 +205,27 @@ tbody tr {
 }
 
 tbody tr:hover {
-    background: rgba(45, 137, 255, 0.15) !important;
+    background: var(--brand2) !important;
     cursor: pointer;
 }
 
+table {
+    background: var(--panel);
+    border: 1px solid var(--panel-b);
+    border-radius: 8px;
+    overflow: hidden;
+}
 
-#btnExportarExcel {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background: #28a745;
+table thead {
+    background: var(--brand);
+}
+
+table th {
     color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 15px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
+    font-weight: bold;
 }
 
-#btnExportarExcel:hover {
-    background: #218838;
-    filter: brightness(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    transform: translateY(-2px);
-}
-
-#btnExportarExcel:disabled {
-    background: #666;
-    cursor: not-allowed;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+table td {
+    color: var(--text);
 }
 
