@@ -40,10 +40,15 @@ public class FactorS {
             factorExistente.get().setFrutas(factorActualizado.getFrutas());
             factorExistente.get().setSalados(factorActualizado.getSalados());
             factorExistente.get().setFrituras(factorActualizado.getFrituras());
+
+            factorExistente.get().setCondimentados(factorActualizado.getCondimentados());
+            factorExistente.get().setBebidasCalientes(factorActualizado.getBebidasCalientes());
+
             factorExistente.get().setQuimicos(factorActualizado.getQuimicos());
             factorExistente.get().setHumoLena(factorActualizado.getHumoLena());
             factorExistente.get().setPesticidas(factorActualizado.getPesticidas());
             factorExistente.get().setFuenteAgua(factorActualizado.getFuenteAgua());
+            factorExistente.get().setFuenteAguaOtra(factorActualizado.getFuenteAguaOtra());
             factorExistente.get().setTratamientoAgua(factorActualizado.getTratamientoAgua());
             factorExistente.get().setDetalleQuimicos(factorActualizado.getDetalleQuimicos());
             factorExistente.get().setHumoLena(factorActualizado.getHumoLena());

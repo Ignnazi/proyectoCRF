@@ -1,80 +1,117 @@
 package ingsof.servicio;
 
 import ingsof.entidad.Antecedente;
-import ingsof.entidad.Participantecrf;
 import ingsof.repositorio.AntecedenteR;
-import ingsof.repositorio.ParticipantecrfR;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AntecedenteS {
 
     private final AntecedenteR repo;
-    private final ParticipantecrfR partRepo;
 
-    public AntecedenteS(AntecedenteR repo, ParticipantecrfR partRepo) {
+    public AntecedenteS(AntecedenteR repo) {
         this.repo = repo;
-        this.partRepo = partRepo;
     }
 
-    @Transactional(readOnly = true)
+    @SuppressWarnings("null")
+    public void guardar(Antecedente antecedente) {
+        validarCodPart(antecedente);
+        validarDiagnosticoFecha(antecedente);
+        validarFamOtro(antecedente);
+        validarMedGastro(antecedente);
+        repo.save(antecedente);
+    }
+
+    public void eliminar(int id) {
+        repo.deleteById(id);
+    }
+
+    public void actualizar(int id, Antecedente a) {
+        Optional<Antecedente> existente = repo.findById(id);
+        if (existente.isPresent()) {
+            Antecedente x = existente.get();
+
+            x.setDiagnostico(a.getDiagnostico());
+            x.setFechaDiag(a.getFechaDiag());
+            x.setFamCg(a.getFamCg());
+            x.setFamOtro(a.getFamOtro());
+            x.setOtroCancer(a.getOtroCancer());
+            x.setOtrasEnfermedades(a.getOtrasEnfermedades());
+            x.setMedGastro(a.getMedGastro());
+            x.setMedGastroCual(a.getMedGastroCual());
+            x.setCirugia(a.getCirugia());
+
+            validarDiagnosticoFecha(x);
+            validarFamOtro(x);
+            validarMedGastro(x);
+
+            repo.save(x);
+        }
+    }
+
+    public Optional<Antecedente> obtener(int id) {
+        return repo.findById(id);
+    }
+
     public List<Antecedente> listar() {
         return repo.findAll();
     }
 
-    @SuppressWarnings("null")
-    @Transactional(readOnly = true)
-    public Antecedente porId(Integer id) {
-        return repo.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe antecedente"));
+    private void validarCodPart(Antecedente a) {
+        if (isBlank(a.getCodPart())) {
+            throw new IllegalArgumentException("cod_part es obligatorio");
+        }
     }
 
-    @Transactional(readOnly = true)
-    public Antecedente porCodPart(String codPart) {
-        return repo.findByCodPart(codPart).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe para ese participante"));
+    private void validarDiagnosticoFecha(Antecedente a) {
+        String d = trimToNull(a.getDiagnostico());
+        if (d == null) return;
+
+        if ("Sí".equalsIgnoreCase(d)) {
+            if (a.getFechaDiag() == null) {
+                throw new IllegalArgumentException("Si diagnóstico es 'Sí', debe ingresar fecha de diagnóstico.");
+            }
+        } else {
+            a.setFechaDiag(null);
+        }
     }
 
-    @Transactional
-    public Antecedente crear(Antecedente a) {
-        @SuppressWarnings("null")
-        Participantecrf p = partRepo.findById(a.getCodPart())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Participante no encontrado"));
-        if (!"Caso".equalsIgnoreCase(p.getGrupo()) && "Sí".equalsIgnoreCase(a.getDiagnostico()))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Solo los casos pueden tener diagnóstico histológico.");
-        if (!"Caso".equalsIgnoreCase(p.getGrupo()) && a.getFechaDiag() != null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Solo los casos pueden tener fecha de diagnóstico.");
-        return repo.save(a);
+    private void validarFamOtro(Antecedente a) {
+        String f = trimToNull(a.getFamOtro());
+        if (f == null) return;
+
+        if ("Sí".equalsIgnoreCase(f)) {
+            if (isBlank(a.getOtroCancer())) {
+                throw new IllegalArgumentException("Si antecedentes familiares de otros cánceres es 'Sí', debe indicar cuál(es).");
+            }
+        } else {
+            a.setOtroCancer(null);
+        }
     }
 
-    @SuppressWarnings("null")
-    @Transactional
-    public Antecedente actualizar(Integer id, Antecedente cambios) {
-        Antecedente db = porId(id);
-        String destino = cambios.getCodPart() != null ? cambios.getCodPart() : db.getCodPart();
-        Participantecrf p = partRepo.findById(destino)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Participante no encontrado"));
-        String diag = cambios.getDiagnostico() != null ? cambios.getDiagnostico() : db.getDiagnostico();
-        var fecha = cambios.getFechaDiag() != null ? cambios.getFechaDiag() : db.getFechaDiag();
-        if (!"Caso".equalsIgnoreCase(p.getGrupo()) && "Sí".equalsIgnoreCase(diag))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Solo los casos pueden tener diagnóstico histológico.");
-        if (!"Caso".equalsIgnoreCase(p.getGrupo()) && fecha != null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Solo los casos pueden tener fecha de diagnóstico.");
+    private void validarMedGastro(Antecedente a) {
+        String m = trimToNull(a.getMedGastro());
+        if (m == null) return;
 
-        if (cambios.getDiagnostico() != null) db.setDiagnostico(cambios.getDiagnostico());
-        if (cambios.getFechaDiag() != null) db.setFechaDiag(cambios.getFechaDiag());
-        if (cambios.getFamCg() != null) db.setFamCg(cambios.getFamCg());
-        if (cambios.getFamOtro() != null) db.setFamOtro(cambios.getFamOtro());
-        if (cambios.getOtroCancer() != null) db.setOtroCancer(cambios.getOtroCancer());
-        if (cambios.getOtrasEnfermedades() != null) db.setOtrasEnfermedades(cambios.getOtrasEnfermedades());
-        if (cambios.getMedicamentos() != null) db.setMedicamentos(cambios.getMedicamentos());
-        if (cambios.getCirugia() != null) db.setCirugia(cambios.getCirugia());
-        if (cambios.getCodPart() != null) db.setCodPart(cambios.getCodPart());
-        return repo.save(db);
+        if ("Sí".equalsIgnoreCase(m)) {
+            if (isBlank(a.getMedGastroCual())) {
+                throw new IllegalArgumentException("Si uso crónico de medicamentos es 'Sí', debe especificar cuál.");
+            }
+        } else {
+            a.setMedGastroCual(null);
+        }
+    }
+
+    private boolean isBlank(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+
+    private String trimToNull(String s) {
+        if (s == null) return null;
+        String t = s.trim();
+        return t.isEmpty() ? null : t;
     }
 }

@@ -3,6 +3,7 @@ package ingsof.servicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 import ingsof.entidad.Usuario;
 import ingsof.repositorio.UsuarioR;
 
@@ -26,6 +27,11 @@ public class UsuarioS {
     @SuppressWarnings("null")
     public Usuario guardar(Usuario usuario) {
     return repo.save(usuario);
+    }
+
+    // Buscar por nombre
+    public Optional<Usuario> buscarPorNombre(String nombre) {
+        return repo.findByNombre(nombre);
     }
 
 

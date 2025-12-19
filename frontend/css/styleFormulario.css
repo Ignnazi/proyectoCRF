@@ -1,0 +1,222 @@
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+:root{
+  --bg: #0f1720;
+  --text: #e6f0ff;
+  --muted: rgba(255,255,255,0.14);
+  --panel: rgba(255,255,255,0.04);
+  --panel-b: rgba(255,255,255,0.10);
+  --input: rgba(0,0,0,0.25);
+  --brand: #1b5fa8;
+  --brand2: rgba(27,95,168,0.55);
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.crf-wrap { width: 100%; }
+.crf-container { max-width: 1100px; margin: 0 auto; padding: 18px 18px 32px; }
+
+h1 { font-size: 34px; margin: 6px 0 10px; color: #b9d6ff; }
+h2 { margin: 18px 0 10px; font-size: 26px; color: #9bc6ff; }
+h3 { margin: 18px 0 10px; font-size: 20px; color: #cfe3ff; }
+
+hr {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.14);
+  margin: 10px 0 18px;
+}
+
+section {
+  background: var(--panel);
+  border: 1px solid var(--panel-b);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="date"],
+input[type="email"],
+input[type="tel"],
+select,
+textarea{
+  width: 100%;
+  background: var(--input);
+  border: 1px solid var(--muted);
+  color: var(--text);
+  padding: 12px 12px;
+  border-radius: 10px;
+  outline: none;
+}
+
+textarea{ min-height: 90px; resize: vertical; }
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color: rgba(155,198,255,0.55);
+  box-shadow: 0 0 0 3px rgba(27,95,168,0.18);
+}
+
+input[readonly]{
+  opacity: 0.95;
+  cursor: not-allowed;
+}
+
+.radio-group { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
+.radio-item { display: inline-flex; gap: 8px; align-items: center; font-weight: 600; }
+.radio-group input[type="radio"]{ accent-color: var(--brand); }
+
+.btn-row{
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.btn-primary{
+  background: var(--brand);
+  border: 1px solid rgba(255,255,255,0.20);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.btn-primary:hover { filter: brightness(1.05); }
+
+.btn-back{
+  background: transparent;
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.btn-back:hover { background: rgba(255,255,255,0.08); }
+
+table{
+  width: 100%;
+  margin-top: 14px;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+}
+th, td{ padding: 10px; border: 1px solid rgba(255,255,255,0.12); }
+th{ background: var(--brand2); }
+td{ background: rgba(255,255,255,0.03); }
+
+.msg{
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  display: none;
+  font-size: 14px;
+}
+.msg.ok { background: rgba(63,191,74,0.18); border: 1px solid rgba(63,191,74,0.5); }
+.msg.err { background: rgba(255,99,99,0.18); border: 1px solid rgba(255,99,99,0.5); }
+.msg.show { display: block; }
+
+.form-grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+@media (min-width: 900px){
+  .form-grid{ grid-template-columns: 1fr 1fr; gap: 14px 18px; }
+}
+.grid-span { grid-column: 1 / -1; }
+
+.styleFormularioParticipante { margin-bottom: 22px; }
+.styleFormularioSociodemo { margin-top: 18px; }
+.styleFormularioAntecedente { margin-top: 18px; }
+.styleFormularioAntropometria { margin-top: 18px; }
+.styleFormularioHabito { margin-top: 18px; }
+.styleFormularioHelicobacter { margin-top: 18px; }
+.styleFormularioHistopatologia { margin-top: 18px; }
+
+#imcAntrop { font-weight: 800; }
+
+#cualCancerBlock { margin-top: 10px; }
+
+.radio-col{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+#fumaDetallesBlock,
+#fumaExBlock,
+#beberDetallesBlock,
+#beberExBlock { display: none; }
+
+#detalleQuimicosBlock,
+#otraAguaBlock { display: none; }
+
+#negDesBlock,
+#pasadoDetalleBlock,
+#tratDetalleBlock,
+#otroExamenBlock,
+#repetidoDetalleBlock { margin-top: 10px; }
+
+/* ===== ARREGLO BOTONES POR ID (sin tocar HTML) ===== */
+#btnGuardarSocio,
+#btnLimpiarSocio,
+#btnGuardarParticipante,
+#btnLimpiarParticipante,
+#btnGuardarSec1,
+#btnGuardarSec2,
+#guardar{
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.20);
+  font-weight: 700;
+}
+
+#btnGuardarSocio,
+#btnGuardarParticipante,
+#btnGuardarSec1,
+#btnGuardarSec2,
+#guardar{
+  background: var(--brand);
+  color: #fff;
+}
+
+#btnGuardarSocio:hover,
+#btnGuardarParticipante:hover,
+#btnGuardarSec1:hover,
+#btnGuardarSec2:hover,
+#guardar:hover{
+  filter: brightness(1.05);
+}
+
+#btnLimpiarSocio,
+#btnLimpiarParticipante{
+  background: transparent;
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+#btnLimpiarSocio:hover,
+#btnLimpiarParticipante:hover{
+  background: rgba(255,255,255,0.08);
+}

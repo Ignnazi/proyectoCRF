@@ -16,6 +16,8 @@ public class Factor {
     private String frutas;
     private String frituras;
 
+    private String condimentados;
+
     @Column(name = "bebidas_calientes")
     private String bebidasCalientes;
 
@@ -30,6 +32,9 @@ public class Factor {
 
     @Column(name = "fuente_agua")
     private String fuenteAgua;
+
+    @Column(name = "fuente_agua_otra")
+    private String fuenteAguaOtra;
 
     @Column(name = "tratamiento_agua")
     private String tratamientoAgua;
@@ -78,6 +83,13 @@ public class Factor {
         this.frituras = frituras;
     }
 
+    public String getCondimentados() {
+        return condimentados;
+    }
+    public void setCondimentados(String condimentados) {
+        this.condimentados = condimentados;
+    }
+
     public String getBebidasCalientes() {
         return bebidasCalientes;
     }
@@ -120,6 +132,13 @@ public class Factor {
         this.fuenteAgua = fuenteAgua;
     }
 
+    public String getFuenteAguaOtra() {
+        return fuenteAguaOtra;
+    }
+    public void setFuenteAguaOtra(String fuenteAguaOtra) {
+        this.fuenteAguaOtra = fuenteAguaOtra;
+    }
+
     public String getTratamientoAgua() {
         return tratamientoAgua;
     }
@@ -141,4 +160,3 @@ public class Factor {
         this.participante = participante;
     }
 }
-
