@@ -1,88 +1,111 @@
 package ingsof;
 
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
+
 import ingsof.entidad.Participantecrf;
 import ingsof.repositorio.ParticipantecrfR;
 import ingsof.servicio.ParticipantecrfS;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ParticipantecrfST {
 
     @Mock
-    ParticipantecrfR repo;
+    private ParticipantecrfR repo;
 
     @InjectMocks
-    ParticipantecrfS servicio;
+    private ParticipantecrfS servicio;
 
     @Test
-    void listar_ok() {
-        when(repo.findAll()).thenReturn(List.of(new Participantecrf(), new Participantecrf()));
+    void crear_DeberiaGenerarIdCorrectoParaCaso() {
+        // DATOS
+        Participantecrf nuevo = new Participantecrf();
+        nuevo.setNombre("Juan Perez");
+        nuevo.setGrupo("Caso");
 
-        var lista = servicio.listar();
-
-        assertEquals(2, lista.size());
-        verify(repo).findAll();
-    }
-
-    @SuppressWarnings("null")
-    @Test
-    void crear_basico_generaCodigoYFecha() {
-        Participantecrf in = new Participantecrf();
-        in.setNombre("Ana");
-        in.setGrupo("Caso");     // → prefijo CS
-
+        // MOCK: Simulamos que el último ID de casos (CS) fue 0, así que debería generar CS001
         when(repo.maxNumeroPorPrefijo("CS")).thenReturn(0);
-        when(repo.save(any(Participantecrf.class))).thenAnswer(i -> i.getArgument(0));
+        when(repo.save(any(Participantecrf.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        Participantecrf out = servicio.crear(in);
+        // EJECUCIÓN
+        Participantecrf resultado = servicio.crear(nuevo);
 
-        assertEquals("CS001", out.getCodPart());
-        assertEquals("Caso", out.getGrupo());
-        assertNotNull(out.getFechaInclusion());
-        verify(repo).save(any(Participantecrf.class));
+        // VERIFICACIÓN
+        assertNotNull(resultado.getCodPart());
+        assertEquals("CS001", resultado.getCodPart());
+        assertNotNull(resultado.getFechaInclusion()); // Debe asignarse fecha si es nula
     }
 
-    @SuppressWarnings("null")
     @Test
-    void actualizar_basico_sinCambioDeGrupo() {
-        Participantecrf db = new Participantecrf();
-        db.setCodPart("CS010");
-        db.setNombre("Viejo");
-        db.setGrupo("Caso");
-        db.setIdUser(1);
-        db.setFechaInclusion(LocalDateTime.parse("2025-11-06T08:00:00"));
+    void crear_DeberiaGenerarIdCorrectoParaControl() {
+        // DATOS
+        Participantecrf nuevo = new Participantecrf();
+        nuevo.setNombre("Maria Lopez");
+        nuevo.setGrupo("Control");
 
-        when(repo.findById("CS010")).thenReturn(Optional.of(db));
-        when(repo.save(any(Participantecrf.class))).thenAnswer(i -> i.getArgument(0));
+        // MOCK: Simulamos que ya existen 15 controles, el siguiente debe ser 16 (CT016)
+        when(repo.maxNumeroPorPrefijo("CT")).thenReturn(15);
+        when(repo.save(any(Participantecrf.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        // cambios simples
+        // EJECUCIÓN
+        Participantecrf resultado = servicio.crear(nuevo);
+
+        // VERIFICACIÓN
+        assertEquals("CT016", resultado.getCodPart());
+    }
+
+    @Test
+    void crear_DeberiaFallarSiFaltanDatos() {
+        Participantecrf invalido = new Participantecrf();
+        // No tiene nombre ni grupo
+
+        assertThrows(ResponseStatusException.class, () -> {
+            servicio.crear(invalido);
+        });
+    }
+    
+    @Test
+    void actualizar_DeberiaCambiarIdSiCambiaGrupo() {
+        // DATOS: Participante existente (Control)
+        String idViejo = "CT005";
+        Participantecrf existente = new Participantecrf();
+        existente.setCodPart(idViejo);
+        existente.setNombre("Ana");
+        existente.setGrupo("Control");
+        
+        // DATOS: Cambios solicitados (pasa a Caso)
         Participantecrf cambios = new Participantecrf();
-        cambios.setNombre("Nuevo");
-        cambios.setIdUser(2);
+        cambios.setGrupo("Caso");
 
-        Participantecrf out = servicio.actualizar("CS010", cambios);
+        // MOCKS
+        when(repo.findById(idViejo)).thenReturn(Optional.of(existente));
+        when(repo.maxNumeroPorPrefijo("CS")).thenReturn(9); // El siguiente será CS010
+        // Simulamos que tras el update, buscamos el nuevo ID y lo encontramos
+        Participantecrf actualizadoDb = new Participantecrf();
+        actualizadoDb.setCodPart("CS010");
+        actualizadoDb.setNombre("Ana");
+        actualizadoDb.setGrupo("Caso");
+        when(repo.findById("CS010")).thenReturn(Optional.of(actualizadoDb));
+        when(repo.save(any(Participantecrf.class))).thenReturn(actualizadoDb);
 
-        assertEquals("CS010", out.getCodPart());
-        assertEquals("Nuevo", out.getNombre());
-        assertEquals(2, out.getIdUser());
-        verify(repo, never()).actualizarCodigo(anyString(), anyString());
-        verify(repo).save(any(Participantecrf.class));
-    }
+        // EJECUCIÓN
+        Participantecrf resultado = servicio.actualizar(idViejo, cambios);
 
-    @Test
-    void eliminar_ok() {
-        servicio.eliminar("CS001");
-        verify(repo).deleteById("CS001");
+        // VERIFICACIÓN
+        assertEquals("CS010", resultado.getCodPart());
+        assertEquals("Caso", resultado.getGrupo());
+        verify(repo).actualizarCodigo("CS010", idViejo); // Verificar que se llamó al update nativo
     }
 }

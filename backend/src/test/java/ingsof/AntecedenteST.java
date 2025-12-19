@@ -1,7 +1,6 @@
 package ingsof;
 
-import java.sql.Date;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -23,7 +22,7 @@ import ingsof.repositorio.ParticipantecrfR;
 import ingsof.servicio.AntecedenteS;
 
 @ExtendWith(MockitoExtension.class)
-class AntecedentesST {
+class AntecedenteST {
 
     @Mock private AntecedenteR repo;
     @Mock private ParticipantecrfR partRepo;
@@ -67,7 +66,7 @@ class AntecedentesST {
     void guardar_DeberiaFallarSiControlTieneFechaDiagnostico() {
         Antecedente a = new Antecedente();
         a.setCodPart("CT001");
-        a.setFechaDiag(Date.valueOf(LocalDate.now())); // Inválido para control
+        a.setFechaDiag((java.sql.Date) new Date()); // Inválido para control
 
         Participantecrf p = new Participantecrf();
         p.setGrupo("Control");

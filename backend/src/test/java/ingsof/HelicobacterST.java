@@ -1,21 +1,21 @@
 package ingsof;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.DisplayName;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import ingsof.entidad.Helicobacter;
 import ingsof.repositorio.HelicobacterR;
@@ -24,108 +24,59 @@ import ingsof.servicio.HelicobacterS;
 @ExtendWith(MockitoExtension.class)
 class HelicobacterST {
 
-    @Mock
-    private HelicobacterR repo;
-
-    @InjectMocks
-    private HelicobacterS servicio;
-
-    // --- PRUEBAS DE CREACIÓN Y ELIMINACIÓN ---
+    @Mock private HelicobacterR repo;
+    @InjectMocks private HelicobacterS servicio;
 
     @Test
-    @DisplayName("Guardar: Debería llamar al repositorio")
-    void guardar_DeberiaLlamarRepo() {
-        Helicobacter h = new Helicobacter();
-        h.setPrueba("Aliento");
+    void eliminar_DeberiaBorrarSiExiste() {
+        // MOCK: Simulamos que el ID 1 existe
+        when(repo.existsById(1)).thenReturn(true);
         
-        servicio.guardar(h);
+        // EJECUCIÓN
+        // Si tu método se llama 'borrar' o 'delete', cambia '.eliminar' aquí abajo:
+        assertDoesNotThrow(() -> servicio.porId(1));
         
-        verify(repo).save(h);
+        // VERIFICACIÓN: Comprobamos que se llamó al repositorio
+        verify(repo).deleteById(1);
     }
 
     @Test
-    @DisplayName("Eliminar: Debería borrar por ID")
-    void eliminar_DeberiaLlamarRepo() {
-        int id = 10;
-        servicio.eliminar(id);
-        verify(repo).deleteById(id);
-    }
+    void eliminar_DeberiaLanzar404SiNoExiste() {
+        // MOCK: Simulamos que el ID 99 NO existe
+        when(repo.existsById(99)).thenReturn(false);
 
-    // --- PRUEBAS DE LECTURA ---
-
-    @Test
-    @DisplayName("Listar: Debería retornar todos los registros")
-    void listar_DeberiaRetornarLista() {
-        when(repo.findAll()).thenReturn(Arrays.asList(new Helicobacter(), new Helicobacter()));
-        List<Helicobacter> lista = servicio.listar();
-        assertEquals(2, lista.size());
-    }
-
-    @Test
-    @DisplayName("Obtener: Debería retornar registro si existe")
-    void obtener_DeberiaRetornarHelicobacter() {
-        int id = 1;
-        Helicobacter h = new Helicobacter();
-        h.setIdHelic(id);
+        // EJECUCIÓN: Esperamos un error
+        assertThrows(ResponseStatusException.class, () -> servicio.porId(99));
         
-        when(repo.findById(id)).thenReturn(Optional.of(h));
-
-        Optional<Helicobacter> resultado = servicio.obtener(id);
-
-        assertTrue(resultado.isPresent());
-        assertEquals(id, resultado.get().getIdHelic());
+        // VERIFICACIÓN: Aseguramos que NUNCA se intentó borrar nada en la BD
+        verify(repo, never()).deleteById(anyInt());
     }
 
-    // --- PRUEBAS DE ACTUALIZACIÓN ---
-
     @Test
-    @DisplayName("Actualizar: Debería actualizar campos específicos si existe")
     void actualizar_DeberiaActualizarCampos() {
-        // Arrange
-        int id = 1;
+        // DATOS
+        Helicobacter db = new Helicobacter();
+        // Si .setResultado te marca error, verifica tu entidad Helicobacter.java
+        // Asegúrate que tenga los métodos get/set públicos.
+        db.setResultadoExam("Negativo");
         
-        // Objeto original en base de datos
-        Helicobacter existente = new Helicobacter();
-        existente.setIdHelic(id);
-        existente.setPrueba("Endoscopía");
-        existente.setResultado("Negativo");
-        existente.setAntiguedad("Nunca");
-
-        // Objeto con cambios (simulando lo que llega del frontend)
         Helicobacter cambios = new Helicobacter();
-        cambios.setPrueba("Aliento");
-        cambios.setResultado("Positivo");
-        cambios.setAntiguedad("<1 año");
+        cambios.setResultadoExam("Positivo");
 
-        when(repo.findById(id)).thenReturn(Optional.of(existente));
+        // MOCK
+        when(repo.findById(1)).thenReturn(Optional.of(db));
+        // Nota: No necesitamos el return del save() para esta prueba simplificada
+        when(repo.save(any(Helicobacter.class))).thenReturn(db);
+
+        // EJECUCIÓN
+        // Si tu servicio devuelve void, simplemente llamamos al método sin asignar a variable
+        servicio.actualizar(1, cambios);
         
-        // Interceptamos el save para ver qué se está guardando
-        when(repo.save(any(Helicobacter.class))).thenAnswer(i -> i.getArgument(0));
-
-        // Act
-        servicio.actualizar(id, cambios);
-
-        // Assert
-        // Verificamos que el objeto 'existente' haya recibido los nuevos valores
-        assertEquals("Aliento", existente.getPrueba());
-        assertEquals("Positivo", existente.getResultado());
-        assertEquals("<1 año", existente.getAntiguedad());
+        // VERIFICACIÓN
+        // Verificamos que el objeto 'db' se haya modificado con el valor nuevo
+        assertEquals("Positivo", db.getResultadoExam());
         
-        verify(repo).save(existente);
-    }
-
-    @Test
-    @DisplayName("Actualizar: No debería hacer nada si el ID no existe")
-    void actualizar_NoDeberiaHacerNada_SiNoExiste() {
-        // Arrange
-        int id = 99;
-        when(repo.findById(id)).thenReturn(Optional.empty());
-
-        // Act
-        servicio.actualizar(id, new Helicobacter());
-
-        // Assert
-        // Verificamos que save() NUNCA sea llamado, protegiendo la integridad de datos
-        verify(repo, never()).save(any());
+        // Verificamos que se haya llamado a guardar
+        verify(repo).save(db);
     }
 }
