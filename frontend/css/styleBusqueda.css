@@ -1,0 +1,151 @@
+/* Estilos para la página de búsqueda de participantes */
+
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+.btn-back:hover {
+    background: #1a6fd8;
+    filter: brightness(1.1);
+}
+
+.search-container {
+    position: relative;
+    background: #1a2028;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    border: 1px solid #3c4654;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+
+.search-container h3 {
+    color: #a4c8ff;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+@media (max-width: 1200px) {
+    .filter-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-item label {
+    font-weight: bold;
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+.filter-item select,
+.filter-item input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    background: #11161c;
+    color: white;
+    box-sizing: border-box;
+}
+
+.btn-filter-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.btn-filter {
+    background: #2d89ff;
+    color: white;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.btn-filter:hover {
+    filter: brightness(1.1);
+}
+
+.btn-reset {
+    background: #666;
+    color: white;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.btn-reset:hover {
+    filter: brightness(1.1);
+}
+
+.results-info {
+    margin: 16px 0;
+    padding: 12px;
+    background: rgba(164, 200, 255, 0.1);
+    border-radius: 6px;
+    border-left: 4px solid #2d89ff;
+    font-size: 14px;
+}
+
+tbody tr {
+    transition: background 0.2s ease;
+}
+
+tbody tr:hover {
+    background: rgba(45, 137, 255, 0.15) !important;
+    cursor: pointer;
+}
+
+
+#btnExportarExcel {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: #28a745;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+#btnExportarExcel:hover {
+    background: #218838;
+    filter: brightness(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+}
+
+#btnExportarExcel:disabled {
+    background: #666;
+    cursor: not-allowed;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+

@@ -12,8 +12,8 @@ body {
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 24px;
+  align-items: flex-start;
+  padding: 12px 24px 24px 24px;
   box-sizing: border-box;
 }
 
@@ -22,7 +22,7 @@ body {
   color: #333;
   width: 420px;
   padding: 40px;
-  border-radius: 12px;
+  border-radius: 15px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.25);
   text-align: center;
 }
@@ -49,11 +49,8 @@ body {
   transition: background-color 0.3s ease;
 }
 
-.btn-login {
-  background-color: #1b262c;
-  color: #ffffff;
-}
-.btn-login:hover { background-color: #0f1c22; }
+
+
 
 .btn-form {
   background-color: #3282b8;

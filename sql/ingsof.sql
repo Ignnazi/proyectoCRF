@@ -7,6 +7,10 @@
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
+-- Crear la base de datos y usarla
+CREATE DATABASE IF NOT EXISTS `ingsof` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `ingsof`;
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -16,6 +20,9 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
+
+-- Desactivar temporalmente las comprobaciones de claves foráneas para permitir recrear tablas en cualquier orden
+SET FOREIGN_KEY_CHECKS = 0;
 
 --
 -- Base de datos: `ingsof`
@@ -368,28 +375,29 @@ INSERT INTO `sociodemo` (`id_socdemo`, `edad`, `sexo`, `nacionalidad`, `direccio
 CREATE TABLE `usuario` (
   `id_user` int(11) NOT NULL,
   `nombre` varchar(60) DEFAULT NULL,
-  `rol` varchar(45) DEFAULT NULL
+  `rol` varchar(45) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `usuario`
 --
 
-INSERT INTO `usuario` (`id_user`, `nombre`, `rol`) VALUES
-(1, 'Ana Morales', 'Entrevistadora'),
-(2, 'Luis Soto', 'Entrevistador'),
-(3, 'Paula Reyes', 'Supervisor'),
-(4, 'Miguel Torres', 'Entrevistador'),
-(5, 'Camila Vargas', 'Digitadora'),
-(6, 'Carlos López', 'Entrevistador'),
-(7, 'Andrea Díaz', 'Supervisor'),
-(8, 'Pedro Fuentes', 'Entrevistador'),
-(9, 'María Rojas', 'Entrevistadora'),
-(10, 'Javier Peña', 'Coordinador'),
-(11, 'Ignacia Herrera', 'Entrevistadora'),
-(12, 'Roberto', 'Profesor'),
-(13, 'Alucard', 'Colaborador'),
-(14, 'Joaquin', 'Medico');
+INSERT INTO `usuario` (`id_user`, `nombre`, `rol`, `password`) VALUES
+(1, 'Ana Morales', 'Entrevistadora', 'pwd1'),
+(2, 'Luis Soto', 'Entrevistador', 'pwd2'),
+(3, 'Paula Reyes', 'Supervisor', 'pwd3'),
+(4, 'Miguel Torres', 'Entrevistador', 'pwd4'),
+(5, 'Camila Vargas', 'Digitadora', 'pwd5'),
+(6, 'Carlos López', 'Entrevistador', 'pwd6'),
+(7, 'Andrea Díaz', 'Supervisor', 'pwd7'),
+(8, 'Pedro Fuentes', 'Entrevistador', 'pwd8'),
+(9, 'María Rojas', 'Entrevistadora', 'pwd9'),
+(10, 'Javier Peña', 'Coordinador', 'pwd10'),
+(11, 'Ignacia Herrera', 'Entrevistadora', 'pwd11'),
+(12, 'Roberto', 'Profesor', 'pwd12'),
+(13, 'Alucard', 'Colaborador', 'pwd13'),
+(14, 'Joaquin', 'Medico', 'pwd14');
 
 --
 -- Índices para tablas volcadas
@@ -579,6 +587,10 @@ ALTER TABLE `participantecrf`
 --
 ALTER TABLE `sociodemo`
   ADD CONSTRAINT `fk_sociodemo_part` FOREIGN KEY (`cod_part`) REFERENCES `participantecrf` (`cod_part`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- Reactivar comprobaciones de claves foráneas
+SET FOREIGN_KEY_CHECKS = 1;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
