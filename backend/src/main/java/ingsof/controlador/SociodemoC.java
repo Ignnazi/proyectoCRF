@@ -29,15 +29,13 @@ public class SociodemoC {
         return this.servicio.obtener(id);
     }
 
-    @PostMapping
-    public ResponseEntity<?> guardar(@RequestBody Sociodemo sociodemo) {
-        try{
-            Sociodemo guardado = this.servicio.guardar(sociodemo);
-            return ResponseEntity.ok(guardado);
-        } catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+    @SuppressWarnings("null")
+    public Sociodemo guardar(Sociodemo sociodemo) {
+    validarEdad(sociodemo);
+    validarCodPart(sociodemo);
+    validarPrevision(sociodemo);
+    return repo.save(sociodemo);
+}
 
     @DeleteMapping("/{id}")
     public void eliminar(@PathVariable int id) {
