@@ -140,7 +140,7 @@ class AntecedentesST {
         String codPart = "P003";
         Antecedente nuevo = new Antecedente();
         nuevo.setCodPart(codPart);
-        nuevo.setFechaDiag(LocalDate.now()); // ESTO DEBERÍA FALLAR EN CONTROLES
+        nuevo.setFechaDiag(java.sql.Date.valueOf(LocalDate.now())); // ESTO DEBERÍA FALLAR EN CONTROLES
 
         Participantecrf participante = new Participantecrf();
         participante.setGrupo("Control");

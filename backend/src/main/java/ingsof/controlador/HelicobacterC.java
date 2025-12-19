@@ -36,12 +36,14 @@ public class HelicobacterC {
     }
 
     @PostMapping
-    public ResponseEntity<Helicobacter> crear(@RequestBody Helicobacter body) {
-        return ResponseEntity.ok(servicio.crear(body));
+    public ResponseEntity<String> crear(@RequestBody Helicobacter body) {
+        servicio.crear(body);
+        return ResponseEntity.ok("Datos de Helicobacter Pylori guardados correctamente");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Helicobacter> actualizar(@PathVariable Integer id, @RequestBody Helicobacter body) {
-        return ResponseEntity.ok(servicio.actualizar(id, body));
+    public ResponseEntity<String> actualizar(@PathVariable Integer id, @RequestBody Helicobacter body) {
+        servicio.actualizar(id, body);
+        return ResponseEntity.ok("Datos de Helicobacter Pylori actualizados correctamente");
     }
 }

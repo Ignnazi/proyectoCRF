@@ -1,6 +1,27 @@
-const API_PART = "http://localhost:8082/api/participantecrf";
+const API_PART = "http://localhost:8080/api/participantecrf";
 
 window.estadoFormulario = window.estadoFormulario || { codActual: null, grupoActual: null };
+
+// Mostrar nombre del usuario en el navbar
+document.addEventListener('DOMContentLoaded', () => {
+  const userName = sessionStorage.getItem('userName');
+  const navbarUserName = document.getElementById('navbarUserName');
+  if (navbarUserName && userName) {
+    navbarUserName.textContent = userName;
+  }
+
+  // Configurar botón de cerrar sesión
+  const btnLogout = document.getElementById('btnLogout');
+  if (btnLogout) {
+    btnLogout.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+        sessionStorage.clear();
+        window.location.href = 'index.html';
+      }
+    });
+  }
+});
 
 function msgPart(texto, tipo = "ok") {
   const box = document.getElementById("msgBox");
@@ -65,6 +86,58 @@ function limpiarAuto() {
   if (fechaEl) fechaEl.value = "";
   setCodSecciones("");
   window.estadoFormulario.codActual = null;
+}
+
+// Función para limpiar TODO el formulario (todas las secciones)
+function limpiarTodoElFormulario() {
+  // Limpiar Sección 1: Identificación del participante
+  const nombre = document.getElementById("nombre");
+  const telefono = document.getElementById("telefono");
+  const correo = document.getElementById("correo");
+  if (nombre) nombre.value = "";
+  if (telefono) telefono.value = "";
+  if (correo) correo.value = "";
+
+  // Desmarcar grupo
+  document.querySelectorAll("input[name='grupo']").forEach(r => r.checked = false);
+
+  // Limpiar código y fecha
+  limpiarAuto();
+
+  // Llamar funciones de limpieza de cada sección si existen
+  if (typeof window.limpiarSociodemoForm === "function") {
+    window.limpiarSociodemoForm();
+  }
+
+  if (typeof window.limpiarAntecedenteForm === "function") {
+    window.limpiarAntecedenteForm();
+  }
+
+  if (typeof window.limpiarAntropometriaForm === "function") {
+    window.limpiarAntropometriaForm();
+  }
+
+  if (typeof window.limpiarHabitoForm === "function") {
+    window.limpiarHabitoForm();
+  }
+
+  if (typeof window.limpiarFactorForm === "function") {
+    window.limpiarFactorForm();
+  }
+
+  if (typeof window.limpiarHelicobacterForm === "function") {
+    window.limpiarHelicobacterForm();
+  }
+
+  if (typeof window.limpiarHistopatologiaForm === "function") {
+    window.limpiarHistopatologiaForm();
+  }
+
+  // Scroll al inicio del formulario
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Mostrar mensaje
+  msgPart("Formulario limpiado. Listo para nuevo participante ✅", "ok");
 }
 
 function guardarSiListo() {
@@ -142,6 +215,14 @@ async function guardarParticipanteAuto() {
   guardando = true;
 
   try {
+    // Obtener el userId del usuario logueado
+    const userId = sessionStorage.getItem('userId');
+    if (!userId) {
+      msgPart("Error: No se encontró usuario logueado. Por favor, inicia sesión nuevamente.", "err");
+      guardando = false;
+      return;
+    }
+
     let url = API_PART;
     let method = "POST";
 
@@ -150,10 +231,19 @@ async function guardarParticipanteAuto() {
       method = "PUT";
     }
 
+    // Preparar el payload con idUser
+    const payload = {
+      nombre,
+      telefono: telefono || null,
+      correo: correo || null,
+      grupo,
+      idUser: parseInt(userId, 10) // Asignar el ID del usuario logueado
+    };
+
     const resp = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nombre, telefono: telefono || null, correo: correo || null, grupo })
+      body: JSON.stringify(payload)
     });
 
     if (!resp.ok) {
@@ -192,6 +282,16 @@ async function guardarParticipanteAuto() {
 document.addEventListener("DOMContentLoaded", async () => {
   const backForm = document.getElementById("btnBackForm");
   if (backForm) backForm.addEventListener("click", () => { window.location.href = "home.html"; });
+
+  // Botón flotante para nuevo participante
+  const btnNuevo = document.getElementById("btnNuevoParticipante");
+  if (btnNuevo) {
+    btnNuevo.addEventListener("click", () => {
+      if (confirm("¿Desea limpiar todos los campos para registrar un nuevo participante?")) {
+        limpiarTodoElFormulario();
+      }
+    });
+  }
 
   document.querySelectorAll("input[name='grupo']").forEach(r => {
     r.addEventListener("change", guardarParticipanteAuto);

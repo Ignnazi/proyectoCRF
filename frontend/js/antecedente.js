@@ -1,4 +1,4 @@
-const API_ANTEC = "http://localhost:8082/api/antecedente";
+const API_ANTEC = "http://localhost:8080/api/antecedente";
 
 function msgAntec(texto, tipo = "ok") {
   const box = document.getElementById("msgBoxAntec");
@@ -89,6 +89,8 @@ function limpiarAntecedenteForm() {
   window.actualizarVisibilidadAntecedente();
 }
 
+// Exponer globalmente para el botón de nuevo participante
+window.limpiarAntecedenteForm = limpiarAntecedenteForm;
 window.listarAntecedente = async function () {
   const tabla = document.getElementById("tablaAntecedente");
   if (!tabla) return;

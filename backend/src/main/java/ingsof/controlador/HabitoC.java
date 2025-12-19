@@ -2,6 +2,7 @@ package ingsof.controlador;
 
 import ingsof.entidad.Habito;
 import ingsof.servicio.HabitoS;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,8 +29,9 @@ public class HabitoC {
     }
 
     @PostMapping
-    public void guardar(@RequestBody Habito habito) {
+    public ResponseEntity<String> guardar(@RequestBody Habito habito) {
         this.servicio.guardar(habito);
+        return ResponseEntity.ok("Hábito guardado correctamente");
     }
 
     @DeleteMapping("/{id}")
@@ -38,7 +40,8 @@ public class HabitoC {
     }
 
     @PutMapping("/{id}")
-    public void actualizar(@PathVariable int id, @RequestBody Habito habitoActualizado) {
+    public ResponseEntity<String> actualizar(@PathVariable int id, @RequestBody Habito habitoActualizado) {
         this.servicio.actualizar(id, habitoActualizado);
+        return ResponseEntity.ok("Hábito actualizado correctamente");
     }
 }

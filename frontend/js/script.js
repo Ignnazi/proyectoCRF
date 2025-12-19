@@ -5,6 +5,27 @@
 
 const API = "http://localhost:8080/api/participantecrf";
 
+// Mostrar nombre del usuario en el navbar
+document.addEventListener('DOMContentLoaded', () => {
+  const userName = sessionStorage.getItem('userName');
+  const navbarUserName = document.getElementById('navbarUserName');
+  if (navbarUserName && userName) {
+    navbarUserName.textContent = userName;
+  }
+
+  // Configurar botón de cerrar sesión
+  const btnLogout = document.getElementById('btnLogout');
+  if (btnLogout) {
+    btnLogout.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+        sessionStorage.clear();
+        window.location.href = 'index.html';
+      }
+    });
+  }
+});
+
 
 window.irAFormulario = function irAFormulario(){
   const home = document.getElementById("homeView");

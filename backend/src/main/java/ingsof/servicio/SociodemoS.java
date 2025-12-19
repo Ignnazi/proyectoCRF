@@ -16,11 +16,11 @@ public class SociodemoS {
     }
 
     @SuppressWarnings("null")
-    public void guardar(Sociodemo sociodemo) {
+    public Sociodemo guardar(Sociodemo sociodemo) {
         validarEdad(sociodemo);
         validarCodPart(sociodemo);
         validarPrevision(sociodemo);
-        repo.save(sociodemo);
+        return repo.save(sociodemo);
     }
 
     public void eliminar(int id) {

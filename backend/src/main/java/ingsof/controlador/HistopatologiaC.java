@@ -33,13 +33,15 @@ public class HistopatologiaC {
     }
 
     @PostMapping
-    public ResponseEntity<Histopatologia> crear(@RequestBody Histopatologia body) {
-        return ResponseEntity.ok(servicio.crear(body));
+    public ResponseEntity<String> crear(@RequestBody Histopatologia body) {
+        servicio.crear(body);
+        return ResponseEntity.ok("Datos histopatológicos guardados correctamente");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Histopatologia> actualizar(@PathVariable Integer id, @RequestBody Histopatologia body) {
-        return ResponseEntity.ok(servicio.actualizar(id, body));
+    public ResponseEntity<String> actualizar(@PathVariable Integer id, @RequestBody Histopatologia body) {
+        servicio.actualizar(id, body);
+        return ResponseEntity.ok("Datos histopatológicos actualizados correctamente");
     }
 
     @PutMapping("/sync/{codPart}")

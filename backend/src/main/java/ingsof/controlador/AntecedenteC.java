@@ -30,10 +30,10 @@ public class AntecedenteC {
     }
 
     @PostMapping
-    public ResponseEntity<?> guardar(@RequestBody Antecedente antecedente) {
+    public ResponseEntity<String> guardar(@RequestBody Antecedente antecedente) {
         try {
             this.servicio.guardar(antecedente);
-            return ResponseEntity.ok("Guardado Exitosamente");
+            return ResponseEntity.ok("Antecedentes guardados correctamente");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -45,7 +45,12 @@ public class AntecedenteC {
     }
 
     @PutMapping("/{id}")
-    public void actualizar(@PathVariable int id, @RequestBody Antecedente antecedente) {
-        this.servicio.actualizar(id, antecedente);
+    public ResponseEntity<String> actualizar(@PathVariable int id, @RequestBody Antecedente antecedente) {
+        try {
+            this.servicio.actualizar(id, antecedente);
+            return ResponseEntity.ok("Antecedentes actualizados correctamente");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

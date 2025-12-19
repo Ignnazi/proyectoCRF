@@ -2,6 +2,27 @@
 
 const API_BASE = "http://localhost:8080/api";
 
+// Mostrar nombre del usuario en el navbar y configurar logout
+document.addEventListener('DOMContentLoaded', () => {
+    const userName = sessionStorage.getItem('userName');
+    const navbarUserName = document.getElementById('navbarUserName');
+    if (navbarUserName && userName) {
+        navbarUserName.textContent = userName;
+    }
+
+    // Configurar botón de cerrar sesión
+    const btnLogout = document.getElementById('btnLogout');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                sessionStorage.clear();
+                window.location.href = 'index.html';
+            }
+        });
+    }
+});
+
 // Obtener el ID del participante desde la URL
 function obtenerIdParticipante() {
     const params = new URLSearchParams(window.location.search);
@@ -34,7 +55,6 @@ async function cargarDetalleParticipante() {
             antropometria,
             sociodemo,
             factores,
-            genotipo,
             habitos,
             helicobacter,
             histopatologia
@@ -43,7 +63,6 @@ async function cargarDetalleParticipante() {
             obtenerDatos('antropometria', codPart),
             obtenerDatos('sociodemo', codPart),
             obtenerDatos('factor', codPart),
-            obtenerDatos('genotipo', codPart),
             obtenerDatos('habito', codPart),
             obtenerDatos('helicobacter', codPart),
             obtenerDatos('histopatologia', codPart)
@@ -56,7 +75,6 @@ async function cargarDetalleParticipante() {
             antropometria,
             sociodemo,
             factores,
-            genotipo,
             habitos,
             helicobacter,
             histopatologia
@@ -112,6 +130,14 @@ function mostrarDetalle(data) {
                     <span>${p.nombre ?? 'N/A'}</span>
                 </div>
                 <div class="detail-item">
+                    <label>Teléfono:</label>
+                    <span>${p.telefono ?? 'N/A'}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Correo Electrónico:</label>
+                    <span>${p.correo ?? 'N/A'}</span>
+                </div>
+                <div class="detail-item">
                     <label>Grupo:</label>
                     <span>${p.grupo ?? 'N/A'}</span>
                 </div>
@@ -147,12 +173,20 @@ function mostrarDetalle(data) {
                         <span>${s.direccion ?? 'N/A'}</span>
                     </div>
                     <div class="detail-item">
+                        <label>Comuna:</label>
+                        <span>${s.comuna ?? 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Ciudad:</label>
+                        <span>${s.ciudad ?? 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
                         <label>Zona:</label>
                         <span>${s.zona ?? 'N/A'}</span>
                     </div>
                     <div class="detail-item">
-                        <label>Años de Residencia:</label>
-                        <span>${s.aniosRes ?? 'N/A'}</span>
+                        <label>Vive más de 5 años:</label>
+                        <span>${s.viveMas5 ?? 'N/A'}</span>
                     </div>
                     <div class="detail-item">
                         <label>Educación:</label>
@@ -161,6 +195,14 @@ function mostrarDetalle(data) {
                     <div class="detail-item">
                         <label>Ocupación:</label>
                         <span>${s.ocupacion ?? 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Previsión de Salud:</label>
+                        <span>${s.previsionSalud ?? 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Otra Previsión:</label>
+                        <span>${s.previsionOtra ?? 'N/A'}</span>
                     </div>
                 </div>
             </div>
@@ -200,7 +242,7 @@ function mostrarDetalle(data) {
                 <h3>Antecedentes Clínicos</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
-                        <label>Diagnóstico:</label>
+                        <label>Diagnóstico de Cáncer Gástrico:</label>
                         <span>${ant.diagnostico ?? 'N/A'}</span>
                     </div>
                     <div class="detail-item">
@@ -212,11 +254,11 @@ function mostrarDetalle(data) {
                         <span>${ant.famCg ?? 'N/A'}</span>
                     </div>
                     <div class="detail-item">
-                        <label>Otro Familiar con Cáncer:</label>
+                        <label>Familiar con Otro Cáncer:</label>
                         <span>${ant.famOtro ?? 'N/A'}</span>
                     </div>
                     <div class="detail-item">
-                        <label>Otro Cáncer:</label>
+                        <label>Especificar Otro Cáncer:</label>
                         <span>${ant.otroCancer ?? 'N/A'}</span>
                     </div>
                     <div class="detail-item">
@@ -224,11 +266,15 @@ function mostrarDetalle(data) {
                         <span>${ant.otrasEnfermedades ?? 'N/A'}</span>
                     </div>
                     <div class="detail-item">
-                        <label>Medicamentos:</label>
-                        <span>${ant.medicamentos ?? 'N/A'}</span>
+                        <label>Medicamentos Gastrointestinales:</label>
+                        <span>${ant.medGastro ?? 'N/A'}</span>
                     </div>
                     <div class="detail-item">
-                        <label>Cirugía:</label>
+                        <label>Cuáles Medicamentos:</label>
+                        <span>${ant.medGastroCual ?? 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Cirugía Gástrica:</label>
                         <span>${ant.cirugia ?? 'N/A'}</span>
                     </div>
                 </div>
@@ -260,6 +306,10 @@ function mostrarDetalle(data) {
                         <span>${f.frituras ?? 'N/A'}</span>
                     </div>
                     <div class="detail-item">
+                        <label>Alimentos Condimentados:</label>
+                        <span>${f.condimentados ?? 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
                         <label>Bebidas Calientes:</label>
                         <span>${f.bebidasCalientes ?? 'N/A'}</span>
                     </div>
@@ -284,6 +334,10 @@ function mostrarDetalle(data) {
                         <span>${f.fuenteAgua ?? 'N/A'}</span>
                     </div>
                     <div class="detail-item">
+                        <label>Otra Fuente de Agua:</label>
+                        <span>${f.fuenteAguaOtra ?? 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
                         <label>Tratamiento de Agua:</label>
                         <span>${f.tratamientoAgua ?? 'N/A'}</span>
                     </div>
@@ -292,46 +346,6 @@ function mostrarDetalle(data) {
         `;
     }
 
-    // Sección: Genotipo
-    if (data.genotipo) {
-        const g = data.genotipo;
-        const fechaToma = g.fechaToma ? g.fechaToma.toString().slice(0, 10) : 'N/A';
-        html += `
-            <div class="detail-section">
-                <h3>Muestras biológicas y genéticas</h3>
-                <div class="detail-grid">
-                    <div class="detail-item">
-                        <label>Fecha de Toma:</label>
-                        <span>${fechaToma}</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>TLR9 rs5743836:</label>
-                        <span>${g.tlr9Rs5743836 ?? 'N/A'}</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>TLR9 rs187084:</label>
-                        <span>${g.tlr9Rs187084 ?? 'N/A'}</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>miR146a rs2910164:</label>
-                        <span>${g.mir146aRs2910164 ?? 'N/A'}</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>miR196a2 rs11614913:</label>
-                        <span>${g.mir196a2Rs11614913 ?? 'N/A'}</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>MTHFR rs1801133:</label>
-                        <span>${g.mthfrRs1801133 ?? 'N/A'}</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>DNMT3B rs1569686:</label>
-                        <span>${g.dnmt3bRs1569686 ?? 'N/A'}</span>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
 
     // Sección: Hábitos (puede haber varios)
     if (data.habitos && data.habitos.length > 0) {
@@ -382,21 +396,58 @@ function mostrarDetalle(data) {
     // Sección: Helicobacter
     if (data.helicobacter) {
         const hel = data.helicobacter;
+        const repetidoFecha = hel.repetidoFecha ? hel.repetidoFecha.toString().slice(0, 10) : 'N/A';
         html += `
             <div class="detail-section">
                 <h3>Helicobacter Pylori</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
-                        <label>Prueba:</label>
-                        <span>${hel.prueba ?? 'N/A'}</span>
+                        <label>Resultado del Examen:</label>
+                        <span>${hel.resultadoExam ?? 'N/A'}</span>
                     </div>
                     <div class="detail-item">
-                        <label>Resultado:</label>
-                        <span>${hel.resultado ?? 'N/A'}</span>
+                        <label>Tipo de Examen:</label>
+                        <span>${hel.tipoExamen ?? 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Otro Examen:</label>
+                        <span>${hel.otroExamen ?? 'N/A'}</span>
                     </div>
                     <div class="detail-item">
                         <label>Antigüedad:</label>
                         <span>${hel.antiguedad ?? 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Positivo en el Pasado:</label>
+                        <span>${hel.pasadoPositivo ?? 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Detalle del Pasado:</label>
+                        <span>${hel.pasadoDetalle ?? 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Recibió Tratamiento:</label>
+                        <span>${hel.tratamiento ?? 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Detalle del Tratamiento:</label>
+                        <span>${hel.tratamientoDetalle ?? 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Uso de IBP/Antibióticos:</label>
+                        <span>${hel.usoIbpAbx ?? 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Examen Repetido:</label>
+                        <span>${hel.repetido ?? 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Fecha Examen Repetido:</label>
+                        <span>${repetidoFecha}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Resultado Examen Repetido:</label>
+                        <span>${hel.repetidoResultado ?? 'N/A'}</span>
                     </div>
                 </div>
             </div>
@@ -429,7 +480,7 @@ function mostrarDetalle(data) {
 
     // Si no hay datos relacionados
     if (!data.sociodemo && !data.antropometria && !data.antecedentes &&
-        !data.factores && !data.genotipo && (!data.habitos || data.habitos.length === 0) &&
+        !data.factores && (!data.habitos || data.habitos.length === 0) &&
         !data.helicobacter && !data.histopatologia) {
         html += `
             <div class="detail-section">
