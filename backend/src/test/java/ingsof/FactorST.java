@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,7 @@ import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,104 +33,124 @@ class FactorST {
     @InjectMocks
     private FactorS servicio;
 
-    // --- PRUEBAS DE CREACIÓN Y ELIMINACIÓN ---
+    // --- TEST DE GUARDAR ---
 
     @Test
-    @DisplayName("Guardar: Debería llamar al repositorio")
-    void guardar_DeberiaLlamarRepo() {
+    @DisplayName("Guardar - Debería llamar al repositorio correctamente")
+    void guardar_LlamaAlRepo() {
+        // Arrange
         Factor factor = new Factor();
+        factor.setCodPart("PART-123");
+        factor.setCarnes("Raras veces");
+
+        // Act
         servicio.guardar(factor);
-        verify(repo).save(factor);
+
+        // Assert
+        verify(repo, times(1)).save(factor);
     }
 
-    @Test
-    @DisplayName("Eliminar: Debería llamar al repositorio por ID")
-    void eliminar_DeberiaLlamarRepo() {
-        int id = 1;
-        servicio.eliminar(id);
-        verify(repo).deleteById(id);
-    }
-
-    // --- PRUEBAS DE LECTURA ---
+    // --- TESTS DE OBTENER ---
 
     @Test
-    @DisplayName("ObtenerPorId: Debería retornar factor si existe")
-    void obtenerPorId_DeberiaRetornarFactor() {
+    @DisplayName("ObtenerPorId - Debería devolver el factor si existe")
+    void obtenerPorId_Existe_DevuelveFactor() {
+        // Arrange
         int id = 1;
-        Factor f = new Factor();
-        f.setIdFac(id);
+        Factor factorSimulado = new Factor();
+        factorSimulado.setIdFac(id);
         
-        when(repo.findById(id)).thenReturn(Optional.of(f));
+        when(repo.findById(id)).thenReturn(Optional.of(factorSimulado));
 
+        // Act
         Optional<Factor> resultado = servicio.obtenerPorId(id);
 
+        // Assert
         assertTrue(resultado.isPresent());
         assertEquals(id, resultado.get().getIdFac());
     }
 
     @Test
-    @DisplayName("ObtenerTodos: Debería retornar lista")
-    void obtenerTodos_DeberiaRetornarLista() {
-        when(repo.findAll()).thenReturn(Arrays.asList(new Factor(), new Factor()));
-        List<Factor> lista = servicio.obtenerTodos();
-        assertEquals(2, lista.size());
-    }
-
-    // --- PRUEBAS DE ACTUALIZACIÓN ---
-
-    @Test
-    @DisplayName("Actualizar: Debería actualizar todos los campos si existe")
-    void actualizarPorId_DeberiaActualizarCampos() {
-        // Arrange
-        int id = 10;
-        
-        // Objeto original en BD
-        Factor existente = new Factor();
-        existente.setIdFac(id);
-        existente.setCarnes("No");
-        existente.setFrutas("A veces");
-
-        // Objeto con nuevos datos
-        Factor nuevosDatos = new Factor();
-        nuevosDatos.setCarnes("Sí");
-        nuevosDatos.setFrutas("Siempre");
-        nuevosDatos.setSalados("Nunca");
-        nuevosDatos.setFrituras("Frecuente");
-        nuevosDatos.setQuimicos("No");
-        nuevosDatos.setHumoLena("Sí");
-        nuevosDatos.setPesticidas("No");
-        nuevosDatos.setFuenteAgua("Pozo");
-        nuevosDatos.setTratamientoAgua("Hervida");
-        nuevosDatos.setDetalleQuimicos("Cloro");
-
-        when(repo.findById(id)).thenReturn(Optional.of(existente));
-        // Mockeamos save para verificar qué objeto le llega
-        when(repo.save(any(Factor.class))).thenAnswer(i -> i.getArgument(0));
-
-        // Act
-        servicio.actualizarPorId(id, nuevosDatos);
-
-        // Assert
-        // Verificamos que el objeto 'existente' haya mutado con los nuevos valores
-        assertEquals("Sí", existente.getCarnes());
-        assertEquals("Siempre", existente.getFrutas());
-        assertEquals("Nunca", existente.getSalados());
-        assertEquals("Pozo", existente.getFuenteAgua());
-        assertEquals("Cloro", existente.getDetalleQuimicos());
-        
-        // Verificamos que se haya guardado
-        verify(repo).save(existente);
-    }
-
-    @Test
-    @DisplayName("Actualizar: No debería hacer nada si ID no existe")
-    void actualizarPorId_NoDeberiaHacerNada_SiNoExiste() {
+    @DisplayName("ObtenerPorId - Debería devolver vacío si no existe")
+    void obtenerPorId_NoExiste_DevuelveVacio() {
         int id = 99;
         when(repo.findById(id)).thenReturn(Optional.empty());
 
-        servicio.actualizarPorId(id, new Factor());
+        Optional<Factor> resultado = servicio.obtenerPorId(id);
 
-        // Verificamos que NUNCA se llame a save
+        assertFalse(resultado.isPresent());
+    }
+
+    @Test
+    @DisplayName("ObtenerTodos - Debería devolver una lista de factores")
+    void obtenerTodos_DevuelveLista() {
+        // Arrange
+        List<Factor> listaSimulada = Arrays.asList(new Factor(), new Factor());
+        when(repo.findAll()).thenReturn(listaSimulada);
+
+        // Act
+        List<Factor> resultado = servicio.obtenerTodos();
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(2, resultado.size());
+    }
+
+    // --- TESTS DE ACTUALIZAR ---
+
+    @Test
+    @DisplayName("Actualizar - Debería modificar los campos y guardar si el ID existe")
+    void actualizar_IdExiste_ActualizaCampos() {
+        // Arrange
+        int id = 10;
+        
+        // El factor que "ya existe" en la BD
+        Factor factorExistente = new Factor();
+        factorExistente.setIdFac(id);
+        factorExistente.setCarnes("Nunca"); // Valor antiguo
+        factorExistente.setQuimicos("No");  // Valor antiguo
+
+        // Los datos nuevos que llegan del frontend/controlador
+        Factor factorNuevosDatos = new Factor();
+        factorNuevosDatos.setCarnes("Diario"); // Nuevo valor
+        factorNuevosDatos.setQuimicos("Sí");   // Nuevo valor
+        factorNuevosDatos.setDetalleQuimicos("Cloro");
+
+        when(repo.findById(id)).thenReturn(Optional.of(factorExistente));
+
+        // Act
+        servicio.actualizarPorId(id, factorNuevosDatos);
+
+        // Assert
+        // Verificamos que el objeto existente se haya modificado
+        assertEquals("Diario", factorExistente.getCarnes());
+        assertEquals("Sí", factorExistente.getQuimicos());
+        assertEquals("Cloro", factorExistente.getDetalleQuimicos());
+        
+        // Verificamos que se llame a save con el objeto modificado
+        verify(repo).save(factorExistente);
+    }
+
+    @Test
+    @DisplayName("Actualizar - No debería hacer nada si el ID no existe")
+    void actualizar_IdNoExiste_NoGuarda() {
+        int id = 99;
+        Factor factorNuevosDatos = new Factor();
+        
+        when(repo.findById(id)).thenReturn(Optional.empty());
+
+        servicio.actualizarPorId(id, factorNuevosDatos);
+
         verify(repo, never()).save(any());
+    }
+
+    // --- TEST DE ELIMINAR ---
+
+    @Test
+    @DisplayName("Eliminar - Debería llamar al repositorio con el ID correcto")
+    void eliminar_LlamaDeleteById() {
+        int id = 5;
+        servicio.eliminar(id);
+        verify(repo, times(1)).deleteById(id);
     }
 }

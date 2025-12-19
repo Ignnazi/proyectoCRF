@@ -31,8 +31,6 @@ class SociodemoST {
     @InjectMocks
     private SociodemoS servicio;
 
-    // --- PRUEBAS DE GUARDADO (VALIDACIONES) ---
-
     @Test
     @DisplayName("Guardar: Debería guardar exitosamente si es mayor de edad")
     void guardar_Exito() {
@@ -76,8 +74,6 @@ class SociodemoST {
         assertEquals("La edad no puede ser nula", ex.getMessage());
         verify(repo, never()).save(any());
     }
-
-    // --- PRUEBAS DE ACTUALIZACIÓN ---
 
     @Test
     @DisplayName("Actualizar: Debería mapear todos los campos correctamente")
@@ -132,7 +128,6 @@ class SociodemoST {
         verify(repo, never()).save(any());
     }
 
-    // --- PRUEBAS CRUD BÁSICAS ---
 
     @Test
     @DisplayName("Eliminar: Debería llamar al repositorio")
