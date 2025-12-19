@@ -1,7 +1,7 @@
 // ===============================
 // habito.js
 // ===============================
-const API_HAB = "http://localhost:8082/api/habito";
+const API_HAB = "http://localhost:8080/api/habito";
 window.estadoFormulario = window.estadoFormulario || { codActual: null, grupoActual: null };
 
 // ---------- Helpers ----------
@@ -100,6 +100,15 @@ function limpiarBeber() {
   ["frecuenciaBeberHab", "cantidadBeberHab", "aniosBeberHab", "tiempoDejadoBeberHab"].forEach(limpiarRadios);
   window.actualizarVisibilidadHabito();
 }
+
+// Función global para limpiar todos los hábitos
+function limpiarHabitoForm() {
+  limpiarFuma();
+  limpiarBeber();
+}
+
+// Exponer globalmente para el botón de nuevo participante
+window.limpiarHabitoForm = limpiarHabitoForm;
 
 // ---------- API ----------
 window.listarHabito = async function () {

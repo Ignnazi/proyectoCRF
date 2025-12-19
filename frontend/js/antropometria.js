@@ -1,7 +1,7 @@
 // ===============================
 // antropometria.js
 // ===============================
-const API_ANTROP = "http://localhost:8082/api/antropometria";
+const API_ANTROP = "http://localhost:8080/api/antropometria";
 
 window.estadoFormulario = window.estadoFormulario || { codActual: null, grupoActual: null };
 
@@ -203,6 +203,9 @@ function limpiarAntropometriaForm() {
 
   syncCodPartAntrop();
 }
+
+// Exponer globalmente para el botón de nuevo participante
+window.limpiarAntropometriaForm = limpiarAntropometriaForm;
 
 // ---------- Init ----------
 document.addEventListener("DOMContentLoaded", async () => {

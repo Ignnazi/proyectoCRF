@@ -1,7 +1,7 @@
 // ===============================
 // helicobacter.js
 // ===============================
-const API_HELIC = "http://localhost:8082/api/helicobacter";
+const API_HELIC = "http://localhost:8080/api/helicobacter";
 
 window.estadoFormulario = window.estadoFormulario || { codActual: null, grupoActual: null };
 
@@ -99,6 +99,9 @@ function limpiarHelicForm() {
 
   window.actualizarVisibilidadHelicobacter();
 }
+
+// Exponer globalmente para el botón de nuevo participante
+window.limpiarHelicobacterForm = limpiarHelicForm;
 
 // ---------- API ----------
 window.listarHelicobacter = async function () {

@@ -5,6 +5,7 @@ import ingsof.repositorio.HelicobacterR;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class HelicobacterS {
@@ -17,6 +18,19 @@ public class HelicobacterS {
 
     public List<Helicobacter> listar() {
         return repo.findAll();
+    }
+
+    @SuppressWarnings("null")
+    public void guardar(Helicobacter helicobacter) {
+        repo.save(helicobacter);
+    }
+
+    public void eliminar(int id) {
+        repo.deleteById(id);
+    }
+
+    public Optional<Helicobacter> obtener(int id) {
+        return repo.findById(id);
     }
 
     @SuppressWarnings("null")

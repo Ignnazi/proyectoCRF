@@ -64,13 +64,16 @@ class AntecedentesST {
     }
 
     @Test
-    void guardar_DeberiaFallarSiControlTieneFechaDiagnostico() {
-        Antecedente a = new Antecedente();
-        a.setCodPart("CT001");
-        a.setFechaDiag(Date.valueOf(LocalDate.now())); // Inválido para control
+    @DisplayName("Crear: Debería fallar si NO es 'Caso' pero tiene Fecha Diagnóstico")
+    void crear_DeberiaFallar_SiControlTieneFecha() {
+        // Arrange
+        String codPart = "P003";
+        Antecedente nuevo = new Antecedente();
+        nuevo.setCodPart(codPart);
+        nuevo.setFechaDiag(java.sql.Date.valueOf(LocalDate.now())); // ESTO DEBERÍA FALLAR EN CONTROLES
 
-        Participantecrf p = new Participantecrf();
-        p.setGrupo("Control");
+        Participantecrf participante = new Participantecrf();
+        participante.setGrupo("Control");
 
         when(partRepo.findById("CT001")).thenReturn(Optional.of(p));
 

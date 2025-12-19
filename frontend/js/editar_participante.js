@@ -27,16 +27,13 @@ window.addEventListener('DOMContentLoaded', async () => {
     // Mostrar nombre de usuario
     document.getElementById('navbarUserName').textContent = userName || 'Usuario';
 
-    // Configurar botones de navegación
-    document.getElementById('btnBackToHome').addEventListener('click', (e) => {
-        e.preventDefault();
-        window.location.href = `busqueda.html?userId=${userId}`;
-    });
-
+    // Configurar botón de cerrar sesión
     document.getElementById('btnLogout').addEventListener('click', (e) => {
         e.preventDefault();
-        sessionStorage.clear();
-        window.location.href = 'index.html';
+        if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        }
     });
 
     // Cargar datos del participante
@@ -51,25 +48,23 @@ async function cargarDatosParticipante() {
         if (!respPart.ok) throw new Error('Participante no encontrado');
         const participante = await respPart.json();
 
-        // Cargar datos relacionados
-        const [antecedente, antropometria, factor, genotipo, habitos, helicobacter, histopatologia, sociodemo] = await Promise.all([
+        // Cargar datos relacionados (SIN genotipo ya que no existe)
+        const [antecedente, antropometria, factor, habitos, helicobacter, histopatologia, sociodemo] = await Promise.all([
             cargarEntidad('antecedente', participanteId),
             cargarEntidad('antropometria', participanteId),
             cargarEntidad('factor', participanteId),
-            cargarEntidad('genotipo', participanteId),
             cargarHabitos(participanteId),
             cargarEntidad('helicobacter', participanteId),
             cargarEntidad('histopatologia', participanteId),
             cargarEntidad('sociodemo', participanteId)
         ]);
 
-        // Guardar datos originales
+        // Guardar datos originales (SIN genotipo)
         datosOriginales = {
             participante,
             antecedente,
             antropometria,
             factor,
-            genotipo,
             habitos,
             helicobacter,
             histopatologia,
@@ -126,7 +121,7 @@ async function cargarHabitos(codPart) {
 // Renderizar formulario de edición
 function renderizarFormulario() {
     const content = document.getElementById('editContent');
-    const { participante, antecedente, antropometria, factor, genotipo, habitos, helicobacter, histopatologia, sociodemo } = datosOriginales;
+    const { participante, antecedente, antropometria, factor, habitos, helicobacter, histopatologia, sociodemo } = datosOriginales;
 
     let html = `
         <!-- Datos del Participante -->
@@ -134,9 +129,10 @@ function renderizarFormulario() {
             <h2 class="section-title">Datos del Participante - Código: ${participante?.codPart}</h2>
             <div class="info-grid">
                 ${crearCampo('Nombre', 'participante.nombre', participante?.nombre, 'text')}
+                ${crearCampo('Teléfono', 'participante.telefono', participante?.telefono, 'text')}
+                ${crearCampo('Correo', 'participante.correo', participante?.correo, 'email')}
                 ${crearCampo('Grupo', 'participante.grupo', participante?.grupo, 'select', false, ['Caso', 'Control'])}
-                ${crearCampo('Fecha de Inclusión', 'participante.fechaInclusion', participante?.fechaInclusion?.slice(0, 16), 'datetime-local')}
-                ${crearCampo('ID Usuario', 'participante.idUser', participante?.idUser, 'number')}
+                ${crearCampo('Fecha de Inclusión', 'participante.fechaInclusion', participante?.fechaInclusion?.slice(0, 16), 'datetime-local', true)}
             </div>
         </div>
 
@@ -148,10 +144,14 @@ function renderizarFormulario() {
                 ${crearCampo('Sexo', 'sociodemo.sexo', sociodemo?.sexo, 'select', false, ['Hombre', 'Mujer'])}
                 ${crearCampo('Nacionalidad', 'sociodemo.nacionalidad', sociodemo?.nacionalidad, 'text')}
                 ${crearCampo('Dirección', 'sociodemo.direccion', sociodemo?.direccion, 'text')}
+                ${crearCampo('Comuna', 'sociodemo.comuna', sociodemo?.comuna, 'text')}
+                ${crearCampo('Ciudad', 'sociodemo.ciudad', sociodemo?.ciudad, 'text')}
                 ${crearCampo('Zona', 'sociodemo.zona', sociodemo?.zona, 'select', false, ['Urbana', 'Rural'])}
-                ${crearCampo('Años de Residencia', 'sociodemo.aniosRes', sociodemo?.aniosRes, 'select', false, ['<5', '5–10', '>10'])}
+                ${crearCampo('Vive más de 5 años', 'sociodemo.viveMas5', sociodemo?.viveMas5, 'select', false, ['Sí', 'No'])}
                 ${crearCampo('Educación', 'sociodemo.educacion', sociodemo?.educacion, 'select', false, ['Básico', 'Medio', 'Superior'])}
                 ${crearCampo('Ocupación', 'sociodemo.ocupacion', sociodemo?.ocupacion, 'text')}
+                ${crearCampo('Previsión Salud', 'sociodemo.previsionSalud', sociodemo?.previsionSalud, 'select', false, ['Fonasa', 'Isapre', 'Particular', 'Otra'])}
+                ${crearCampo('Otra Previsión', 'sociodemo.previsionOtra', sociodemo?.previsionOtra, 'text')}
             </div>
         </div>
 
@@ -169,14 +169,15 @@ function renderizarFormulario() {
         <div class="section">
             <h2 class="section-title">Antecedentes</h2>
             <div class="info-grid">
-                ${crearCampo('Diagnóstico', 'antecedente.diagnostico', antecedente?.diagnostico, 'select', false, ['Sí', 'No'])}
+                ${crearCampo('Diagnóstico CG', 'antecedente.diagnostico', antecedente?.diagnostico, 'select', false, ['Sí', 'No'])}
                 ${crearCampo('Fecha de Diagnóstico', 'antecedente.fechaDiag', antecedente?.fechaDiag?.slice?.(0, 10) || antecedente?.fechaDiag, 'date')}
                 ${crearCampo('Familiar con CG', 'antecedente.famCg', antecedente?.famCg, 'select', false, ['Sí', 'No'])}
                 ${crearCampo('Familiar con Otro Cáncer', 'antecedente.famOtro', antecedente?.famOtro, 'select', false, ['Sí', 'No'])}
-                ${crearCampo('Otro Cáncer', 'antecedente.otroCancer', antecedente?.otroCancer, 'text')}
+                ${crearCampo('Especificar Otro Cáncer', 'antecedente.otroCancer', antecedente?.otroCancer, 'text')}
                 ${crearCampo('Otras Enfermedades', 'antecedente.otrasEnfermedades', antecedente?.otrasEnfermedades, 'text')}
-                ${crearCampo('Medicamentos', 'antecedente.medicamentos', antecedente?.medicamentos, 'text')}
-                ${crearCampo('Cirugía', 'antecedente.cirugia', antecedente?.cirugia, 'select', false, ['Sí', 'No'])}
+                ${crearCampo('Medicamentos Gastrointestinales', 'antecedente.medGastro', antecedente?.medGastro, 'select', false, ['Sí', 'No'])}
+                ${crearCampo('Cuáles Medicamentos', 'antecedente.medGastroCual', antecedente?.medGastroCual, 'text')}
+                ${crearCampo('Cirugía Gástrica', 'antecedente.cirugia', antecedente?.cirugia, 'select', false, ['Sí', 'No'])}
             </div>
         </div>
 
@@ -184,41 +185,38 @@ function renderizarFormulario() {
         <div class="section">
             <h2 class="section-title">Factores de Riesgo</h2>
             <div class="info-grid">
-                ${crearCampo('Carnes', 'factor.carnes', factor?.carnes, 'select', false, ['<1/sem', '1–2/sem', '≥3/sem'])}
-                ${crearCampo('Salados', 'factor.salados', factor?.salados, 'select', false, ['Sí', 'No'])}
-                ${crearCampo('Frutas', 'factor.frutas', factor?.frutas, 'select', false, ['Baja', 'Media', 'Alta'])}
+                ${crearCampo('Consumo Carnes', 'factor.carnes', factor?.carnes, 'select', false, ['<1/sem', '1–2/sem', '≥3/sem'])}
+                ${crearCampo('Alimentos Salados', 'factor.salados', factor?.salados, 'select', false, ['Sí', 'No'])}
+                ${crearCampo('Consumo Frutas', 'factor.frutas', factor?.frutas, 'select', false, ['Baja', 'Media', 'Alta'])}
                 ${crearCampo('Frituras', 'factor.frituras', factor?.frituras, 'select', false, ['Sí', 'No'])}
+                ${crearCampo('Alimentos Condimentados', 'factor.condimentados', factor?.condimentados, 'select', false, ['Sí', 'No'])}
                 ${crearCampo('Bebidas Calientes', 'factor.bebidasCalientes', factor?.bebidasCalientes, 'select', false, ['Pocas', 'Medias', 'Frecuentes'])}
-                ${crearCampo('Pesticidas', 'factor.pesticidas', factor?.pesticidas, 'select', false, ['Sí', 'No'])}
-                ${crearCampo('Químicos', 'factor.quimicos', factor?.quimicos, 'select', false, ['Sí', 'No'])}
+                ${crearCampo('Exposición Pesticidas', 'factor.pesticidas', factor?.pesticidas, 'select', false, ['Sí', 'No'])}
+                ${crearCampo('Exposición Químicos', 'factor.quimicos', factor?.quimicos, 'select', false, ['Sí', 'No'])}
                 ${crearCampo('Detalle Químicos', 'factor.detalleQuimicos', factor?.detalleQuimicos, 'text')}
                 ${crearCampo('Humo de Leña', 'factor.humoLena', factor?.humoLena, 'select', false, ['Nunca', 'Estacional', 'Diario'])}
-                ${crearCampo('Fuente de Agua', 'factor.fuenteAgua', factor?.fuenteAgua, 'select', false, ['Red', 'Pozo', 'Camión'])}
-                ${crearCampo('Tratamiento de Agua', 'factor.tratamientoAgua', factor?.tratamientoAgua, 'select', false, ['Ninguno', 'Hervir', 'Filtro', 'Cloro'])}
+                ${crearCampo('Fuente de Agua', 'factor.fuenteAgua', factor?.fuenteAgua, 'select', false, ['Red', 'Pozo', 'Camión', 'Otra'])}
+                ${crearCampo('Otra Fuente Agua', 'factor.fuenteAguaOtra', factor?.fuenteAguaOtra, 'text')}
+                ${crearCampo('Tratamiento Agua', 'factor.tratamientoAgua', factor?.tratamientoAgua, 'select', false, ['Ninguno', 'Hervir', 'Filtro', 'Cloro'])}
             </div>
         </div>
 
-        <!-- Genotipo -->
-        <div class="section">
-            <h2 class="section-title">Genotipo</h2>
-            <div class="info-grid">
-                ${crearCampo('Fecha de Toma', 'genotipo.fechaToma', genotipo?.fechaToma?.slice?.(0, 10) || genotipo?.fechaToma, 'date')}
-                ${crearCampo('TLR9 rs5743836', 'genotipo.tlr9Rs5743836', genotipo?.tlr9Rs5743836, 'text')}
-                ${crearCampo('TLR9 rs187084', 'genotipo.tlr9Rs187084', genotipo?.tlr9Rs187084, 'text')}
-                ${crearCampo('miR-146a rs2910164', 'genotipo.mir146aRs2910164', genotipo?.mir146aRs2910164, 'text')}
-                ${crearCampo('miR-196a2 rs11614913', 'genotipo.mir196a2Rs11614913', genotipo?.mir196a2Rs11614913, 'text')}
-                ${crearCampo('MTHFR rs1801133', 'genotipo.mthfrRs1801133', genotipo?.mthfrRs1801133, 'text')}
-                ${crearCampo('DNMT3B rs1569686', 'genotipo.dnmt3bRs1569686', genotipo?.dnmt3bRs1569686, 'text')}
-            </div>
-        </div>
-
-        <!-- Helicobacter -->
+        <!-- Helicobacter Pylori -->
         <div class="section">
             <h2 class="section-title">Helicobacter Pylori</h2>
             <div class="info-grid">
-                ${crearCampo('Prueba', 'helicobacter.prueba', helicobacter?.prueba, 'select', false, ['Aliento', 'Antígeno', 'Endoscopía'])}
-                ${crearCampo('Resultado', 'helicobacter.resultado', helicobacter?.resultado, 'select', false, ['Positivo', 'Negativo'])}
-                ${crearCampo('Antigüedad', 'helicobacter.antiguedad', helicobacter?.antiguedad, 'select', false, ['<1 año', '1–5 años', '>5 años'])}
+                ${crearCampo('Resultado Examen', 'helicobacter.resultadoExam', helicobacter?.resultadoExam, 'select', false, ['Positivo', 'Negativo', 'Desconocido'])}
+                ${crearCampo('Tipo Examen', 'helicobacter.tipoExamen', helicobacter?.tipoExamen, 'select', false, ['Aliento', 'Antígeno', 'Serología', 'Endoscopía', 'Otro'])}
+                ${crearCampo('Otro Examen', 'helicobacter.otroExamen', helicobacter?.otroExamen, 'text')}
+                ${crearCampo('Antigüedad', 'helicobacter.antiguedad', helicobacter?.antiguedad, 'select', false, ['<1 año', '1–5 años', '>5 años', 'Nunca'])}
+                ${crearCampo('Pasado Positivo', 'helicobacter.pasadoPositivo', helicobacter?.pasadoPositivo, 'select', false, ['Sí', 'No', 'No recuerda'])}
+                ${crearCampo('Detalle Pasado', 'helicobacter.pasadoDetalle', helicobacter?.pasadoDetalle, 'text')}
+                ${crearCampo('Tratamiento', 'helicobacter.tratamiento', helicobacter?.tratamiento, 'select', false, ['Sí', 'No', 'No recuerda'])}
+                ${crearCampo('Detalle Tratamiento', 'helicobacter.tratamientoDetalle', helicobacter?.tratamientoDetalle, 'text')}
+                ${crearCampo('Uso IBP/Antibióticos', 'helicobacter.usoIbpAbx', helicobacter?.usoIbpAbx, 'select', false, ['Sí', 'No', 'No recuerda'])}
+                ${crearCampo('Examen Repetido', 'helicobacter.repetido', helicobacter?.repetido, 'select', false, ['Sí', 'No'])}
+                ${crearCampo('Fecha Repetido', 'helicobacter.repetidoFecha', helicobacter?.repetidoFecha?.slice?.(0, 10) || helicobacter?.repetidoFecha, 'date')}
+                ${crearCampo('Resultado Repetido', 'helicobacter.repetidoResultado', helicobacter?.repetidoResultado, 'select', false, ['Positivo', 'Negativo', 'Desconocido'])}
             </div>
         </div>
 
@@ -384,12 +382,6 @@ async function guardarCambios() {
             await guardarEntidad('factor', formData.factor, formData.factor.idFac, 'idFac');
         }
 
-        // Genotipo
-        if (formData.genotipo && (formData.genotipo.idGenotip || tieneContenido(formData.genotipo))) {
-            console.log('Guardando genotipo...', formData.genotipo);
-            await guardarEntidad('genotipo', formData.genotipo, formData.genotipo.idGenotip, 'idGenotip');
-        }
-
         // Helicobacter
         if (formData.helicobacter && (formData.helicobacter.idHelic || tieneContenido(formData.helicobacter))) {
             console.log('Guardando helicobacter...', formData.helicobacter);
@@ -431,12 +423,11 @@ async function guardarCambios() {
 function recopilarDatosFormulario() {
     const inputs = document.querySelectorAll('input, select, textarea');
     const data = {
-        participante: { codPart: participanteId },
+        participante: datosOriginales.participante ? { ...datosOriginales.participante } : { codPart: participanteId },
         sociodemo: datosOriginales.sociodemo ? { ...datosOriginales.sociodemo } : { codPart: participanteId },
         antropometria: datosOriginales.antropometria ? { ...datosOriginales.antropometria } : { codPart: participanteId },
         antecedente: datosOriginales.antecedente ? { ...datosOriginales.antecedente } : { codPart: participanteId },
         factor: datosOriginales.factor ? { ...datosOriginales.factor } : { codPart: participanteId },
-        genotipo: datosOriginales.genotipo ? { ...datosOriginales.genotipo } : { codPart: participanteId },
         helicobacter: datosOriginales.helicobacter ? { ...datosOriginales.helicobacter } : { codPart: participanteId },
         histopatologia: datosOriginales.histopatologia ? { ...datosOriginales.histopatologia } : { codPart: participanteId },
         habitos: []
@@ -478,7 +469,11 @@ function recopilarDatosFormulario() {
                 if (field === 'codPart') {
                     // codPart debe ser String para participantecrf
                     data[entidad][field] = participanteId;
-                } else if (field.startsWith('id') && field !== 'idUser') {
+                } else if (field === 'idUser') {
+                    // idUser debe ser Integer
+                    data[entidad][field] = value ? parseInt(value) : data[entidad][field];
+                } else if (field.startsWith('id')) {
+                    // Otros campos id también son Integer
                     data[entidad][field] = value ? parseInt(value) : data[entidad][field];
                 } else if (input.type === 'number') {
                     data[entidad][field] = value ? parseFloat(value) : null;

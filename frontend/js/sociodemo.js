@@ -1,4 +1,4 @@
-const API_SOCIO = "http://localhost:8082/api/sociodemo";
+const API_SOCIO = "http://localhost:8080/api/sociodemo";
 
 function msgSocio(texto, tipo = "ok") {
   const box = document.getElementById("msgBoxSocio");
@@ -37,6 +37,9 @@ function limpiarSociodemoForm() {
 
   togglePrevisionOtra();
 }
+
+// Exponer globalmente para el botón de nuevo participante
+window.limpiarSociodemoForm = limpiarSociodemoForm;
 
 window.listarSociodemo = async function () {
   const tabla = document.getElementById("tablaSociodemo");

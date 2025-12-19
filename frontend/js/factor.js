@@ -1,4 +1,4 @@
-const API_FACTOR = "http://localhost:8082/api/factor";
+const API_FACTOR = "http://localhost:8080/api/factor";
 window.estadoFormulario = window.estadoFormulario || { codActual: null, grupoActual: null };
 
 function msgFactor(texto, tipo = "ok") {
@@ -75,6 +75,9 @@ function limpiarFactorForm() {
 
   window.actualizarVisibilidadFactor();
 }
+
+// Exponer globalmente para el botón de nuevo participante
+window.limpiarFactorForm = limpiarFactorForm;
 
 window.listarFactor = async function () {
   const tabla = document.getElementById("tablaFactor");
