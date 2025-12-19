@@ -1,12 +1,12 @@
 package ingsof;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
@@ -75,9 +75,9 @@ class AntecedentesST {
         Participantecrf participante = new Participantecrf();
         participante.setGrupo("Control");
 
-        when(partRepo.findById("CT001")).thenReturn(Optional.of(p));
+        when(partRepo.findById(codPart)).thenReturn(Optional.of(participante));
 
         // CAMBIO: Se usa guardar() en lugar de crear()
-        assertThrows(ResponseStatusException.class, () -> servicio.guardar(a));
+        assertThrows(ResponseStatusException.class, () -> servicio.guardar(nuevo));
     }
 }

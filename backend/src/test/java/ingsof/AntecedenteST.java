@@ -1,6 +1,5 @@
 package ingsof;
 
-import java.util.Date;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -66,7 +65,7 @@ class AntecedenteST {
     void guardar_DeberiaFallarSiControlTieneFechaDiagnostico() {
         Antecedente a = new Antecedente();
         a.setCodPart("CT001");
-        a.setFechaDiag((java.sql.Date) new Date()); // Inválido para control
+        a.setFechaDiag(new java.sql.Date(System.currentTimeMillis())); // Inválido para control
 
         Participantecrf p = new Participantecrf();
         p.setGrupo("Control");
