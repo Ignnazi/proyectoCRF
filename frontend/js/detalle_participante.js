@@ -1,6 +1,6 @@
 /* Script para la página de detalle del participante */
 
-const API_BASE = "http://localhost:8080/api";
+const API_BASE = "http://pacheco.chillan.ubiobio.cl:8034/api";
 
 // Obtener el ID del participante desde la URL
 function obtenerIdParticipante() {

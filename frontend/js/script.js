@@ -3,7 +3,7 @@
    - Verifica existencia de elementos antes de operar (evita errores en páginas parciales).
 */
 
-const API = "http://localhost:8080/api/participantecrf";
+const API = "http://pacheco.chillan.ubiobio.cl:8034/api/participantecrf";
 
 
 window.irAFormulario = function irAFormulario(){

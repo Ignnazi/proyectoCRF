@@ -34,7 +34,7 @@ services:
       MYSQL_PASS: ${MYSQL_APP_PASS}
       SPRING_DEVTOOLS_RESTART_ENABLED: "true"
     ports:
-      - "8080:8080"
+      - "8034:8080"
     volumes:
       # Mapear el código fuente para hot reload
       - ./backend/src:/app/src
@@ -53,7 +53,7 @@ services:
     volumes:
       - ./frontend:/usr/share/nginx/html
     ports:
-      - "3002:80"
+      - "8026:80"
     depends_on:
       - backend
     restart: always

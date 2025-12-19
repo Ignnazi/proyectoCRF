@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 const API_PART = "http://localhost:8082/api/participantecrf";
+=======
+const API_PART = "http://pacheco.chillan.ubiobio.cl:8034/api/participantecrf";
+>>>>>>> Stashed changes
 
 window.estadoFormulario = window.estadoFormulario || { codActual: null, grupoActual: null };
 

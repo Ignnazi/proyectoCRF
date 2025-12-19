@@ -1,6 +1,6 @@
 /* Script para la página de búsqueda de participantes */
 
-const API = "http://localhost:8080/api/participantecrf";
+const API = "http://pacheco.chillan.ubiobio.cl:8034/api/participantecrf";
 let todosLosParticipantes = [];
 let participantesFiltrados = [];
 let userIdLogueado = null;

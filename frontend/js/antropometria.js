@@ -1,7 +1,11 @@
 // ===============================
 // antropometria.js
 // ===============================
+<<<<<<< Updated upstream
 const API_ANTROP = "http://localhost:8082/api/antropometria";
+=======
+const API_ANTROP = "http://pacheco.chillan.ubiobio.cl:8034/api/antropometria";
+>>>>>>> Stashed changes
 
 window.estadoFormulario = window.estadoFormulario || { codActual: null, grupoActual: null };
 

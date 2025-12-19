@@ -1,6 +1,6 @@
 /* Script para la página de login (index.html) */
 
-const USER_API = "http://localhost:8080/api/usuario";
+const USER_API = "http://pacheco.chillan.ubiobio.cl:8034/api/usuario";
 
 // Manejo de login
 document.addEventListener('DOMContentLoaded', () => {

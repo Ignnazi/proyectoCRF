@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 const API_ANTEC = "http://localhost:8082/api/antecedente";
+=======
+const API_ANTEC = "http://pacheco.chillan.ubiobio.cl:8034/api/antecedente";
+>>>>>>> Stashed changes
 
 function msgAntec(texto, tipo = "ok") {
   const box = document.getElementById("msgBoxAntec");

@@ -1,7 +1,11 @@
 // ===============================
 // habito.js
 // ===============================
+<<<<<<< Updated upstream
 const API_HAB = "http://localhost:8082/api/habito";
+=======
+const API_HAB = "http://pacheco.chillan.ubiobio.cl:8034/api/habito";
+>>>>>>> Stashed changes
 window.estadoFormulario = window.estadoFormulario || { codActual: null, grupoActual: null };
 
 // ---------- Helpers ----------

@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 const API_FACTOR = "http://localhost:8082/api/factor";
+=======
+const API_FACTOR = "http://pacheco.chillan.ubiobio.cl:8034/api/factor";
+>>>>>>> Stashed changes
 window.estadoFormulario = window.estadoFormulario || { codActual: null, grupoActual: null };
 
 function msgFactor(texto, tipo = "ok") {

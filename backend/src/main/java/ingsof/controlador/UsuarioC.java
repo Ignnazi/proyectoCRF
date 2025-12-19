@@ -8,7 +8,7 @@ import ingsof.servicio.UsuarioS;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://pacheco.chillan.ubiobio.cl:8026")
 @RestController
 @RequestMapping("/api/usuario")
 public class UsuarioC {

@@ -11,8 +11,7 @@ FROM eclipse-temurin:21-jdk
 WORKDIR /app
 COPY --from=build /app/target/*.jar ./app.jar
 
-# Spring Boot por defecto escucha en 8080; docker-compose mapea 8080:8080
-EXPOSE 8080
+EXPOSE 8034
 
 # Habilitar DevTools con opciones optimizadas para desarrollo
 ENTRYPOINT ["java", \

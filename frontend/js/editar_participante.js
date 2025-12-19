@@ -47,7 +47,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 async function cargarDatosParticipante() {
     try {
         // Cargar datos principales
-        const respPart = await fetch(`http://localhost:8080/api/participantecrf/${participanteId}`);
+        const respPart = await fetch(`http://pacheco.chillan.ubiobio.cl:8034/api/participantecrf/${participanteId}`);
         if (!respPart.ok) throw new Error('Participante no encontrado');
         const participante = await respPart.json();
 
@@ -90,7 +90,7 @@ async function cargarDatosParticipante() {
 // Cargar datos de una entidad
 async function cargarEntidad(entidad, codPart) {
     try {
-        const resp = await fetch(`http://localhost:8080/api/${entidad}`);
+        const resp = await fetch(`http://pacheco.chillan.ubiobio.cl:8034/api/${entidad}`);
         if (!resp.ok) return null;
 
         const lista = await resp.json();
@@ -108,7 +108,7 @@ async function cargarEntidad(entidad, codPart) {
 // Cargar hábitos (puede haber múltiples)
 async function cargarHabitos(codPart) {
     try {
-        const resp = await fetch(`http://localhost:8080/api/habito`);
+        const resp = await fetch(`http://pacheco.chillan.ubiobio.cl:8034/api/habito`);
         if (!resp.ok) return [];
 
         const lista = await resp.json();
@@ -501,7 +501,7 @@ async function guardarEntidad(endpoint, datos, id, idField) {
         // Si no hay ID, crear nueva entidad
         if (!id) {
             console.log(`📤 POST /api/${endpoint}`, datos);
-            const resp = await fetch(`http://localhost:8080/api/${endpoint}`, {
+            const resp = await fetch(`http://pacheco.chillan.ubiobio.cl:8034/api/${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(datos)
@@ -548,7 +548,7 @@ async function guardarEntidad(endpoint, datos, id, idField) {
         } else {
             // Actualizar entidad existente
             console.log(`📤 PUT /api/${endpoint}/${id}`, datos);
-            const resp = await fetch(`http://localhost:8080/api/${endpoint}/${id}`, {
+            const resp = await fetch(`http://pacheco.chillan.ubiobio.cl:8034/api/${endpoint}/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(datos)

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3002")
+@CrossOrigin(origins = "http://pacheco.chillan.ubiobio.cl:8026")
 @RestController
 @RequestMapping("/api/participantecrf")
 public class ParticipantecrfC {

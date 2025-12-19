@@ -1,7 +1,11 @@
 // ===============================
 // histopatologia.js
 // ===============================
+<<<<<<< Updated upstream
 const API_HISTO = "http://localhost:8082/api/histopatologia";
+=======
+const API_HISTO = "http://pacheco.chillan.ubiobio.cl:8034/api/histopatologia";
+>>>>>>> Stashed changes
 
 // Reusa estado global (igual que tus otras secciones)
 window.estadoFormulario = window.estadoFormulario || { codActual: null, grupoActual: null };

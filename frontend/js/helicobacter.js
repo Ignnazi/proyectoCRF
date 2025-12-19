@@ -1,7 +1,11 @@
 // ===============================
 // helicobacter.js
 // ===============================
+<<<<<<< Updated upstream
 const API_HELIC = "http://localhost:8082/api/helicobacter";
+=======
+const API_HELIC = "http://pacheco.chillan.ubiobio.cl:8034/api/helicobacter";
+>>>>>>> Stashed changes
 
 window.estadoFormulario = window.estadoFormulario || { codActual: null, grupoActual: null };
 

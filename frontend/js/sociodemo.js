@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 const API_SOCIO = "http://localhost:8082/api/sociodemo";
+=======
+const API_SOCIO = "http://pacheco.chillan.ubiobio.cl:8034/api/sociodemo";
+>>>>>>> Stashed changes
 
 function msgSocio(texto, tipo = "ok") {
   const box = document.getElementById("msgBoxSocio");
