@@ -1,14 +1,26 @@
 services:
+
   db:
     image: mysql:8
     container_name: ingsof_db
+    env_file:
+      - .env
     environment:
-      MYSQL_DATABASE: ingsof
-      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD: ${MYSQL_ALLOW_EMPTY_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "3310:3306"
+      - "3306:3306"
     volumes:
       - ./sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-padmin123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     restart: always
 
   backend:
@@ -18,17 +30,28 @@ services:
       - .env
     environment:
       MYSQL_URL: ${MYSQL_URL}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASS: ${MYSQL_PASS}
+      MYSQL_USER: ${MYSQL_APP_USER}
+      MYSQL_PASS: ${MYSQL_APP_PASS}
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
     ports:
-      - "8082:8080"
+      - "8080:8080"
+    volumes:
+      # Mapear el código fuente para hot reload
+      - ./backend/src:/app/src
+      # Mapear el target para que los cambios compilados se reflejen inmediatamente
+      - ./backend/target:/app/target
     depends_on:
-      - db
-    restart: always
+      db:
+        condition: service_healthy
+    restart: unless-stopped
 
   frontend:
     build: ./frontend
     container_name: proyectoCRF_frontend
+    env_file:
+      - .env
+    volumes:
+      - ./frontend:/usr/share/nginx/html
     ports:
       - "3002:80"
     depends_on:

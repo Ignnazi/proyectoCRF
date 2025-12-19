@@ -1,6 +1,7 @@
 package ingsof.entidad;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "helicobacter")
@@ -50,6 +51,7 @@ public class Helicobacter {
     // Relación 1:1 con Participante
     @OneToOne
     @JoinColumn(name = "cod_part", referencedColumnName = "cod_part", insertable = false, updatable = false)
+    @JsonIgnore
     private Participantecrf participante;
 
     public Helicobacter() {}

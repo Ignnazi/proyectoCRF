@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Participante - CRF</title>
+    <link rel="stylesheet" href="css/styleFormulario.css">
+    <link rel="stylesheet" href="css/styleDetalle.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <button id="btnExportarPDF" class="btn-export" type="button">📄 Exportar a PDF</button>
+
+    <div class="crf-wrap">
+        <div class="crf-container">
+            <button id="btnVolver" class="btn-back" type="button">← Volver a búsqueda</button>
+
+            <h1>Case Report Form (CRF) - Estudio Cáncer Gástrico</h1>
+            <hr>
+
+            <div id="contenido">
+                <div class="loading">Cargando información del participante...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/detalle_participante.js"></script>
+</body>
+</html>

@@ -32,8 +32,8 @@ public class SociodemoC {
     @PostMapping
     public ResponseEntity<?> guardar(@RequestBody Sociodemo sociodemo) {
         try{
-            this.servicio.guardar(sociodemo);
-            return ResponseEntity.ok("Guardado Exitosamente");
+            Sociodemo guardado = this.servicio.guardar(sociodemo);
+            return ResponseEntity.ok(guardado);
         } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -45,7 +45,12 @@ public class SociodemoC {
     }
 
     @PutMapping("/{id}")
-    public void actualizar(@PathVariable int id, @RequestBody Sociodemo sociodemo) {
-        this.servicio.actualizar(id, sociodemo);
+    public ResponseEntity<?> actualizar(@PathVariable int id, @RequestBody Sociodemo sociodemo) {
+        try {
+            this.servicio.actualizar(id, sociodemo);
+            return ResponseEntity.ok(this.servicio.obtener(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
