@@ -24,8 +24,15 @@ public class HelicobacterC {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Helicobacter> porId(@PathVariable int id) {
+    public ResponseEntity<Helicobacter> porId(@PathVariable Integer id) {
         return ResponseEntity.ok(servicio.porId(id));
+    }
+
+    @GetMapping("/por-participante/{codPart}")
+    public ResponseEntity<Helicobacter> porCodPart(@PathVariable String codPart) {
+        Helicobacter h = servicio.porCodPart(codPart);
+        if (h == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(h);
     }
 
     @PostMapping
@@ -34,13 +41,7 @@ public class HelicobacterC {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Helicobacter> actualizar(@PathVariable int id, @RequestBody Helicobacter body) {
+    public ResponseEntity<Helicobacter> actualizar(@PathVariable Integer id, @RequestBody Helicobacter body) {
         return ResponseEntity.ok(servicio.actualizar(id, body));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable int id) {
-        servicio.eliminar(id);
-        return ResponseEntity.noContent().build();
     }
 }

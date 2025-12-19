@@ -2,10 +2,7 @@ package ingsof.servicio;
 
 import ingsof.entidad.Helicobacter;
 import ingsof.repositorio.HelicobacterR;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -18,40 +15,41 @@ public class HelicobacterS {
         this.repo = repo;
     }
 
-    @Transactional(readOnly = true)
     public List<Helicobacter> listar() {
         return repo.findAll();
     }
 
     @SuppressWarnings("null")
-    @Transactional(readOnly = true)
-    public Helicobacter porId(int id) {
-        return repo.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe helicobacter con ese ID"));
+    public Helicobacter porId(Integer id) {
+        return repo.findById(id).orElseThrow(() -> new RuntimeException("Helicobacter no encontrado"));
     }
 
-    @Transactional
-    public Helicobacter crear(Helicobacter helicobacter) {
-        return repo.save(helicobacter);
+    public Helicobacter porCodPart(String codPart) {
+        return repo.findByCodPart(codPart).orElse(null);
     }
 
     @SuppressWarnings("null")
-    @Transactional
-    public Helicobacter actualizar(int id, Helicobacter cambios) {
-        Helicobacter db = porId(id);
-        if (cambios.getPrueba() != null) db.setPrueba(cambios.getPrueba());
-        if (cambios.getResultado() != null) db.setResultado(cambios.getResultado());
-        if (cambios.getAntiguedad() != null) db.setAntiguedad(cambios.getAntiguedad());
-        if (cambios.getCodPart() != null) db.setCodPart(cambios.getCodPart());
-        return repo.save(db);
+    public Helicobacter crear(Helicobacter body) {
+        return repo.save(body);
     }
 
-    @Transactional
-    public void eliminar(int id) {
-        if (!repo.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe helicobacter con ese ID");
-        }
-        repo.deleteById(id);
-    }
+    public Helicobacter actualizar(Integer id, Helicobacter body) {
+        Helicobacter h = porId(id);
 
+        h.setResultadoExam(body.getResultadoExam());
+        h.setPasadoPositivo(body.getPasadoPositivo());
+        h.setPasadoDetalle(body.getPasadoDetalle());
+        h.setTratamiento(body.getTratamiento());
+        h.setTratamientoDetalle(body.getTratamientoDetalle());
+        h.setTipoExamen(body.getTipoExamen());
+        h.setOtroExamen(body.getOtroExamen());
+        h.setAntiguedad(body.getAntiguedad());
+        h.setUsoIbpAbx(body.getUsoIbpAbx());
+        h.setRepetido(body.getRepetido());
+        h.setRepetidoFecha(body.getRepetidoFecha());
+        h.setRepetidoResultado(body.getRepetidoResultado());
+        h.setCodPart(body.getCodPart());
+
+        return repo.save(h);
+    }
 }

@@ -1,7 +1,7 @@
 package ingsof.entidad;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.sql.Date;
 
 @Entity
 @Table(name = "antecedente")
@@ -10,12 +10,12 @@ public class Antecedente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_antec")
-    private Integer idAntec;
+    private int idAntec;
 
     private String diagnostico;
 
     @Column(name = "fecha_diag")
-    private LocalDate fechaDiag;
+    private Date fechaDiag;
 
     @Column(name = "fam_cg")
     private String famCg;
@@ -29,12 +29,16 @@ public class Antecedente {
     @Column(name = "otras_enfermedades")
     private String otrasEnfermedades;
 
-    private String medicamentos;
+    @Column(name = "med_gastro")
+    private String medGastro;
+
+    @Column(name = "med_gastro_cual")
+    private String medGastroCual;
+
     private String cirugia;
 
-    @Column(name = "cod_part", nullable = false, length = 5)
+    @Column(name = "cod_part")
     private String codPart;
-
 
     @OneToOne
     @JoinColumn(name = "cod_part", referencedColumnName = "cod_part", insertable = false, updatable = false)
@@ -42,12 +46,11 @@ public class Antecedente {
 
     public Antecedente() { }
 
-    // Getters y setters
-    public Integer getIdAntec() {
+    public int getIdAntec() {
         return idAntec;
     }
 
-    public void setIdAntec(Integer idAntec) {
+    public void setIdAntec(int idAntec) {
         this.idAntec = idAntec;
     }
 
@@ -59,11 +62,11 @@ public class Antecedente {
         this.diagnostico = diagnostico;
     }
 
-    public LocalDate getFechaDiag() {
+    public Date getFechaDiag() {
         return fechaDiag;
     }
 
-    public void setFechaDiag(LocalDate fechaDiag) {
+    public void setFechaDiag(Date fechaDiag) {
         this.fechaDiag = fechaDiag;
     }
 
@@ -91,14 +94,6 @@ public class Antecedente {
         this.otroCancer = otroCancer;
     }
 
-    public String getCodPart() {
-        return codPart;
-    }
-
-    public void setCodPart(String codPart) {
-        this.codPart = codPart;
-    }
-
     public String getOtrasEnfermedades() {
         return otrasEnfermedades;
     }
@@ -107,12 +102,20 @@ public class Antecedente {
         this.otrasEnfermedades = otrasEnfermedades;
     }
 
-    public String getMedicamentos() {
-        return medicamentos;
+    public String getMedGastro() {
+        return medGastro;
     }
 
-    public void setMedicamentos(String medicamentos) {
-        this.medicamentos = medicamentos;
+    public void setMedGastro(String medGastro) {
+        this.medGastro = medGastro;
+    }
+
+    public String getMedGastroCual() {
+        return medGastroCual;
+    }
+
+    public void setMedGastroCual(String medGastroCual) {
+        this.medGastroCual = medGastroCual;
     }
 
     public String getCirugia() {
@@ -121,6 +124,14 @@ public class Antecedente {
 
     public void setCirugia(String cirugia) {
         this.cirugia = cirugia;
+    }
+
+    public String getCodPart() {
+        return codPart;
+    }
+
+    public void setCodPart(String codPart) {
+        this.codPart = codPart;
     }
 
     public Participantecrf getParticipante() {
