@@ -1,11 +1,14 @@
 package ingsof.servicio;
 
-import ingsof.entidad.Helicobacter;
-import ingsof.repositorio.HelicobacterR;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import ingsof.entidad.Helicobacter;
+import ingsof.repositorio.HelicobacterR;
 
 @Service
 public class HelicobacterS {
@@ -26,6 +29,9 @@ public class HelicobacterS {
     }
 
     public void eliminar(int id) {
+        if (!repo.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Helicobacter no encontrado");
+        }
         repo.deleteById(id);
     }
 
@@ -35,7 +41,8 @@ public class HelicobacterS {
 
     @SuppressWarnings("null")
     public Helicobacter porId(Integer id) {
-        return repo.findById(id).orElseThrow(() -> new RuntimeException("Helicobacter no encontrado"));
+        return repo.findById(id).orElseThrow(() -> 
+            new ResponseStatusException(HttpStatus.NOT_FOUND, "Helicobacter no encontrado"));
     }
 
     public Helicobacter porCodPart(String codPart) {

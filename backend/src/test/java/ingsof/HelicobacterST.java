@@ -29,35 +29,24 @@ class HelicobacterST {
 
     @Test
     void eliminar_DeberiaBorrarSiExiste() {
-        // MOCK: Simulamos que el ID 1 existe
         when(repo.existsById(1)).thenReturn(true);
-        
-        // EJECUCIÓN
-        // Si tu método se llama 'borrar' o 'delete', cambia '.eliminar' aquí abajo:
-        assertDoesNotThrow(() -> servicio.porId(1));
-        
-        // VERIFICACIÓN: Comprobamos que se llamó al repositorio
+        assertDoesNotThrow(() -> servicio.eliminar(1));
         verify(repo).deleteById(1);
     }
 
     @Test
     void eliminar_DeberiaLanzar404SiNoExiste() {
-        // MOCK: Simulamos que el ID 99 NO existe
         when(repo.existsById(99)).thenReturn(false);
-
-        // EJECUCIÓN: Esperamos un error
-        assertThrows(ResponseStatusException.class, () -> servicio.porId(99));
-        
-        // VERIFICACIÓN: Aseguramos que NUNCA se intentó borrar nada en la BD
+        assertThrows(ResponseStatusException.class, () -> servicio.eliminar(99));
         verify(repo, never()).deleteById(anyInt());
     }
+
 
     @Test
     void actualizar_DeberiaActualizarCampos() {
         // DATOS
         Helicobacter db = new Helicobacter();
-        // Si .setResultado te marca error, verifica tu entidad Helicobacter.java
-        // Asegúrate que tenga los métodos get/set públicos.
+        
         db.setResultadoExam("Negativo");
         
         Helicobacter cambios = new Helicobacter();
@@ -65,18 +54,15 @@ class HelicobacterST {
 
         // MOCK
         when(repo.findById(1)).thenReturn(Optional.of(db));
-        // Nota: No necesitamos el return del save() para esta prueba simplificada
         when(repo.save(any(Helicobacter.class))).thenReturn(db);
 
         // EJECUCIÓN
-        // Si tu servicio devuelve void, simplemente llamamos al método sin asignar a variable
+        
         servicio.actualizar(1, cambios);
         
         // VERIFICACIÓN
-        // Verificamos que el objeto 'db' se haya modificado con el valor nuevo
-        assertEquals("Positivo", db.getResultadoExam());
         
-        // Verificamos que se haya llamado a guardar
+        assertEquals("Positivo", db.getResultadoExam());
         verify(repo).save(db);
     }
 }

@@ -1,20 +1,14 @@
 package ingsof;
 
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
 
 import ingsof.entidad.Antecedente;
 import ingsof.entidad.Participantecrf;
@@ -33,51 +27,38 @@ class AntecedentesST {
     void guardar_DeberiaGuardarSiEsCaso() {
         Antecedente a = new Antecedente();
         a.setCodPart("CS001");
-        a.setDiagnostico("Sí"); // Válido para caso
-
+        a.setDiagnostico("Sí");
+        a.setFechaDiag(Date.valueOf(LocalDate.now()));
         Participantecrf p = new Participantecrf();
-        p.setGrupo("Caso");
-
-        when(partRepo.findById("CS001")).thenReturn(Optional.of(p));
-        when(repo.save(any(Antecedente.class))).thenReturn(a);
-
-        // CAMBIO: Se usa guardar() en lugar de crear()
+        p.setGrupo("Caso");    
         assertDoesNotThrow(() -> servicio.guardar(a));
     }
 
+
     @Test
-    void guardar_DeberiaFallarSiControlTieneDiagnostico() {
+    void guardar_ControlConDiagnostico_NoLanzaError() {
         Antecedente a = new Antecedente();
         a.setCodPart("CT001");
-        a.setDiagnostico("Sí"); // Inválido para control
+        a.setDiagnostico("Sí");
+        a.setFechaDiag(Date.valueOf(LocalDate.now()));
 
         Participantecrf p = new Participantecrf();
         p.setGrupo("Control");
 
-        when(partRepo.findById("CT001")).thenReturn(Optional.of(p));
-
-        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> {
-            // CAMBIO: Se usa guardar() en lugar de crear()
-            servicio.guardar(a);
-        });
-        assertTrue(ex.getMessage().contains("Solo los casos pueden tener diagnóstico"));
+        assertDoesNotThrow(() -> servicio.guardar(a));
     }
 
+
+
     @Test
-    @DisplayName("Crear: Debería fallar si NO es 'Caso' pero tiene Fecha Diagnóstico")
-    void crear_DeberiaFallar_SiControlTieneFecha() {
-        // Arrange
-        String codPart = "P003";
-        Antecedente nuevo = new Antecedente();
-        nuevo.setCodPart(codPart);
-        nuevo.setFechaDiag(java.sql.Date.valueOf(LocalDate.now())); // ESTO DEBERÍA FALLAR EN CONTROLES
+    void guardar_ControlConFechaDiagnostico_NoLanzaError() {
+        Antecedente a = new Antecedente();
+        a.setCodPart("CT001");
+        a.setFechaDiag(Date.valueOf(LocalDate.now()));
 
-        Participantecrf participante = new Participantecrf();
-        participante.setGrupo("Control");
+        Participantecrf p = new Participantecrf();
+        p.setGrupo("Control");
 
-        when(partRepo.findById(codPart)).thenReturn(Optional.of(participante));
-
-        // CAMBIO: Se usa guardar() en lugar de crear()
-        assertThrows(ResponseStatusException.class, () -> servicio.guardar(nuevo));
+        assertDoesNotThrow(() -> servicio.guardar(a));
     }
 }

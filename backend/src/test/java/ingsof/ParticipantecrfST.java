@@ -91,21 +91,26 @@ class ParticipantecrfST {
 
         // MOCKS
         when(repo.findById(idViejo)).thenReturn(Optional.of(existente));
-        when(repo.maxNumeroPorPrefijo("CS")).thenReturn(9); // El siguiente será CS010
-        // Simulamos que tras el update, buscamos el nuevo ID y lo encontramos
+        when(repo.maxNumeroPorPrefijo("CS")).thenReturn(9);
+         when(repo.actualizarCodigo("CS010", idViejo)).thenReturn(1);
+
         Participantecrf actualizadoDb = new Participantecrf();
         actualizadoDb.setCodPart("CS010");
         actualizadoDb.setNombre("Ana");
         actualizadoDb.setGrupo("Caso");
+
         when(repo.findById("CS010")).thenReturn(Optional.of(actualizadoDb));
-        when(repo.save(any(Participantecrf.class))).thenReturn(actualizadoDb);
+
+        when(repo.save(any(Participantecrf.class)))
+        .thenAnswer(inv -> inv.getArgument(0));
 
         // EJECUCIÓN
         Participantecrf resultado = servicio.actualizar(idViejo, cambios);
 
+
         // VERIFICACIÓN
         assertEquals("CS010", resultado.getCodPart());
         assertEquals("Caso", resultado.getGrupo());
-        verify(repo).actualizarCodigo("CS010", idViejo); // Verificar que se llamó al update nativo
+        verify(repo).actualizarCodigo("CS010", idViejo);
     }
 }

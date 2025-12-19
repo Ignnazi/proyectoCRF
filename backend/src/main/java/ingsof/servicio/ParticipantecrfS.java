@@ -1,14 +1,17 @@
 package ingsof.servicio;
 
-import ingsof.entidad.Participantecrf;
-import ingsof.repositorio.ParticipantecrfR;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
+import ingsof.entidad.Participantecrf;
+import ingsof.repositorio.ParticipantecrfR;
 
 @Service
 public class ParticipantecrfS {
@@ -32,9 +35,9 @@ public class ParticipantecrfS {
 
     private void validarObligatorios(Participantecrf p) {
         if (p.getNombre() == null || p.getNombre().isBlank())
-            throw new IllegalArgumentException("nombre es requerido");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "nombre es requerido");
         if (p.getGrupo() == null || p.getGrupo().isBlank())
-            throw new IllegalArgumentException("grupo es requerido");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "grupo es requerido");
     }
 
     @Transactional(readOnly = true)

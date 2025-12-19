@@ -25,12 +25,17 @@ class SociodemoST {
     void guardar_DeberiaAceptarMayoresDe18() {
         Sociodemo s = new Sociodemo();
         s.setEdad(20);
+        s.setCodPart("CS001"); // 🔑 obligatorio
 
-        when(repo.save(any(Sociodemo.class))).thenReturn(s);
+        when(repo.save(any(Sociodemo.class)))
+            .thenAnswer(inv -> inv.getArgument(0));
 
-        servicio.guardar(s);
+        Sociodemo resultado = servicio.guardar(s);
+
         verify(repo).save(s);
+        assertEquals(20, resultado.getEdad());
     }
+
 
     @Test
     void guardar_DeberiaRechazarMenoresDe18() {
