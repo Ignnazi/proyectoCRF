@@ -2,6 +2,7 @@ package ingsof.controlador;
 
 import ingsof.entidad.Factor;
 import ingsof.servicio.FactorS;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,8 +28,9 @@ public class FactorC {
     }
 
     @PostMapping
-    public void guardar(@RequestBody Factor factor) {
+    public ResponseEntity<String> guardar(@RequestBody Factor factor) {
         this.servicio.guardar(factor);
+        return ResponseEntity.ok("Factores de riesgo guardados correctamente");
     }
 
     @DeleteMapping("/{id}")
@@ -37,7 +39,8 @@ public class FactorC {
     }
 
     @PutMapping("/{id}")
-    public void actualizar(@PathVariable int id, @RequestBody Factor factor) {
+    public ResponseEntity<String> actualizar(@PathVariable int id, @RequestBody Factor factor) {
         this.servicio.actualizarPorId(id, factor);
+        return ResponseEntity.ok("Factores de riesgo actualizados correctamente");
     }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,8 +37,8 @@ class HelicobacterST {
     @DisplayName("Guardar: Debería llamar al repositorio")
     void guardar_DeberiaLlamarRepo() {
         Helicobacter h = new Helicobacter();
-        h.setPrueba("Aliento");
-        
+        h.setTipoExamen("Aliento");
+
         servicio.guardar(h);
         
         verify(repo).save(h);
@@ -87,14 +88,14 @@ class HelicobacterST {
         // Objeto original en base de datos
         Helicobacter existente = new Helicobacter();
         existente.setIdHelic(id);
-        existente.setPrueba("Endoscopía");
-        existente.setResultado("Negativo");
+        existente.setTipoExamen("Endoscopía");
+        existente.setResultadoExam("Negativo");
         existente.setAntiguedad("Nunca");
 
         // Objeto con cambios (simulando lo que llega del frontend)
         Helicobacter cambios = new Helicobacter();
-        cambios.setPrueba("Aliento");
-        cambios.setResultado("Positivo");
+        cambios.setTipoExamen("Aliento");
+        cambios.setResultadoExam("Positivo");
         cambios.setAntiguedad("<1 año");
 
         when(repo.findById(id)).thenReturn(Optional.of(existente));
@@ -103,29 +104,29 @@ class HelicobacterST {
         when(repo.save(any(Helicobacter.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act
-        servicio.actualizar(id, cambios);
+        Helicobacter resultado = servicio.actualizar(id, cambios);
 
         // Assert
         // Verificamos que el objeto 'existente' haya recibido los nuevos valores
-        assertEquals("Aliento", existente.getPrueba());
-        assertEquals("Positivo", existente.getResultado());
-        assertEquals("<1 año", existente.getAntiguedad());
-        
+        assertEquals("Aliento", resultado.getTipoExamen());
+        assertEquals("Positivo", resultado.getResultadoExam());
+        assertEquals("<1 año", resultado.getAntiguedad());
+
         verify(repo).save(existente);
     }
 
     @Test
-    @DisplayName("Actualizar: No debería hacer nada si el ID no existe")
-    void actualizar_NoDeberiaHacerNada_SiNoExiste() {
+    @DisplayName("Actualizar: Debería lanzar excepción si el ID no existe")
+    void actualizar_DeberiaLanzarExcepcion_SiNoExiste() {
         // Arrange
         int id = 99;
         when(repo.findById(id)).thenReturn(Optional.empty());
 
-        // Act
-        servicio.actualizar(id, new Helicobacter());
+        // Act & Assert
+        // El método porId lanza RuntimeException cuando no encuentra el registro
+        assertThrows(RuntimeException.class, () -> servicio.actualizar(id, new Helicobacter()));
 
-        // Assert
-        // Verificamos que save() NUNCA sea llamado, protegiendo la integridad de datos
+        // Verificamos que save() NUNCA sea llamado
         verify(repo, never()).save(any());
     }
 }

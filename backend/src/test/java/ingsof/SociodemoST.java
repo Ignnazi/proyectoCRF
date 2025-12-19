@@ -97,7 +97,7 @@ class SociodemoST {
         cambios.setSexo("Mujer");
         cambios.setZona("Urbana");
         cambios.setNacionalidad("Chilena");
-        cambios.setAniosRes(">10");
+        cambios.setViveMas5("Sí");
         cambios.setDireccion("Calle Nueva 123");
         cambios.setEducacion("Superior");
         cambios.setOcupacion("Ingeniera");
@@ -113,7 +113,7 @@ class SociodemoST {
         assertEquals("Mujer", existente.getSexo());
         assertEquals("Urbana", existente.getZona());
         assertEquals("Chilena", existente.getNacionalidad());
-        assertEquals(">10", existente.getAniosRes());
+        assertEquals("Sí", existente.getViveMas5());
         assertEquals("Calle Nueva 123", existente.getDireccion());
         assertEquals("Superior", existente.getEducacion());
         assertEquals("Ingeniera", existente.getOcupacion());

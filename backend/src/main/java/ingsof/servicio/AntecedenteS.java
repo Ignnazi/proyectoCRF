@@ -1,8 +1,12 @@
 package ingsof.servicio;
 
 import ingsof.entidad.Antecedente;
+import ingsof.entidad.Participantecrf;
 import ingsof.repositorio.AntecedenteR;
+import ingsof.repositorio.ParticipantecrfR;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,25 +15,42 @@ import java.util.Optional;
 public class AntecedenteS {
 
     private final AntecedenteR repo;
+    private final ParticipantecrfR partRepo;
 
-    public AntecedenteS(AntecedenteR repo) {
+    public AntecedenteS(AntecedenteR repo, ParticipantecrfR partRepo) {
         this.repo = repo;
+        this.partRepo = partRepo;
     }
 
     @SuppressWarnings("null")
-    public void guardar(Antecedente antecedente) {
+    public Antecedente guardar(Antecedente antecedente) {
         validarCodPart(antecedente);
         validarDiagnosticoFecha(antecedente);
         validarFamOtro(antecedente);
         validarMedGastro(antecedente);
-        repo.save(antecedente);
+        return repo.save(antecedente);
+    }
+
+    @SuppressWarnings("null")
+    public Antecedente crear(Antecedente antecedente) {
+        validarCodPart(antecedente);
+        validarGrupoParticipante(antecedente);
+        validarDiagnosticoFecha(antecedente);
+        validarFamOtro(antecedente);
+        validarMedGastro(antecedente);
+        return repo.save(antecedente);
+    }
+
+    public Antecedente porId(Integer id) {
+        return repo.findById(id).orElseThrow(() ->
+            new ResponseStatusException(HttpStatus.NOT_FOUND, "Antecedente no encontrado con id: " + id));
     }
 
     public void eliminar(int id) {
         repo.deleteById(id);
     }
 
-    public void actualizar(int id, Antecedente a) {
+    public Antecedente actualizar(int id, Antecedente a) {
         Optional<Antecedente> existente = repo.findById(id);
         if (existente.isPresent()) {
             Antecedente x = existente.get();
@@ -44,12 +65,14 @@ public class AntecedenteS {
             x.setMedGastroCual(a.getMedGastroCual());
             x.setCirugia(a.getCirugia());
 
+            validarGrupoParticipante(x);
             validarDiagnosticoFecha(x);
             validarFamOtro(x);
             validarMedGastro(x);
 
-            repo.save(x);
+            return repo.save(x);
         }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Antecedente no encontrado con id: " + id);
     }
 
     public Optional<Antecedente> obtener(int id) {
@@ -63,6 +86,31 @@ public class AntecedenteS {
     private void validarCodPart(Antecedente a) {
         if (isBlank(a.getCodPart())) {
             throw new IllegalArgumentException("cod_part es obligatorio");
+        }
+    }
+
+    private void validarGrupoParticipante(Antecedente a) {
+        String codPart = a.getCodPart();
+        if (isBlank(codPart)) return;
+
+        Optional<Participantecrf> participanteOpt = partRepo.findById(codPart);
+        if (participanteOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Participante no encontrado: " + codPart);
+        }
+
+        Participantecrf participante = participanteOpt.get();
+        String grupo = participante.getGrupo();
+
+        // Si NO es Caso, no puede tener diagnóstico ni fecha
+        if (!"Caso".equalsIgnoreCase(grupo)) {
+            if ("Sí".equalsIgnoreCase(a.getDiagnostico())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Un participante del grupo '" + grupo + "' no puede tener diagnóstico de cáncer gástrico");
+            }
+            if (a.getFechaDiag() != null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Un participante del grupo '" + grupo + "' no puede tener fecha de diagnóstico");
+            }
         }
     }
 
