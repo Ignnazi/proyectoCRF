@@ -22,6 +22,7 @@ CREATE TABLE `usuario` (
   `id_user` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(60) DEFAULT NULL,
   `rol` varchar(45) DEFAULT NULL,
+  `password` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`id_user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -179,21 +180,21 @@ CREATE TABLE `histopatologia` (
 -- DATOS
 -- --------------------------------------------------------
 
-INSERT INTO `usuario` (`id_user`, `nombre`, `rol`) VALUES
-(1, 'Ana Morales', 'Entrevistadora'),
-(2, 'Luis Soto', 'Entrevistador'),
-(3, 'Paula Reyes', 'Supervisor'),
-(4, 'Miguel Torres', 'Entrevistador'),
-(5, 'Camila Vargas', 'Digitadora'),
-(6, 'Carlos López', 'Entrevistador'),
-(7, 'Andrea Díaz', 'Supervisor'),
-(8, 'Pedro Fuentes', 'Entrevistador'),
-(9, 'María Rojas', 'Entrevistadora'),
-(10, 'Javier Peña', 'Coordinador'),
-(11, 'Ignacia Herrera', 'Entrevistadora'),
-(12, 'Roberto', 'Profesor'),
-(13, 'Alucard', 'Colaborador'),
-(14, 'Joaquin', 'Medico');
+INSERT INTO `usuario` (`id_user`, `nombre`, `rol`, `password`) VALUES
+(1, 'Ana Morales', 'Entrevistadora', 'pwd1'),
+(2, 'Luis Soto', 'Entrevistador','pwd2'),
+(3, 'Paula Reyes', 'Supervisor','pwd3'),
+(4, 'Miguel Torres', 'Entrevistador','pwd4'),
+(5, 'Camila Vargas', 'Digitadora','pwd5'),
+(6, 'Carlos López', 'Entrevistador','pwd6'),
+(7, 'Andrea Díaz', 'Supervisor','pwd7'),
+(8, 'Pedro Fuentes', 'Entrevistador','pwd8'),
+(9, 'María Rojas', 'Entrevistadora','pwd9'),
+(10, 'Javier Peña', 'Coordinador','pwd10'),
+(11, 'Ignacia Herrera', 'Entrevistadora','pwd11'),
+(12, 'Roberto', 'Profesor','pwd12'),
+(13, 'Alucard', 'Colaborador','pwd13'),
+(14, 'Joaquin', 'Medico','pwd14');
 
 INSERT INTO `participantecrf`
 (`cod_part`, `nombre`, `telefono`, `correo`, `grupo`, `fecha_inclusion`, `id_user`) VALUES
